@@ -21,6 +21,9 @@ extern "C"
 #define ASCON_XOF_DIGEST_SIZE 32
 #define ASCON_XOF_RATE (64 / 8)
 
+// TODO decide between size and len in names
+// TODO activate all compiler checks
+
 typedef struct {} ascon_aead_ctx_t;
 typedef struct {} ascon_hash_ctx_t;
 typedef struct

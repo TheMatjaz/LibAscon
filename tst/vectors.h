@@ -15,36 +15,71 @@ extern "C"
 #include <stdlib.h>
 #include "ascon.h"
 
-#define VECS_MAX_PLAINTEXT_SIZE 1024
+// The awk commands retrieve the longest line of a given type in the file.
+// Of that line, one has to count the hexstring length and divide by 2.
+
+// awk '{print length, $0}' hash.txt |grep 'Msg ='|sort -nr|head -1
+#define VECS_MAX_HASH_PLAINTEXT_SIZE 1024
+// awk '{print length, $0}' aead128.txt |grep 'PT ='|sort -nr|head -1
+#define VECS_MAX_AEAD_PLAINTEXT_SIZE 32
+// awk '{print length, $0}' aead128.txt |grep 'AD ='|sort -nr|head -1
+#define VECS_MAX_AEAD_ASSOC_DATA_SIZE 32
+// awk '{print length, $0}' aead128.txt |grep 'CT ='|sort -nr|head -1
+#define VECS_MAX_AEAD_CIPHERTEXT_SIZE 48
+
+#define VECS_MAX_HEXBYTES 1024
 
 typedef enum
 {
     VECS_OK = 0,
     VECS_EOF = -1,
-    VECS_IO_CANNOT_OPEN_FILE = 1,
-    VECS_FORMAT_INCORRECT_COUNT_HDR = 2,
-    VECS_FORMAT_TOO_LARGE_PLAINTEXT = 3,
-    VECS_FORMAT_TOO_SHORT_HEXBYTES = 4,
-    VECS_FORMAT_INCORRECT_MSG_HDR = 5,
-    VECS_FORMAT_INCORRECT_DIGEST_HDR = 6,
-    VECS_FORMAT_TOO_SHORT_PLAINTEXT = 7,
-    VECS_FORMAT_TOO_SHORT_DIGEST = 8,
+    VECS_IO_CANNOT_OPEN_FILE,
+    VECS_FORMAT_INCORRECT_COUNT_HDR,
+    VECS_FORMAT_INCORRECT_MSG_HDR,
+    VECS_FORMAT_INCORRECT_DIGEST_HDR,
+    VECS_FORMAT_INCORRECT_KEY_HDR,
+    VECS_FORMAT_INCORRECT_NONCE_HDR,
+    VECS_FORMAT_INCORRECT_PLAINTEXT_HDR,
+    VECS_FORMAT_INCORRECT_ASSOC_DATA_HDR,
+    VECS_FORMAT_INCORRECT_CIPHERTEXT_HDR,
+    VECS_FORMAT_TOO_SHORT_HEXBYTES,
+    VECS_FORMAT_TOO_LARGE_HEXBYTES,
+    VECS_FORMAT_TOO_SHORT_PLAINTEXT,
+    VECS_FORMAT_TOO_LARGE_PLAINTEXT,
+    VECS_FORMAT_TOO_SHORT_DIGEST,
+    VECS_FORMAT_TOO_SHORT_KEY,
+    VECS_FORMAT_TOO_SHORT_NONCE,
 } vecs_err_t;
 
 typedef struct
 {
-    uint8_t plaintext[VECS_MAX_PLAINTEXT_SIZE];
-    uint8_t expected_digest[ASCON_XOF_DIGEST_SIZE];
+    uint8_t plaintext[VECS_MAX_HASH_PLAINTEXT_SIZE];
+    uint8_t expected_digest[ASCON_HASH_DIGEST_SIZE];
     size_t plaintext_len;
 } vecs_hash_t;
+
+typedef struct
+{
+    uint8_t plaintext[VECS_MAX_AEAD_PLAINTEXT_SIZE];
+    uint8_t assoc_data[VECS_MAX_AEAD_ASSOC_DATA_SIZE];
+    uint8_t expected_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_SIZE];
+    uint8_t key[ASCON_AEAD_KEY_SIZE];
+    uint8_t nonce[ASCON_AEAD_NONCE_SIZE];
+    size_t plaintext_len;
+    size_t assoc_data_len;
+    size_t ciphertext_len;
+} vecs_aead_t;
 
 typedef struct
 {
     FILE* handle;
 } vecs_ctx_t;
 
-vecs_err_t vecs_hash_init(vecs_ctx_t* ctx, const char* file_name);
+vecs_err_t vecs_init(vecs_ctx_t* ctx, const char* file_name);
+
 vecs_err_t vecs_hash_next(vecs_ctx_t* ctx, vecs_hash_t* testcase);
+
+vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
 
 #ifdef __cplusplus
 }

@@ -15,7 +15,7 @@ static void test_xof_batch(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_XOF_DIGEST_SIZE];
-    vecs_err_t errcode = vecs_hash_init(&ctx, XOF_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, XOF_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 
     while (1)
