@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.6)
+project(ascon LANGUAGES C)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include_directories(AFTER SYSTEM inc/)
+add_library(ascon STATIC src/xof/ref/hash.c src/xof/ref/permutations.h)

@@ -11,20 +11,25 @@ extern "C"
 #endif
 
 #include <stdint.h>
-#include <stdbool.>
 #include <stddef.h>
 
 // Defines for block size, tag size, hash-digest size, xof-digest size
 #define ASCON_AEAD_KEY_SIZE 16
 #define ASCON_AEAD_BLOCK_SIZE 16
 #define ASCON_AEAD_NONCE_SIZE 16
-#define ASCON_HASH_final_SIZE
-
-#define CRYPTO_BYTES 32  /* TODO what is this value? */
+#define ASCON_HASH_DIGEST_SIZE 32
+#define ASCON_XOF_DIGEST_SIZE 32
+#define ASCON_XOF_RATE (64 / 8)
 
 typedef struct {} ascon_aead_ctx_t;
 typedef struct {} ascon_hash_ctx_t;
-typedef struct {} ascon_xof_ctx_t;
+typedef struct {
+    uint64_t x0;
+    uint64_t x1;
+    uint64_t x2;
+    uint64_t x3;
+    uint64_t x4;
+} ascon_xof_ctx_t;
 typedef enum
 {
     ASCON_OK = 0,

@@ -1,15 +1,10 @@
 #ifndef PERMUTATIONS_H_
 #define PERMUTATIONS_H_
 
-typedef unsigned char u8;
-typedef unsigned long long u64;
+#include <stdint.h>
 
-typedef struct {
-  u64 x0, x1, x2, x3, x4;
-} state;
-
-#define EXT_BYTE64(x, n) ((u8)((u64)(x) >> (8 * (7 - (n)))))
-#define INS_BYTE64(x, n) ((u64)(x) << (8 * (7 - (n))))
+#define EXT_BYTE64(x, n) ((uint8_t)((uint64_t)(x) >> (8 * (7 - (n)))))
+#define INS_BYTE64(x, n) ((uint64_t)(x) << (8 * (7 - (n))))
 #define ROTR64(x, n) (((x) >> (n)) | ((x) << (64 - (n))))
 
 #define ROUND(C)                    \

@@ -1,50 +1,50 @@
-#include "api.h"
+#include "ascon.h"
 #include "permutations.h"
 
-#define RATE (64 / 8)
 #define PA_ROUNDS 12
-#define IV ((u64)(8 * (RATE)) << 48 | (u64)(PA_ROUNDS) << 40)
+#define IV ((uint64_t)(8 * (ASCON_XOF_RATE)) << 48 | (uint64_t)(PA_ROUNDS) << 40)
 
-int crypto_hash(unsigned char *out, const unsigned char *in,
-                unsigned long long inlen) {
-  state s;
-  u64 outlen;
-
-  // initialization
-  s.x0 = IV;
-  s.x1 = 0;
-  s.x2 = 0;
-  s.x3 = 0;
-  s.x4 = 0;
-  printstate("initial value:", s);
-  P12(&s);
-  printstate("initialization:", s);
-
-  // absorb plaintext
-  inlen = inlen;
-  while (inlen >= RATE) {
-    s.x0 ^= BYTES_TO_U64(in, 8);
-    P12(&s);
-    inlen -= RATE;
-    in += RATE;
-  }
-  s.x0 ^= BYTES_TO_U64(in, inlen);
-  s.x0 ^= 0x80ull << (56 - 8 * inlen);
-  printstate("absorb plaintext:", s);
-
-  P12(&s);
-  printstate("finalization:", s);
-
-  // set hash output
-  outlen = CRYPTO_BYTES;
-  while (outlen > RATE) {
-    U64_TO_BYTES(out, s.x0, 8);
-    P12(&s);
-    outlen -= RATE;
-    out += RATE;
-  }
-  U64_TO_BYTES(out, s.x0, 8);
-
-  return 0;
+void ascon_xof_init(ascon_xof_ctx_t* const ctx)
+{
+    ctx->x0 = IV;
+    ctx->x1 = 0;
+    ctx->x2 = 0;
+    ctx->x3 = 0;
+    ctx->x4 = 0;
+    printstate("initial value:", ctx);
+    P12(ctx);
+    printstate("initialization:", ctx);
 }
 
+void ascon_xof_update(ascon_xof_ctx_t* ctx,
+                       const uint8_t* data,
+                       size_t data_len)
+{
+    while (data_len >= ASCON_XOF_RATE)
+    {
+        ctx->x0 ^= BYTES_TO_U64(data, 8);
+        P12(ctx);
+        data_len -= ASCON_XOF_RATE;
+        data += ASCON_XOF_RATE;
+    }
+    ctx->x0 ^= BYTES_TO_U64(data, data_len);
+    ctx->x0 ^= 0x80ULL << (56 - 8 * data_len);
+    printstate("absorb plaintext:", ctx);
+    P12(ctx);
+    printstate("finalization:", ctx);
+}
+
+void ascon_xof_final(ascon_xof_ctx_t* ctx, uint8_t* digest)
+{
+    size_t outlen = ASCON_XOF_DIGEST_SIZE;
+    while (outlen > ASCON_XOF_RATE)
+    {
+        U64_TO_BYTES(digest, ctx->x0, 8);
+        P12(ctx);
+        outlen -= ASCON_XOF_RATE;
+        digest += ASCON_XOF_RATE;
+    }
+    U64_TO_BYTES(digest, ctx->x0, 8);
+    // TODO What about custom tag length?
+    // TODO memset(ctx, 0, sizeof(ascon_xof_ctx_t));
+}
