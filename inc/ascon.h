@@ -31,11 +31,11 @@ typedef enum
 } ascon_err_t;
 
 void ascon128_encrypt(uint8_t* ciphertext,
+                      size_t* ciphertext_len,
                       const uint8_t* plaintext,
                       const uint8_t* assoc_data,
                       const uint8_t* nonce,
                       const uint8_t* key,
-                      size_t ciphertext_len,
                       size_t plaintext_len,
                       size_t assoc_data_len);
 
@@ -53,17 +53,33 @@ void ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
                                 const uint8_t* plaintext,
                                 size_t plaintext_len);
 
-void ascon128_encrypt_final(ascon_aead_ctx_t* ctx, uint8_t* tag);
+void ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
+                            uint8_t* ciphertext,
+                            size_t* ciphertext_len);
 
-ascon_err_t
-ascon128_decrypt(uint8_t* digest, const uint8_t* data, size_t data_len);
+ascon_err_t ascon128_decrypt(uint8_t* plaintext,
+                             const uint8_t* assoc_data,
+                             const uint8_t* ciphertext,
+                             const uint8_t* nonce,
+                             const uint8_t* key,
+                             size_t assoc_data_len,
+                             size_t ciphertext_len);
 
-void ascon128_decrypt_init(ascon_aead_ctx_t* ctx);
+void ascon128_decrypt_init(ascon_aead_ctx_t* ctx,
+                           const uint8_t* nonce,
+                           const uint8_t* key);
 
-void ascon128_decrypt_update(ascon_aead_ctx_t* ctx, const uint8_t* data,
-                             size_t data_len);
+void ascon128_decrypt_update_ad(ascon_aead_ctx_t* ctx,
+                                const uint8_t* assoc_data,
+                                size_t assoc_data_len);
 
-ascon_err_t ascon128_decrypt_final(ascon_aead_ctx_t* ctx, uint8_t* tag);
+ascon_err_t ascon128_decrypt_update_ct(ascon_aead_ctx_t* ctx,
+                                       uint8_t* plaintext,
+                                       const uint8_t* ciphertext,
+                                       size_t ciphertext_len);
+
+ascon_err_t ascon128_decrypt_final(ascon_aead_ctx_t* ctx,
+                                   uint8_t* plaintext);
 
 void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len);
 
