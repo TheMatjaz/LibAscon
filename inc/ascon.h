@@ -23,13 +23,15 @@ extern "C"
 
 typedef struct {} ascon_aead_ctx_t;
 typedef struct {} ascon_hash_ctx_t;
-typedef struct {
+typedef struct
+{
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
     uint64_t x3;
     uint64_t x4;
 } ascon_xof_ctx_t;
+
 typedef enum
 {
     ASCON_OK = 0,

@@ -9,50 +9,50 @@
 
 #define ROUND(C)                    \
   do {                              \
-    state t;                        \
-    s.x2 ^= C;                      \
-    s.x0 ^= s.x4;                   \
-    s.x4 ^= s.x3;                   \
-    s.x2 ^= s.x1;                   \
-    t.x0 = s.x0;                    \
-    t.x4 = s.x4;                    \
-    t.x3 = s.x3;                    \
-    t.x1 = s.x1;                    \
-    t.x2 = s.x2;                    \
-    s.x0 = t.x0 ^ ((~t.x1) & t.x2); \
-    s.x2 = t.x2 ^ ((~t.x3) & t.x4); \
-    s.x4 = t.x4 ^ ((~t.x0) & t.x1); \
-    s.x1 = t.x1 ^ ((~t.x2) & t.x3); \
-    s.x3 = t.x3 ^ ((~t.x4) & t.x0); \
-    s.x1 ^= s.x0;                   \
-    t.x1 = s.x1;                    \
-    s.x1 = ROTR64(s.x1, 39);        \
-    s.x3 ^= s.x2;                   \
-    t.x2 = s.x2;                    \
-    s.x2 = ROTR64(s.x2, 1);         \
-    t.x4 = s.x4;                    \
-    t.x2 ^= s.x2;                   \
-    s.x2 = ROTR64(s.x2, 6 - 1);     \
-    t.x3 = s.x3;                    \
-    t.x1 ^= s.x1;                   \
-    s.x3 = ROTR64(s.x3, 10);        \
-    s.x0 ^= s.x4;                   \
-    s.x4 = ROTR64(s.x4, 7);         \
-    t.x3 ^= s.x3;                   \
-    s.x2 ^= t.x2;                   \
-    s.x1 = ROTR64(s.x1, 61 - 39);   \
-    t.x0 = s.x0;                    \
-    s.x2 = ~s.x2;                   \
-    s.x3 = ROTR64(s.x3, 17 - 10);   \
-    t.x4 ^= s.x4;                   \
-    s.x4 = ROTR64(s.x4, 41 - 7);    \
-    s.x3 ^= t.x3;                   \
-    s.x1 ^= t.x1;                   \
-    s.x0 = ROTR64(s.x0, 19);        \
-    s.x4 ^= t.x4;                   \
-    t.x0 ^= s.x0;                   \
-    s.x0 = ROTR64(s.x0, 28 - 19);   \
-    s.x0 ^= t.x0;                   \
+    ascon_xof_ctx_t t;              \
+    ctx->x2 ^= C;                      \
+    ctx->x0 ^= ctx->x4;                   \
+    ctx->x4 ^= ctx->x3;                   \
+    ctx->x2 ^= ctx->x1;                   \
+    t.x0 = ctx->x0;                    \
+    t.x4 = ctx->x4;                    \
+    t.x3 = ctx->x3;                    \
+    t.x1 = ctx->x1;                    \
+    t.x2 = ctx->x2;                    \
+    ctx->x0 = t.x0 ^ ((~t.x1) & t.x2); \
+    ctx->x2 = t.x2 ^ ((~t.x3) & t.x4); \
+    ctx->x4 = t.x4 ^ ((~t.x0) & t.x1); \
+    ctx->x1 = t.x1 ^ ((~t.x2) & t.x3); \
+    ctx->x3 = t.x3 ^ ((~t.x4) & t.x0); \
+    ctx->x1 ^= ctx->x0;                   \
+    t.x1 = ctx->x1;                    \
+    ctx->x1 = ROTR64(ctx->x1, 39);        \
+    ctx->x3 ^= ctx->x2;                   \
+    t.x2 = ctx->x2;                    \
+    ctx->x2 = ROTR64(ctx->x2, 1);         \
+    t.x4 = ctx->x4;                    \
+    t.x2 ^= ctx->x2;                   \
+    ctx->x2 = ROTR64(ctx->x2, 6 - 1);     \
+    t.x3 = ctx->x3;                    \
+    t.x1 ^= ctx->x1;                   \
+    ctx->x3 = ROTR64(ctx->x3, 10);        \
+    ctx->x0 ^= ctx->x4;                   \
+    ctx->x4 = ROTR64(ctx->x4, 7);         \
+    t.x3 ^= ctx->x3;                   \
+    ctx->x2 ^= t.x2;                   \
+    ctx->x1 = ROTR64(ctx->x1, 61 - 39);   \
+    t.x0 = ctx->x0;                    \
+    ctx->x2 = ~ctx->x2;                   \
+    ctx->x3 = ROTR64(ctx->x3, 17 - 10);   \
+    t.x4 ^= ctx->x4;                   \
+    ctx->x4 = ROTR64(ctx->x4, 41 - 7);    \
+    ctx->x3 ^= t.x3;                   \
+    ctx->x1 ^= t.x1;                   \
+    ctx->x0 = ROTR64(ctx->x0, 19);        \
+    ctx->x4 ^= t.x4;                   \
+    t.x0 ^= ctx->x0;                   \
+    ctx->x0 = ROTR64(ctx->x0, 28 - 19);   \
+    ctx->x0 ^= t.x0;                   \
   } while (0)
 
 #define P12()    \
