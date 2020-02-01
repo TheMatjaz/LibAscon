@@ -18,8 +18,9 @@ extern "C"
 #define ASCON_AEAD_BLOCK_SIZE 16
 #define ASCON_AEAD_NONCE_SIZE 16
 #define ASCON_HASH_DIGEST_SIZE 32
+#define ASCON_HASH_RATE 8
 #define ASCON_XOF_DIGEST_SIZE 32
-#define ASCON_XOF_RATE (64 / 8)
+#define ASCON_XOF_RATE 8
 
 // TODO decide between size and len in names
 // TODO activate all compiler checks
@@ -33,7 +34,13 @@ typedef struct s_ascon_xof_ctx
     uint64_t x2;
     uint64_t x3;
     uint64_t x4;
+    uint8_t buffer[ASCON_XOF_RATE];
+    uint8_t buffer_len;
 } ascon_xof_ctx_t;
+
+_Static_assert(ASCON_XOF_RATE <= 255,
+               "XOF rate does not fit in a uint8_t. "
+               "Please alter the ascon_xof_ctx_t partial_len type.");
 
 typedef enum e_ascon_err
 {
