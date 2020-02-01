@@ -20,6 +20,8 @@ extern "C"
 #define ASCON_AEAD_NONCE_SIZE 16
 #define ASCON_HASH_final_SIZE
 
+#define CRYPTO_BYTES 32  /* TODO what is this value? */
+
 typedef struct {} ascon_aead_ctx_t;
 typedef struct {} ascon_hash_ctx_t;
 typedef struct {} ascon_xof_ctx_t;
