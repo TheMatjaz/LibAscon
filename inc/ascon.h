@@ -26,7 +26,7 @@ extern "C"
 
 typedef struct {} ascon_aead_ctx_t;
 typedef struct {} ascon_hash_ctx_t;
-typedef struct
+typedef struct s_ascon_xof_ctx
 {
     uint64_t x0;
     uint64_t x1;
@@ -35,7 +35,7 @@ typedef struct
     uint64_t x4;
 } ascon_xof_ctx_t;
 
-typedef enum
+typedef enum e_ascon_err
 {
     ASCON_OK = 0,
     ASCON_TOO_SHORT_CIPHERTEXT = 1,

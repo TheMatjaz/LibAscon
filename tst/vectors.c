@@ -55,8 +55,8 @@ static vecs_err_t fscan_variable_hexbytes(FILE* const handle,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_count(vecs_ctx_t* const ctx,
-                              vecs_hash_t* const testcase)
+static vecs_err_t fscan_count_hash(vecs_ctx_t* const ctx,
+                                   vecs_hash_t* const testcase)
 {
     unsigned int count = 1;
     size_t obtained_len = fscanf(ctx->handle, " Count = %u ", &count);
@@ -64,8 +64,8 @@ static vecs_err_t fscan_count(vecs_ctx_t* const ctx,
     {
         return VECS_FORMAT_INCORRECT_COUNT_HDR;
     }
-    testcase->plaintext_len = count - 1;
-    if (testcase->plaintext_len > VECS_MAX_HASH_PLAINTEXT_SIZE)
+    testcase->message_len = count - 1;
+    if (testcase->message_len > VECS_MAX_HASH_MESSAGE_SIZE)
     {
         return VECS_FORMAT_TOO_LARGE_PLAINTEXT;
     }
@@ -78,11 +78,11 @@ static vecs_err_t fscan_msg(vecs_ctx_t* const ctx,
     const size_t obtained_len = fscanf(ctx->handle, " Msg = ");
     if (obtained_len != 0)
     {
-        return VECS_FORMAT_INCORRECT_MSG_HDR;
+        return VECS_FORMAT_INCORRECT_MESSAGE_HDR;
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
-                                                    testcase->plaintext,
-                                                    testcase->plaintext_len);
+                                                    testcase->message,
+                                                    testcase->message_len);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_PLAINTEXT;
@@ -116,7 +116,7 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* const ctx, vecs_hash_t* const testcase)
         errcode = VECS_EOF;
         goto termination;
     }
-    errcode = fscan_count(ctx, testcase);
+    errcode = fscan_count_hash(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
     errcode = fscan_msg(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
@@ -131,6 +131,18 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* const ctx, vecs_hash_t* const testcase)
         }
         return errcode;
     }
+}
+
+static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
+                                   vecs_aead_t* const testcase)
+{
+    unsigned int count = 1;
+    size_t obtained_len = fscanf(ctx->handle, " Count = %u ", &count);
+    if (obtained_len != 1)
+    {
+        return VECS_FORMAT_INCORRECT_COUNT_HDR;
+    }
+    return VECS_OK;
 }
 
 static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
@@ -213,7 +225,7 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
         errcode = VECS_EOF;
         goto termination;
     }
-    errcode = fscan_count(ctx, testcase);
+    errcode = fscan_count_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
     errcode = fscan_key(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }

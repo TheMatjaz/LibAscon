@@ -19,7 +19,7 @@ extern "C"
 // Of that line, one has to count the hexstring length and divide by 2.
 
 // awk '{print length, $0}' hash.txt |grep 'Msg ='|sort -nr|head -1
-#define VECS_MAX_HASH_PLAINTEXT_SIZE 1024
+#define VECS_MAX_HASH_MESSAGE_SIZE 1024
 // awk '{print length, $0}' aead128.txt |grep 'PT ='|sort -nr|head -1
 #define VECS_MAX_AEAD_PLAINTEXT_SIZE 32
 // awk '{print length, $0}' aead128.txt |grep 'AD ='|sort -nr|head -1
@@ -35,7 +35,7 @@ typedef enum
     VECS_EOF = -1,
     VECS_IO_CANNOT_OPEN_FILE,
     VECS_FORMAT_INCORRECT_COUNT_HDR,
-    VECS_FORMAT_INCORRECT_MSG_HDR,
+    VECS_FORMAT_INCORRECT_MESSAGE_HDR,
     VECS_FORMAT_INCORRECT_DIGEST_HDR,
     VECS_FORMAT_INCORRECT_KEY_HDR,
     VECS_FORMAT_INCORRECT_NONCE_HDR,
@@ -53,9 +53,9 @@ typedef enum
 
 typedef struct
 {
-    uint8_t plaintext[VECS_MAX_HASH_PLAINTEXT_SIZE];
+    uint8_t message[VECS_MAX_HASH_MESSAGE_SIZE];
     uint8_t expected_digest[ASCON_HASH_DIGEST_SIZE];
-    size_t plaintext_len;
+    size_t message_len;
 } vecs_hash_t;
 
 typedef struct
