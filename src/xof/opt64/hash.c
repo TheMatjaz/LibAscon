@@ -32,8 +32,18 @@ void ascon_xof_update(ascon_xof_ctx_t* ctx,
     P12();
 }
 
+static void inline xof_zero_out(ascon_xof_ctx_t* const ctx)
+{
+    ctx->x0 = 0;
+    ctx->x1 = 0;
+    ctx->x2 = 0;
+    ctx->x3 = 0;
+    ctx->x4 = 0;
+}
+
 void ascon_xof_final(ascon_xof_ctx_t* ctx, uint8_t* digest)
 {
+    // TODO What about custom tag length passed by user?
     size_t outlen = ASCON_XOF_DIGEST_SIZE;
     while (outlen > ASCON_XOF_RATE)
     {
@@ -43,5 +53,6 @@ void ascon_xof_final(ascon_xof_ctx_t* ctx, uint8_t* digest)
         digest += ASCON_XOF_RATE;
     }
     *(uint64_t*) digest = U64BIG(ctx->x0);
+    xof_zero_out(ctx);
 }
 

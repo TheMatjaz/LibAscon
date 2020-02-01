@@ -3,7 +3,7 @@
  */
 
 #include "ascon.h"
-
+/*
 void ascon128_encrypt(uint8_t* ciphertext,
                       size_t* ciphertext_len,
                       const uint8_t* plaintext,
@@ -33,11 +33,11 @@ ascon_err_t ascon128_decrypt(uint8_t* plaintext,
     ascon_err_t errcode;
     ascon128_decrypt_init(&ctx, nonce, key);
     ascon128_decrypt_update_ad(&ctx, assoc_data, assoc_data_len);
-    errcode = ascon128_decrypt_update_ct(&ctx, plaintext, plaintext_len,
-                                         ciphertext_len);
+    errcode = ascon128_decrypt_update_ct(&ctx, plaintext,
+                                         ciphertext, ciphertext_len);
     if (errcode != ASCON_OK)
     {
-        memset(&ctx, 0, sizeof(ctx));
+        // TODO zero-out context
     }
     else
     {
@@ -53,7 +53,7 @@ void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len)
     ascon_hash_update(&ctx, data, data_len);
     ascon_hash_final(&ctx, digest);
 }
-
+*/
 void ascon_xof(uint8_t* digest, const uint8_t* data, size_t data_len)
 {
     ascon_xof_ctx_t ctx;
