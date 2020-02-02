@@ -81,6 +81,11 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* ctx, vecs_hash_t* testcase);
 
 vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
 
+void vecs_hash_log(const vecs_hash_t* testcase,
+                   const uint8_t* obtained_digest);
+void vecs_aead_log(const
+                   vecs_hash_t* testcase);
+
 #ifdef __cplusplus
 }
 #endif

@@ -44,6 +44,7 @@ static inline uint64_t BYTE_MASK(int n) {
 static inline uint64_t ROTR64(uint64_t x, int n) { return (x << (64 - n)) | (x >> n); }
 
 static inline void ROUND(uint8_t C, ascon_xof_ctx_t* p) {
+  // TODO this function leaves state traces on the stack in s and t structs
   ascon_xof_ctx_t s = *p;
   ascon_xof_ctx_t t;
   // addition of round constant

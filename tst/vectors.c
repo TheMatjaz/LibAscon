@@ -247,3 +247,34 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
         return errcode;
     }
 }
+
+static void log_hexbytes(const char* const name,
+                       const uint8_t* const array,
+                       const size_t amount)
+{
+    printf("%s (%zu B): ", name, amount);
+    for (size_t i = 0; i < amount; i++)
+    {
+        printf("%02X", array[i]);
+    }
+    puts("");
+}
+
+void vecs_hash_log(const vecs_hash_t* const testcase,
+                   const uint8_t* const obtained_digest)
+{
+#ifdef DEBUG
+    log_hexbytes("Msg", testcase->message, testcase->message_len);
+    log_hexbytes("Expected digest", testcase->expected_digest,
+                      ASCON_HASH_DIGEST_SIZE);
+    if (obtained_digest != NULL)
+    {
+        log_hexbytes("Obtained digest", obtained_digest,
+                          ASCON_HASH_DIGEST_SIZE);
+    }
+    fflush(stdout);
+#else
+    (void) testcase;
+    (void) obtained_digest;
+#endif
+}
