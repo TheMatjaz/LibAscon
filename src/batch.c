@@ -45,7 +45,7 @@ ascon_err_t ascon128_decrypt(uint8_t* plaintext,
     }
     return errcode;
 }
-
+*/
 void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len)
 {
     ascon_hash_ctx_t ctx;
@@ -53,7 +53,7 @@ void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len)
     ascon_hash_update(&ctx, data, data_len);
     ascon_hash_final(&ctx, digest);
 }
-*/
+
 void ascon_xof(uint8_t* digest, const uint8_t* data, size_t data_len)
 {
     ascon_xof_ctx_t ctx;

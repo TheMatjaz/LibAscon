@@ -14,15 +14,9 @@ extern "C"
 {
 #endif
 
-#include <stdint.h>
-
-void test_log(const char* string);
-
-void test_log_hexbytes(const char* name,
-                       const uint8_t* array,
-                       size_t amount);
-
 void test_xof(void);
+
+void test_hash(void);
 
 #ifdef __cplusplus
 }

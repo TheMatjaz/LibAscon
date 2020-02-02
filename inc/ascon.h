@@ -12,35 +12,36 @@ extern "C"
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
 // Defines for block size, tag size, hash-digest size, xof-digest size
 #define ASCON_AEAD_KEY_SIZE 16
 #define ASCON_AEAD_BLOCK_SIZE 16
 #define ASCON_AEAD_NONCE_SIZE 16
-#define ASCON_HASH_DIGEST_SIZE 32
 #define ASCON_HASH_RATE 8
-#define ASCON_XOF_DIGEST_SIZE 32
-#define ASCON_XOF_RATE 8
+#define ASCON_HASH_DIGEST_SIZE 32
+#define ASCON_XOF_RATE ASCON_HASH_RATE
+#define ASCON_XOF_DIGEST_SIZE ASCON_HASH_DIGEST_SIZE
 
 // TODO decide between size and len in names
 // TODO activate all compiler checks
 
 typedef struct {} ascon_aead_ctx_t;
-typedef struct {} ascon_hash_ctx_t;
-typedef struct s_ascon_xof_ctx
-{
+struct s_ascon_hash_ctx {
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
     uint64_t x3;
     uint64_t x4;
-    uint8_t buffer[ASCON_XOF_RATE];
+    uint8_t buffer[ASCON_HASH_RATE];
     uint8_t buffer_len;
-} ascon_xof_ctx_t;
+};
+typedef struct s_ascon_hash_ctx ascon_hash_ctx_t;
+typedef struct s_ascon_hash_ctx ascon_xof_ctx_t;
 
-_Static_assert(ASCON_XOF_RATE <= 255,
+_Static_assert(ASCON_HASH_RATE <= 255,
                "XOF rate does not fit in a uint8_t. "
-               "Please alter the ascon_xof_ctx_t partial_len type.");
+               "Please increase the s_ascon_hash_ctx.buffer_len type.");
 
 typedef enum e_ascon_err
 {

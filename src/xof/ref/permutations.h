@@ -6,6 +6,7 @@
 #endif
 
 #include <stdint.h>
+#include "ascon.h"
 
 static inline void printstate(const char* text, const ascon_xof_ctx_t* ctx) {
 #ifdef DEBUG
@@ -84,6 +85,7 @@ static inline void ROUND(uint8_t C, ascon_xof_ctx_t* p) {
   s.x4 ^= ROTR64(s.x4, 7) ^ ROTR64(s.x4, 41);
   printstate(" linear diffusion layer:", &s);
   *p = s;
+    // TODO erase s and t
 }
 
 static inline void P12(ascon_xof_ctx_t* s) {
