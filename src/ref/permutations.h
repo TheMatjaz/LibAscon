@@ -9,7 +9,7 @@
 #include "ascon.h"
 
 static inline void printstate(const char* text, const ascon_hash_ctx_t* ctx) {
-#ifdef DEBUG
+#ifdef DEBUG_PERMUTATIONS
   printf("%s\n", text);
   printf("  x0=%016llx\n", ctx->x0);
   printf("  x1=%016llx\n", ctx->x1);

@@ -405,7 +405,8 @@ static void test_xof_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
-        ascon_hash(obtained_digest, testcase.message, testcase.message_len);
+        ascon_hash_xof(obtained_digest, testcase.message,
+                       ASCON_HASH_DIGEST_SIZE, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
@@ -445,7 +446,6 @@ static void test_xof_update_single_byte(void)
     }
 }
 
-
 static void test_xof_batch_custom_digest_len(void)
 {
     vecs_ctx_t ctx;
@@ -464,7 +464,7 @@ static void test_xof_batch_custom_digest_len(void)
         }
         atto_eq(errcode, VECS_OK);
         ascon_hash_xof(obtained_digest, testcase.message,
-                       testcase.message_len, digest_len);
+                       digest_len, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
                    testcase.expected_digest,

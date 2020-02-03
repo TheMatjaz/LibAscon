@@ -102,7 +102,7 @@ void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
         digest += ASCON_HASH_RATE;
     }
     P12(ctx);
-    U64_TO_BYTES(digest, ctx->x0, ASCON_HASH_RATE);
+    U64_TO_BYTES(digest, ctx->x0, digest_size);
     // Final security cleanup of the internal state and buffer.
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }

@@ -3,6 +3,7 @@ project(ascon C)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
+#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG_PERMUTATIONS")
 
 set(LIB_SRC_FILES src/batch.c src/ref/hash.c)
 set(TEST_FRAMEWORK tst/main.c tst/vectors.c)
