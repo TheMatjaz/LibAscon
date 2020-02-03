@@ -15,19 +15,18 @@ extern "C"
 #include <string.h>
 
 // Defines for block size, tag size, hash-digest size, xof-digest size
-#define ASCON_AEAD_KEY_SIZE 16
-#define ASCON_AEAD_BLOCK_SIZE 16
-#define ASCON_AEAD_NONCE_SIZE 16
-#define ASCON_HASH_RATE 8
-#define ASCON_HASH_DIGEST_SIZE 32
-#define ASCON_XOF_RATE ASCON_HASH_RATE
-#define ASCON_XOF_DIGEST_SIZE ASCON_HASH_DIGEST_SIZE
+#define ASCON_AEAD_KEY_SIZE 16U
+#define ASCON_AEAD_BLOCK_SIZE 16U
+#define ASCON_AEAD_NONCE_SIZE 16U
+#define ASCON_HASH_RATE 8U
+#define ASCON_HASH_DIGEST_SIZE 32U
 
 // TODO decide between size and len in names
 // TODO activate all compiler checks
 
 typedef struct {} ascon_aead_ctx_t;
-struct s_ascon_hash_ctx {
+struct s_ascon_hash_ctx
+{
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
@@ -37,7 +36,6 @@ struct s_ascon_hash_ctx {
     uint8_t buffer_len;
 };
 typedef struct s_ascon_hash_ctx ascon_hash_ctx_t;
-typedef struct s_ascon_hash_ctx ascon_xof_ctx_t;
 
 _Static_assert(ASCON_HASH_RATE <= 255,
                "XOF rate does not fit in a uint8_t. "
@@ -110,14 +108,16 @@ ascon_hash_update(ascon_hash_ctx_t* ctx, const uint8_t* data, size_t data_len);
 
 void ascon_hash_final(ascon_hash_ctx_t* ctx, uint8_t* digest);
 
-void ascon_xof(uint8_t* digest, const uint8_t* data, size_t data_len);
+void ascon_hash_xof(uint8_t* digest,
+                    const uint8_t* data,
+                    size_t digest_len,
+                    size_t data_len);
 
-void ascon_xof_init(ascon_xof_ctx_t* ctx);
+void ascon_hash_init_xof(ascon_hash_ctx_t* ctx);
 
-void
-ascon_xof_update(ascon_xof_ctx_t* ctx, const uint8_t* data, size_t data_len);
-
-void ascon_xof_final(ascon_xof_ctx_t* ctx, uint8_t* digest);
+void ascon_hash_final_xof(ascon_hash_ctx_t* ctx,
+                          uint8_t* digest,
+                          size_t digest_len);
 
 #ifdef __cplusplus
 }

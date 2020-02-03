@@ -8,18 +8,18 @@
 #include <stdint.h>
 #include "ascon.h"
 
-static inline void printstate(const char* text, const ascon_hash_ctx_t* s) {
+static inline void printstate(const char* text, const ascon_hash_ctx_t* ctx) {
 #ifdef DEBUG
   printf("%s\n", text);
-  printf("  x0=%016llx\n", s->x0);
-  printf("  x1=%016llx\n", s->x1);
-  printf("  x2=%016llx\n", s->x2);
-  printf("  x3=%016llx\n", s->x3);
-  printf("  x4=%016llx\n", s->x4);
+  printf("  x0=%016llx\n", ctx->x0);
+  printf("  x1=%016llx\n", ctx->x1);
+  printf("  x2=%016llx\n", ctx->x2);
+  printf("  x3=%016llx\n", ctx->x3);
+  printf("  x4=%016llx\n", ctx->x4);
 #else
   // disable warning about unused parameters
   (void)text;
-  (void)s;
+  (void)ctx;
 #endif
 }
 
@@ -45,6 +45,7 @@ static inline uint64_t BYTE_MASK(int n) {
 static inline uint64_t ROTR64(uint64_t x, int n) { return (x << (64 - n)) | (x >> n); }
 
 static inline void ROUND(uint8_t C, ascon_hash_ctx_t* p) {
+  // TODO this function leaves state traces on the stack in s and t structs
   ascon_hash_ctx_t s = *p;
   ascon_hash_ctx_t t;
   // addition of round constant
@@ -84,7 +85,7 @@ static inline void ROUND(uint8_t C, ascon_hash_ctx_t* p) {
   s.x4 ^= ROTR64(s.x4, 7) ^ ROTR64(s.x4, 41);
   printstate(" linear diffusion layer:", &s);
   *p = s;
-  // TODO erase s and t
+    // TODO erase s and t
 }
 
 static inline void P12(ascon_hash_ctx_t* s) {

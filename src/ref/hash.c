@@ -1,16 +1,18 @@
+#include "ascon.h"
 #include "permutations.h"
 #include <string.h>
-#include "ascon.h"
 
 #define PA_ROUNDS 12
-#define IV                                            \
-  ((uint64_t)(8 * (ASCON_HASH_RATE)) << 48 | (uint64_t)(PA_ROUNDS) << 40 | \
-   (uint64_t)(8 * (ASCON_HASH_DIGEST_SIZE)) << 0)
+#define XOF_IV ( \
+    ((uint64_t)(8 * (ASCON_HASH_RATE)) << 48U) \
+    | ((uint64_t)(PA_ROUNDS) << 40U) \
+    )
+#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_SIZE))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-void ascon_hash_init(ascon_hash_ctx_t* const ctx)
+static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
 {
-    ctx->x0 = IV;
+    ctx->x0 = iv;
     ctx->x1 = 0;
     ctx->x2 = 0;
     ctx->x3 = 0;
@@ -21,9 +23,19 @@ void ascon_hash_init(ascon_hash_ctx_t* const ctx)
     printstate("initialization:", ctx);
 }
 
+void inline ascon_hash_init(ascon_hash_ctx_t* const ctx)
+{
+    init(ctx, HASH_IV);
+}
+
+void inline ascon_hash_init_xof(ascon_hash_ctx_t* const ctx)
+{
+    init(ctx, XOF_IV);
+}
+
 void ascon_hash_update(ascon_hash_ctx_t* const ctx,
-                      const uint8_t* data,
-                      size_t data_len)
+                       const uint8_t* data,
+                       size_t data_len)
 {
     if (ctx->buffer_len > 0)
     {
@@ -44,7 +56,6 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
         }
         else
         {
-            // TODO assert(ctx->buffer_len < ASCON_HASH_RATE);
             // Do nothing.
             // The buffer contains some data, but it's not full yet
             // and there is no more data in this update call.
@@ -74,24 +85,30 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
     }
 }
 
-void ascon_hash_final(ascon_hash_ctx_t* const ctx, uint8_t* digest)
+void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
+                          uint8_t* digest,
+                          size_t digest_size)
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
     ctx->x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
     ctx->x0 ^= 0x80ULL << (56 - 8 * (size_t) ctx->buffer_len);
     // Squeeze the digest from the inner state.
-    // TODO What about custom tag length passed by user?
-    size_t outlen = ASCON_HASH_DIGEST_SIZE;
-    while (outlen > ASCON_HASH_RATE)
+    while (digest_size > ASCON_HASH_RATE)
     {
         P12(ctx);
         U64_TO_BYTES(digest, ctx->x0, ASCON_HASH_RATE);
-        outlen -= ASCON_HASH_RATE;
+        digest_size -= ASCON_HASH_RATE;
         digest += ASCON_HASH_RATE;
     }
     P12(ctx);
     U64_TO_BYTES(digest, ctx->x0, ASCON_HASH_RATE);
     // Final security cleanup of the internal state and buffer.
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
+}
+
+
+void inline ascon_hash_final(ascon_hash_ctx_t* const ctx, uint8_t* digest)
+{
+    ascon_hash_final_xof(ctx, digest, ASCON_HASH_DIGEST_SIZE);
 }

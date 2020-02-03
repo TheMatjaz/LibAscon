@@ -54,10 +54,11 @@ void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len)
     ascon_hash_final(&ctx, digest);
 }
 
-void ascon_xof(uint8_t* digest, const uint8_t* data, size_t data_len)
+void ascon_hash_xof(uint8_t* digest, const uint8_t* data,
+                    size_t digest_len, size_t data_len)
 {
-    ascon_xof_ctx_t ctx;
-    ascon_xof_init(&ctx);
-    ascon_xof_update(&ctx, data, data_len);
-    ascon_xof_final(&ctx, digest);
+    ascon_hash_ctx_t ctx;
+    ascon_hash_init_xof(&ctx);
+    ascon_hash_update(&ctx, data, data_len);
+    ascon_hash_final_xof(&ctx, digest, digest_len);
 }

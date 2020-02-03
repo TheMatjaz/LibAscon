@@ -4,7 +4,7 @@ project(ascon C)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 
-set(LIB_SRC_FILES src/batch.c src/xof/ref/hash.c src/hash/ref/hash.c)
+set(LIB_SRC_FILES src/batch.c src/ref/hash.c)
 set(TEST_FRAMEWORK tst/main.c tst/vectors.c)
 set(TEST_SRC_FILES tst/test_xof.c tst/test_hash.c)
 include_directories(AFTER SYSTEM inc/)

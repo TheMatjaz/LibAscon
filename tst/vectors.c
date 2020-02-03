@@ -100,7 +100,7 @@ static vecs_err_t fscan_digest(vecs_ctx_t* const ctx,
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
                                                     testcase->expected_digest,
-                                                    ASCON_XOF_DIGEST_SIZE);
+                                                    ASCON_HASH_DIGEST_SIZE);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_DIGEST;
