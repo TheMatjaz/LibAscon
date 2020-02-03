@@ -4,12 +4,17 @@
 
 #include "ascon.h"
 
-size_t ascon_ciphertext_len(const size_t plaintext_len)
+size_t inline ascon_ciphertext_len(const size_t plaintext_len)
 {
     // TODO add tag
     // Round up the plaintext length to the nearest multiple of the block size.
     return ((plaintext_len + ASCON_AEAD_BLOCK_SIZE - 1)
             / ASCON_AEAD_BLOCK_SIZE) * ASCON_AEAD_BLOCK_SIZE;
+}
+
+size_t inline ascon_ciphertext_and_tag_len(const size_t plaintext_len)
+{
+    return ascon_ciphertext_len(plaintext_len) + ASCON_AEAD_TAG_SIZE;
 }
 
 void ascon128_encrypt(uint8_t* ciphertext,

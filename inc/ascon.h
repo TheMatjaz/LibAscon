@@ -25,7 +25,8 @@ extern "C"
 // TODO decide between size and len in names
 // TODO activate all compiler checks
 
-struct s_ascon_state{
+struct s_ascon_state
+{
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
@@ -61,6 +62,8 @@ typedef enum e_ascon_err
 
 size_t ascon_ciphertext_len(size_t plaintext_len);
 
+size_t ascon_ciphertext_and_tag_len(size_t plaintext_len);
+
 void ascon128_encrypt(uint8_t* ciphertext,
                       size_t* ciphertext_len,
                       const uint8_t* plaintext,
@@ -79,14 +82,14 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* ctx,
                                 size_t assoc_data_len);
 
 size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
-                                uint8_t* ciphertext,
-                                size_t* ciphertext_len,
-                                const uint8_t* plaintext,
-                                size_t plaintext_len);
+                                  uint8_t* ciphertext,
+                                  size_t* ciphertext_len,
+                                  const uint8_t* plaintext,
+                                  size_t plaintext_len);
 
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
-                            uint8_t* ciphertext,
-                            size_t* ciphertext_len);
+                              uint8_t* ciphertext,
+                              size_t* ciphertext_len);
 
 ascon_err_t ascon128_decrypt(uint8_t* plaintext,
                              const uint8_t* assoc_data,

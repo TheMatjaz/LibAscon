@@ -27,6 +27,42 @@ static void test_ciphertext_len(void)
     atto_eq(ascon_ciphertext_len(49), 4 * ASCON_AEAD_BLOCK_SIZE);
 }
 
+static void test_ciphertext_and_tag_len(void)
+{
+    atto_eq(ASCON_AEAD_BLOCK_SIZE, 16);
+    atto_eq(ascon_ciphertext_and_tag_len(0), 0 + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(1),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(2),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(7),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(8),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(9),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(15),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(16),
+            ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(17),
+            2 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(18),
+            2 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(31),
+            2 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(32),
+            2 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(33),
+            3 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);;
+    atto_eq(ascon_ciphertext_and_tag_len(47),
+            3 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(48),
+            3 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+    atto_eq(ascon_ciphertext_and_tag_len(49),
+            4 * ASCON_AEAD_BLOCK_SIZE + ASCON_AEAD_TAG_SIZE);
+}
+
 void test_utils(void)
 {
     test_ciphertext_len();
