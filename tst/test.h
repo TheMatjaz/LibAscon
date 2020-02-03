@@ -18,6 +18,10 @@ void test_xof(void);
 
 void test_hash(void);
 
+void test_utils(void);
+
+void test_aead128(void);
+
 #ifdef __cplusplus
 }
 #endif

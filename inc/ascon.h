@@ -18,28 +18,39 @@ extern "C"
 #define ASCON_AEAD_KEY_SIZE 16U
 #define ASCON_AEAD_BLOCK_SIZE 16U
 #define ASCON_AEAD_NONCE_SIZE 16U
-#define ASCON_HASH_RATE 8U
+#define ASCON_AEAD_TAG_SIZE 16U
+#define ASCON_RATE 8U
 #define ASCON_HASH_DIGEST_SIZE 32U
 
 // TODO decide between size and len in names
 // TODO activate all compiler checks
 
-typedef struct {} ascon_aead_ctx_t;
-struct s_ascon_hash_ctx
-{
+struct s_ascon_state{
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
     uint64_t x3;
     uint64_t x4;
-    uint8_t buffer[ASCON_HASH_RATE];
+};
+typedef struct s_ascon_state ascon_state_t;
+
+struct s_ascon_aead_ctx
+{
+    ascon_state_t state;
+    uint8_t buffer[ASCON_RATE];
+    uint8_t buffer_len;
+    uint64_t k0;
+    uint64_t k1;
+};
+typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
+
+struct s_ascon_hash_ctx
+{
+    ascon_state_t state;
+    uint8_t buffer[ASCON_RATE];
     uint8_t buffer_len;
 };
 typedef struct s_ascon_hash_ctx ascon_hash_ctx_t;
-
-_Static_assert(ASCON_HASH_RATE <= 255,
-               "XOF rate does not fit in a uint8_t. "
-               "Please increase the s_ascon_hash_ctx.buffer_len type.");
 
 typedef enum e_ascon_err
 {
@@ -47,6 +58,8 @@ typedef enum e_ascon_err
     ASCON_TOO_SHORT_CIPHERTEXT = 1,
     ASCON_INVALID_TAG = 2,
 } ascon_err_t;
+
+size_t ascon_ciphertext_len(size_t plaintext_len);
 
 void ascon128_encrypt(uint8_t* ciphertext,
                       size_t* ciphertext_len,
@@ -65,13 +78,13 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
 
-void ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
+size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
                                 uint8_t* ciphertext,
                                 size_t* ciphertext_len,
                                 const uint8_t* plaintext,
                                 size_t plaintext_len);
 
-void ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
+size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
                             uint8_t* ciphertext,
                             size_t* ciphertext_len);
 

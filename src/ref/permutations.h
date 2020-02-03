@@ -8,7 +8,25 @@
 #include <stdint.h>
 #include "ascon.h"
 
-static inline void printstate(const char* text, const ascon_hash_ctx_t* ctx) {
+#define AEAD128_IV ( \
+     ((uint64_t)(8 * (ASCON_AEAD_KEY_SIZE)) << 56U) \
+     | ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
+     | ((uint64_t)(PA_ROUNDS) << 40U) \
+     | ((uint64_t)(PB_ROUNDS) << 32U) \
+     )
+#define XOF_IV ( \
+    ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
+    | ((uint64_t)(PA_ROUNDS) << 40U) \
+    )
+#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_SIZE))
+#define PADDING(bytes) (0x80ULL << (56 - 8 * ((size_t) bytes)))
+
+#define PA_ROUNDS 12
+#define PB_ROUNDS 6
+
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+static inline void printstate(const char* text, const ascon_state_t* ctx) {
 #ifdef DEBUG_PERMUTATIONS
   printf("%s\n", text);
   printf("  x0=%016llx\n", ctx->x0);
@@ -44,10 +62,10 @@ static inline uint64_t BYTE_MASK(int n) {
 
 static inline uint64_t ROTR64(uint64_t x, int n) { return (x << (64 - n)) | (x >> n); }
 
-static inline void ROUND(uint8_t C, ascon_hash_ctx_t* p) {
+static inline void ROUND(uint8_t C, ascon_state_t* p) {
   // TODO this function leaves state traces on the stack in s and t structs
-  ascon_hash_ctx_t s = *p;
-  ascon_hash_ctx_t t;
+  ascon_state_t s = *p;
+  ascon_state_t t;
   // addition of round constant
   s.x2 ^= C;
   printstate(" addition of round constant:", &s);
@@ -88,7 +106,7 @@ static inline void ROUND(uint8_t C, ascon_hash_ctx_t* p) {
     // TODO erase s and t
 }
 
-static inline void P12(ascon_hash_ctx_t* s) {
+static inline void P12(ascon_state_t* s) {
   printstate(" permutation input:", s);
   ROUND(0xf0, s);
   ROUND(0xe1, s);
@@ -104,7 +122,7 @@ static inline void P12(ascon_hash_ctx_t* s) {
   ROUND(0x4b, s);
 }
 
-static inline void P8(ascon_hash_ctx_t* s) {
+static inline void P8(ascon_state_t* s) {
   printstate(" permutation input:", s);
   ROUND(0xb4, s);
   ROUND(0xa5, s);
@@ -116,7 +134,7 @@ static inline void P8(ascon_hash_ctx_t* s) {
   ROUND(0x4b, s);
 }
 
-static inline void P6(ascon_hash_ctx_t* s) {
+static inline void P6(ascon_state_t* s) {
   printstate(" permutation input:", s);
   ROUND(0x96, s);
   ROUND(0x87, s);
