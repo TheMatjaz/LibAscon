@@ -76,9 +76,12 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* const ctx,
 void ascon128_encrypt_final_ad(ascon_aead_ctx_t* const ctx)
 {
     // Finalise absorption of associated data left in the buffer
-    ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
-    ctx->state.x0 ^= PADDING(ctx->buffer_len);
-    ascon_permutation_b(&ctx->state);
+    if (ctx->buffer_len > 0)
+    {
+        ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+        ctx->state.x0 ^= PADDING(ctx->buffer_len);
+        ascon_permutation_b(&ctx->state);
+    }
     ctx->state.x4 ^= 1U;
     printstate("process associated data:", &ctx->state);
 }
@@ -152,7 +155,7 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
 // TODO consider placing tag in separate pointer?
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                               uint8_t* ciphertext,
-                              uint64_t* ciphertext_len)
+                              uint64_t* total_ciphertext_len)
 {
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
@@ -162,7 +165,6 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
         ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
         ctx->state.x0 ^= PADDING(ctx->buffer_len);
         U64_TO_BYTES(ciphertext, ctx->state.x0, ctx->buffer_len);
-        *ciphertext_len += ctx->buffer_len;
         new_ciphertext_bytes += ctx->buffer_len;
     }
     // End of encryption, start of tag generation.
@@ -179,8 +181,8 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                  ctx->state.x4, sizeof(uint64_t));
     new_ciphertext_bytes += ASCON_AEAD_TAG_SIZE;
     // Final security cleanup of the internal state, key and buffer.
+    *total_ciphertext_len = ctx->total_ciphertext_len + new_ciphertext_bytes;
     memset(ctx, 0, sizeof(ascon_aead_ctx_t));
-    *ciphertext_len = ctx->total_ciphertext_len + new_ciphertext_bytes;
     return new_ciphertext_bytes;
 }
 
