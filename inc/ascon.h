@@ -38,10 +38,12 @@ typedef struct s_ascon_state ascon_state_t;
 struct s_ascon_aead_ctx
 {
     ascon_state_t state;
-    uint8_t buffer[ASCON_RATE];
-    uint8_t buffer_len;
     uint64_t k0;
     uint64_t k1;
+    uint64_t total_ciphertext_len; // Not size_t as the CT may be larger than
+    // memory
+    uint8_t buffer[ASCON_RATE];
+    uint8_t buffer_len;
 };
 typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 
@@ -60,12 +62,8 @@ typedef enum e_ascon_err
     ASCON_INVALID_TAG = 2,
 } ascon_err_t;
 
-size_t ascon_ciphertext_len(size_t plaintext_len);
-
-size_t ascon_ciphertext_and_tag_len(size_t plaintext_len);
-
 void ascon128_encrypt(uint8_t* ciphertext,
-                      size_t* ciphertext_len,
+                      uint64_t* ciphertext_len,
                       const uint8_t* plaintext,
                       const uint8_t* assoc_data,
                       const uint8_t* nonce,
@@ -80,16 +78,19 @@ void ascon128_encrypt_init(ascon_aead_ctx_t* ctx,
 void ascon128_encrypt_update_ad(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
+void ascon128_encrypt_final_ad(ascon_aead_ctx_t* ctx);
 
+// Generates [0, plaintext_len] ciphertext bytes
 size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
                                   uint8_t* ciphertext,
-                                  size_t* ciphertext_len,
                                   const uint8_t* plaintext,
                                   size_t plaintext_len);
 
+// Generates [ASCON_AEAD_TAG_SIZE, ASCON_AEAD_TAG_SIZE + (ASCON_RATE - 1)]
+// ciphertext bytes
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
                               uint8_t* ciphertext,
-                              size_t* ciphertext_len);
+                              uint64_t* total_ciphertext_len);
 
 ascon_err_t ascon128_decrypt(uint8_t* plaintext,
                              const uint8_t* assoc_data,
@@ -107,6 +108,7 @@ void ascon128_decrypt_update_ad(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
 
+// Add some output of plaintext length, as it may be less due to buffering
 ascon_err_t ascon128_decrypt_update_ct(ascon_aead_ctx_t* ctx,
                                        uint8_t* plaintext,
                                        const uint8_t* ciphertext,

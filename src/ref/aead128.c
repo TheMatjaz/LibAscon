@@ -13,10 +13,11 @@ void ascon128_encrypt_init(ascon_aead_ctx_t* const ctx,
     ctx->state.x3 = BYTES_TO_U64(nonce, sizeof(uint64_t));;
     ctx->state.x4 = BYTES_TO_U64(nonce + sizeof(uint64_t), sizeof(uint64_t));;
     printstate("initial value:", &ctx->state);
-    P12(&ctx->state);
+    ascon_permutation_a(&ctx->state);
     ctx->state.x3 ^= ctx->k0;
     ctx->state.x4 ^= ctx->k1;
     ctx->buffer_len = 0;
+    ctx->total_ciphertext_len = 0;
     printstate("initialization:", &ctx->state);
 }
 
@@ -38,7 +39,7 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* const ctx,
         {
             // The buffer was filled completely, thus absorb it.
             ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
-            P6(&ctx->state);
+            ascon_permutation_b(&ctx->state);
             ctx->buffer_len = 0;
         }
         else
@@ -59,7 +60,7 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* const ctx,
     while (assoc_data_len >= ASCON_RATE)
     {
         ctx->state.x0 ^= BYTES_TO_U64(assoc_data, ASCON_RATE);
-        P6(&ctx->state);
+        ascon_permutation_b(&ctx->state);
         assoc_data_len -= ASCON_RATE;
         assoc_data += ASCON_RATE;
     }
@@ -72,21 +73,23 @@ void ascon128_encrypt_update_ad(ascon_aead_ctx_t* const ctx,
     }
 }
 
-size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
-                                  uint8_t* ciphertext,
-                                  size_t* ciphertext_len,
-                                  const uint8_t* plaintext,
-                                  size_t plaintext_len)
+void ascon128_encrypt_final_ad(ascon_aead_ctx_t* const ctx)
 {
-    size_t new_ciphertext_bytes = 0;
     // Finalise absorption of associated data left in the buffer
     ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
     ctx->state.x0 ^= PADDING(ctx->buffer_len);
-    P6(&ctx->state);
+    ascon_permutation_b(&ctx->state);
     ctx->state.x4 ^= 1U;
     printstate("process associated data:", &ctx->state);
-    // End of associated data, start of encryption.
+}
+
+size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
+                                  uint8_t* ciphertext,
+                                  const uint8_t* plaintext,
+                                  size_t plaintext_len)
+{
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
+    size_t new_ciphertext_bytes = 0;
     if (ctx->buffer_len > 0)
     {
         // There is plaintext in the buffer already.
@@ -103,9 +106,8 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
             ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
             // Squeeze out some ciphertext
             U64_TO_BYTES(ciphertext, ctx->state.x0, ASCON_RATE);
-            P6(&ctx->state);
+            ascon_permutation_b(&ctx->state);
             ciphertext += ASCON_RATE;
-            *ciphertext_len += ASCON_RATE;
             new_ciphertext_bytes += ASCON_RATE;
             ctx->buffer_len = 0;
         }
@@ -129,11 +131,10 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
     {
         ctx->state.x0 ^= BYTES_TO_U64(plaintext, ASCON_RATE);
         U64_TO_BYTES(ciphertext, ctx->state.x0, ASCON_RATE);
-        P6(&ctx->state);
+        ascon_permutation_b(&ctx->state);
         plaintext_len -= ASCON_RATE;
         plaintext += ASCON_RATE;
         ciphertext += ASCON_RATE;
-        *ciphertext_len += ASCON_RATE;
         new_ciphertext_bytes += ASCON_RATE;
     }
     // If there is any remaining less-than-a-block plaintext to be absorbed,
@@ -144,15 +145,14 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
         ctx->buffer_len = plaintext_len;
     }
     printstate("process plaintext:", &ctx->state);
+    ctx->total_ciphertext_len += new_ciphertext_bytes;
     return new_ciphertext_bytes;
 }
 
-// TODO consider keeping globabl ciphertext_len in the ctx struct
-// and add a getter function
 // TODO consider placing tag in separate pointer?
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                               uint8_t* ciphertext,
-                              size_t* ciphertext_len)
+                              uint64_t* ciphertext_len)
 {
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
@@ -169,7 +169,7 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     // Apply key twice more.
     ctx->state.x1 ^= ctx->k0;
     ctx->state.x2 ^= ctx->k1;
-    P12(&ctx->state);
+    ascon_permutation_a(&ctx->state);
     ctx->state.x3 ^= ctx->k0;
     ctx->state.x4 ^= ctx->k1;
     printstate("finalization:", &ctx->state);
@@ -180,6 +180,7 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     new_ciphertext_bytes += ASCON_AEAD_TAG_SIZE;
     // Final security cleanup of the internal state, key and buffer.
     memset(ctx, 0, sizeof(ascon_aead_ctx_t));
+    *ciphertext_len = ctx->total_ciphertext_len + new_ciphertext_bytes;
     return new_ciphertext_bytes;
 }
 

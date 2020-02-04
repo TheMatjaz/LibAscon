@@ -214,7 +214,7 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
         return VECS_FORMAT_INCORRECT_CIPHERTEXT_HDR;
     }
     return fscan_variable_hexbytes(ctx->handle, testcase->expected_ciphertext,
-                                   &testcase->ciphertext_len);
+                                   &testcase->expected_ciphertext_len);
 }
 
 vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
@@ -249,8 +249,8 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
 }
 
 static void log_hexbytes(const char* const name,
-                       const uint8_t* const array,
-                       const size_t amount)
+                         const uint8_t* const array,
+                         const size_t amount)
 {
     printf("%s (%zu B): ", name, amount);
     for (size_t i = 0; i < amount; i++)
@@ -266,15 +266,39 @@ void vecs_hash_log(const vecs_hash_t* const testcase,
 #ifdef DEBUG
     log_hexbytes("Msg", testcase->message, testcase->message_len);
     log_hexbytes("Expected digest", testcase->expected_digest,
-                      ASCON_HASH_DIGEST_SIZE);
+                 ASCON_HASH_DIGEST_SIZE);
     if (obtained_digest != NULL)
     {
         log_hexbytes("Obtained digest", obtained_digest,
-                          ASCON_HASH_DIGEST_SIZE);
+                     ASCON_HASH_DIGEST_SIZE);
     }
     fflush(stdout);
 #else
     (void) testcase;
     (void) obtained_digest;
+#endif
+}
+
+void vecs_aead_log(const vecs_aead_t* const testcase,
+                   const uint8_t* const obtained_ciphertext,
+                   const uint64_t obtained_ciphertext_len)
+{
+#ifdef DEBUG
+    log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_SIZE);
+    log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_SIZE);
+    log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
+    log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
+    log_hexbytes("Expected CT", testcase->expected_ciphertext,
+                 testcase->expected_ciphertext_len);
+    if (obtained_ciphertext != NULL)
+    {
+        log_hexbytes("Obtained CT", obtained_ciphertext,
+                     obtained_ciphertext_len);
+    }
+    fflush(stdout);
+#else
+    (void) testcase;
+    (void) obtained_ciphertext;
+    (void) obtained_ciphertext_len;
 #endif
 }

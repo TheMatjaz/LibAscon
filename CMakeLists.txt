@@ -5,12 +5,23 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG_PERMUTATIONS")
 
-set(LIB_SRC_FILES src/common.c src/ref/hash.c src/ref/aead128.c)
-set(TEST_FRAMEWORK tst/main.c tst/vectors.c)
-set(TEST_SRC_FILES tst/test_xof.c tst/test_hash.c tst/test_utils.c)
+set(LIB_SRC_FILES
+        src/common.c
+        src/ref/hash.c
+        src/ref/aead128.c)
+set(TEST_FRAMEWORK
+        tst/main.c
+        tst/vectors.c)
+set(TEST_SRC_FILES
+        tst/test_xof.c
+        tst/test_hash.c
+        tst/test_aead128.c)
 include_directories(AFTER SYSTEM inc/)
 add_library(libascon STATIC ${LIB_SRC_FILES})
-add_executable(testascon ${LIB_SRC_FILES} ${TEST_FRAMEWORK} ${TEST_SRC_FILES})
+add_executable(testascon
+        ${LIB_SRC_FILES}
+        ${TEST_FRAMEWORK}
+        ${TEST_SRC_FILES})
 file(COPY tst/vectors DESTINATION ${CMAKE_BINARY_DIR})
 
 
