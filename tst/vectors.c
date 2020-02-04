@@ -213,8 +213,19 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
     {
         return VECS_FORMAT_INCORRECT_CIPHERTEXT_HDR;
     }
-    return fscan_variable_hexbytes(ctx->handle, testcase->expected_ciphertext,
-                                   &testcase->expected_ciphertext_len);
+    vecs_err_t errcode = fscan_variable_hexbytes(
+            ctx->handle,
+            testcase->expected_ciphertext,
+            &testcase->expected_ciphertext_len);
+    if (errcode != VECS_OK)
+    {
+        return errcode;
+    }
+    testcase->expected_ciphertext_len -= ASCON_AEAD_TAG_SIZE;
+    memcpy(testcase->expected_tag,
+           &testcase->expected_ciphertext[testcase->expected_ciphertext_len],
+           ASCON_AEAD_TAG_SIZE);
+    return VECS_OK;
 }
 
 vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)

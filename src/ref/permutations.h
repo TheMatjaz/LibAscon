@@ -125,7 +125,7 @@ static inline void ascon_round(ascon_state_t* p, uint8_t C)
     // TODO erase s and t
 }
 
-static inline void ascon_permutation_a(ascon_state_t* s)
+static inline void ascon_permutation_a12(ascon_state_t* s)
 {
     printstate(" permutation input:", s);
     ascon_round(s, 0xf0);
@@ -155,7 +155,7 @@ static inline void P8(ascon_state_t* s)
     ascon_round(s, 0x4b);
 }
 
-static inline void ascon_permutation_b(ascon_state_t* s)
+static inline void ascon_permutation_b6(ascon_state_t* s)
 {
     printstate(" permutation input:", s);
     ascon_round(s, 0x96);

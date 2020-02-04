@@ -39,8 +39,7 @@ struct s_ascon_aead_ctx
     ascon_state_t state;
     uint64_t k0;
     uint64_t k1;
-    uint64_t total_ciphertext_len; // Not size_t as the CT may be larger than
-    // memory
+    uint64_t total_output_len;
     uint8_t buffer[ASCON_RATE];
     uint8_t buffer_len;
 };
@@ -61,8 +60,9 @@ typedef enum e_ascon_err
     ASCON_INVALID_TAG = 2,
 } ascon_err_t;
 
+// Tag must support ASCON_AEAD_TAG_SIZE bytes
+// Ciphertext must support plaintext_len bytes.
 void ascon128_encrypt(uint8_t* ciphertext,
-                      uint64_t* ciphertext_len,
                       uint8_t* tag,
                       const uint8_t* plaintext,
                       const uint8_t* assoc_data,
@@ -71,54 +71,54 @@ void ascon128_encrypt(uint8_t* ciphertext,
                       size_t plaintext_len,
                       size_t assoc_data_len);
 
-void ascon128_encrypt_init(ascon_aead_ctx_t* ctx,
-                           const uint8_t* nonce,
-                           const uint8_t* key);
+void ascon128_init(ascon_aead_ctx_t* ctx,
+                   const uint8_t* nonce,
+                   const uint8_t* key);
 
-void ascon128_encrypt_update_ad(ascon_aead_ctx_t* ctx,
+void ascon128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
 
-void ascon128_encrypt_final_ad(ascon_aead_ctx_t* ctx);
+void ascon128_assoc_data_final(ascon_aead_ctx_t* ctx);
 
 // Generates [0, plaintext_len] ciphertext bytes
-size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
-                                  uint8_t* ciphertext,
-                                  const uint8_t* plaintext,
-                                  size_t plaintext_len);
+// Returns # of ciphertext bytes generated
+size_t ascon128_encrypt_update(ascon_aead_ctx_t* ctx,
+                               uint8_t* ciphertext,
+                               const uint8_t* plaintext,
+                               size_t plaintext_len);
 
 // Generates [0, ASCON_RATE - 1] ciphertext bytes
+// Returns # of ciphertext bytes generated
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
                               uint8_t* ciphertext,
-                              uint64_t* total_ciphertext_len,
+                              uint64_t* total_ciphertext_len, // Could be NULL
                               uint8_t* tag);
-// TODO consider separate uint8_t* tag where the tag is written
-//  If NULL, append tag at end of ciphertext
 
+// Tag must support ASCON_AEAD_TAG_SIZE bytes
+// Plaintext must support ciphertext_len bytes
+// This function fails if the tag is invalid
 ascon_err_t ascon128_decrypt(uint8_t* plaintext,
                              const uint8_t* assoc_data,
                              const uint8_t* ciphertext,
+                             const uint8_t* tag,
                              const uint8_t* nonce,
                              const uint8_t* key,
                              size_t assoc_data_len,
                              size_t ciphertext_len);
 
-void ascon128_decrypt_init(ascon_aead_ctx_t* ctx,
-                           const uint8_t* nonce,
-                           const uint8_t* key);
+size_t ascon128_decrypt_update(ascon_aead_ctx_t* ctx,
+                               uint8_t* plaintext,
+                               const uint8_t* ciphertext,
+                               size_t ciphertext_len);
 
-void ascon128_decrypt_update_ad(ascon_aead_ctx_t* ctx,
-                                const uint8_t* assoc_data,
-                                size_t assoc_data_len);
-
-// Add some output of plaintext length, as it may be less due to buffering
-ascon_err_t ascon128_decrypt_update_ct(ascon_aead_ctx_t* ctx,
-                                       uint8_t* plaintext,
-                                       const uint8_t* ciphertext,
-                                       size_t ciphertext_len);
-
-ascon_err_t ascon128_decrypt_final(ascon_aead_ctx_t* ctx,
-                                   uint8_t* plaintext);
+// TODO return decrypted amount BUT ALSO THE ERRCODE
+// this function fails if the tag is invalid
+// e.g. make it return FF in case of invalid tag??
+size_t ascon128_decrypt_final(ascon_aead_ctx_t* ctx,
+                              uint8_t* plaintext,
+                              uint64_t* total_plaintext_len, // Could be NULL
+                              const uint8_t* tag);
 
 void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len);
 
