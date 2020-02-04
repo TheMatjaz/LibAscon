@@ -16,7 +16,6 @@ extern "C"
 
 // Defines for block size, tag size, hash-digest size, xof-digest size
 #define ASCON_AEAD_KEY_SIZE 16U
-#define ASCON_AEAD_BLOCK_SIZE 16U
 #define ASCON_AEAD_NONCE_SIZE 16U
 #define ASCON_AEAD_TAG_SIZE 16U
 #define ASCON_RATE 8U
@@ -64,6 +63,7 @@ typedef enum e_ascon_err
 
 void ascon128_encrypt(uint8_t* ciphertext,
                       uint64_t* ciphertext_len,
+                      uint8_t* tag,
                       const uint8_t* plaintext,
                       const uint8_t* assoc_data,
                       const uint8_t* nonce,
@@ -78,6 +78,7 @@ void ascon128_encrypt_init(ascon_aead_ctx_t* ctx,
 void ascon128_encrypt_update_ad(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
+
 void ascon128_encrypt_final_ad(ascon_aead_ctx_t* ctx);
 
 // Generates [0, plaintext_len] ciphertext bytes
@@ -86,11 +87,13 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* ctx,
                                   const uint8_t* plaintext,
                                   size_t plaintext_len);
 
-// Generates [ASCON_AEAD_TAG_SIZE, ASCON_AEAD_TAG_SIZE + (ASCON_RATE - 1)]
-// ciphertext bytes
+// Generates [0, ASCON_RATE - 1] ciphertext bytes
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
                               uint8_t* ciphertext,
-                              uint64_t* total_ciphertext_len);
+                              uint64_t* total_ciphertext_len,
+                              uint8_t* tag);
+// TODO consider separate uint8_t* tag where the tag is written
+//  If NULL, append tag at end of ciphertext
 
 ascon_err_t ascon128_decrypt(uint8_t* plaintext,
                              const uint8_t* assoc_data,

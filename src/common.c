@@ -6,6 +6,7 @@
 
 void ascon128_encrypt(uint8_t* ciphertext,
                       uint64_t* ciphertext_len,
+                      uint8_t* tag,
                       const uint8_t* plaintext,
                       const uint8_t* assoc_data,
                       const uint8_t* nonce,
@@ -18,7 +19,7 @@ void ascon128_encrypt(uint8_t* ciphertext,
     ascon128_encrypt_update_ad(&ctx, assoc_data, assoc_data_len);
     ascon128_encrypt_final_ad(&ctx);
     ascon128_encrypt_update_pt(&ctx, ciphertext, plaintext, plaintext_len);
-    ascon128_encrypt_final(&ctx, ciphertext, ciphertext_len);
+    ascon128_encrypt_final(&ctx, ciphertext, ciphertext_len, tag);
 }
 
 /*

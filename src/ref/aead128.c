@@ -152,10 +152,10 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
     return freshly_generated_ciphertext_len;
 }
 
-// TODO consider placing tag in separate pointer?
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                               uint8_t* ciphertext,
-                              uint64_t* const total_ciphertext_len)
+                              uint64_t* const total_ciphertext_len,
+                              uint8_t* const tag)
 {
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
@@ -174,13 +174,24 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->state.x3 ^= ctx->k0;
     ctx->state.x4 ^= ctx->k1;
     printstate("finalization:", &ctx->state);
-    // Set tag as the last part of the ciphertext.
-    U64_TO_BYTES(ciphertext, ctx->state.x3, sizeof(uint64_t));
-    ciphertext += sizeof(uint64_t);
-    U64_TO_BYTES(ciphertext, ctx->state.x4, sizeof(uint64_t));
-    freshly_generated_ciphertext_len += ASCON_AEAD_TAG_SIZE;
+    if (tag == NULL)
+    {
+        // No custom tag buffer specificed: set tag as the last part of the
+        // ciphertext.
+        U64_TO_BYTES(ciphertext, ctx->state.x3, sizeof(uint64_t));
+        U64_TO_BYTES(ciphertext + sizeof(uint64_t),
+                     ctx->state.x4, sizeof(uint64_t));
+        freshly_generated_ciphertext_len += ASCON_AEAD_TAG_SIZE;
+    }
+    else
+    {
+        // Write tag into different buffer.
+        U64_TO_BYTES(tag, ctx->state.x3, sizeof(uint64_t));
+        U64_TO_BYTES(tag + sizeof(uint64_t), ctx->state.x4, sizeof(uint64_t));
+    }
     // Final security cleanup of the internal state, key and buffer.
-    *total_ciphertext_len = ctx->total_ciphertext_len + freshly_generated_ciphertext_len;
+    *total_ciphertext_len =
+            ctx->total_ciphertext_len + freshly_generated_ciphertext_len;
     memset(ctx, 0, sizeof(ascon_aead_ctx_t));
     return freshly_generated_ciphertext_len;
 }
