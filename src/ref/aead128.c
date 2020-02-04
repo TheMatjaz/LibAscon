@@ -83,7 +83,7 @@ void ascon128_encrypt_final_ad(ascon_aead_ctx_t* const ctx)
         ascon_permutation_b(&ctx->state);
         ctx->buffer_len = 0;
     }
-    ctx->state.x4 ^= 1U;
+    ctx->state.x4 ^= 1;
     printstate("process associated data:", &ctx->state);
 }
 
@@ -148,7 +148,6 @@ size_t ascon128_encrypt_update_pt(ascon_aead_ctx_t* const ctx,
         memcpy(&ctx->buffer, plaintext, plaintext_len);
         ctx->buffer_len = plaintext_len;
     }
-    printstate("process plaintext:", &ctx->state);
     ctx->total_ciphertext_len += freshly_generated_ciphertext_len;
     return freshly_generated_ciphertext_len;
 }
@@ -161,14 +160,12 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
     size_t freshly_generated_ciphertext_len = 0;
-    if (ctx->buffer_len > 0)
-    {
-        ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
-        ctx->state.x0 ^= PADDING(ctx->buffer_len);
-        U64_TO_BYTES(ciphertext, ctx->state.x0, ctx->buffer_len);
-        ciphertext += ctx->buffer_len;
-        freshly_generated_ciphertext_len += ctx->buffer_len;
-    }
+    ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+    ctx->state.x0 ^= PADDING(ctx->buffer_len);
+    U64_TO_BYTES(ciphertext, ctx->state.x0, ctx->buffer_len);
+    ciphertext += ctx->buffer_len;
+    freshly_generated_ciphertext_len += ctx->buffer_len;
+    printstate("process plaintext:", &ctx->state);
     // End of encryption, start of tag generation.
     // Apply key twice more.
     ctx->state.x1 ^= ctx->k0;
