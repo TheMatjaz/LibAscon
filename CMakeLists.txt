@@ -10,13 +10,14 @@ set(LIB_SRC_FILES
         src/ref/hash.c
         src/ref/aead128.c)
 set(TEST_FRAMEWORK
+        tst/atto/atto.c
         tst/main.c
         tst/vectors.c)
 set(TEST_SRC_FILES
         tst/test_xof.c
         tst/test_hash.c
         tst/test_aead128.c)
-include_directories(AFTER SYSTEM inc/)
+include_directories(AFTER SYSTEM inc/ tst/atto/)
 add_library(libascon STATIC ${LIB_SRC_FILES})
 add_executable(testascon
         ${LIB_SRC_FILES}

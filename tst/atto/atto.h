@@ -2,7 +2,7 @@
  * @file
  * Atto - the microscopic C unit test framework
  *
- * @copyright Copyright © 2019, Matjaž Guštin <dev@matjaz.it>
+ * @copyright Copyright © 2019-2020, Matjaž Guštin <dev@matjaz.it>
  * <https://matjaz.it>. All rights reserved.
  * @license BSD 3-Clause License
  *
@@ -41,11 +41,11 @@ extern "C"
 /**
  * Semantic version of this file and framework.
  */
-#define ATTO_VERSION "1.1.0"
+#define ATTO_VERSION "1.2.0"
 
 #include <stdio.h>  /* For printf() */
 #include <math.h>   /* For fabs(), fabsf(), isnan(), isinf(), isfinite() */
-#include <string.h> /* For strncmp() */
+#include <string.h> /* For strncmp(), memcmp() */
 
 /**
  * Boolean indicating if all tests passed successfully (when 0) or not.
@@ -54,7 +54,7 @@ extern "C"
  * so that the test executable returns non-zero in case at least one test
  * failed.
  */
-static char atto_at_least_one_fail = 0;
+extern char atto_at_least_one_fail;
 
 /**
  * Absolute tolerance when comparing two single-precision floating point
@@ -257,7 +257,8 @@ static char atto_at_least_one_fail = 0;
  * atto_ddelta(1.0, 2.0, 0.1);         // Fails
  * ```
  */
-#define atto_ddelta(a, b, delta) atto_assert(fabs((a) - (b)) <= fabs(delta))
+#define atto_ddelta(a, b, delta) \
+    atto_assert(fabs((a) - (b)) <= fabs(delta))
 
 /**
  * Verifies if two double-precision floating point values are within a fixed
@@ -417,7 +418,8 @@ static char atto_at_least_one_fail = 0;
  * atto_streq("abcd", "ABCD", 4);    // Fails, different casing
  * ```
  */
-#define atto_streq(a, b, maxlen) atto_assert(strncmp((a), (b), (maxlen)) == 0)
+#define atto_streq(a, b, maxlen) \
+    atto_assert(strncmp((a), (b), (maxlen)) == 0)
 
 /**
  * Verifies if two memory sections are equal up to a given length.
@@ -433,6 +435,40 @@ static char atto_at_least_one_fail = 0;
  * ```
  */
 #define atto_memeq(a, b, len) atto_assert(memcmp((a), (b), len) == 0)
+
+/**
+* Verifies if two memory sections are different within the given length.
+*
+* Otherwise stops the test case and reports on standard output.
+*
+* Example:
+* ```
+* atto_memneq("abcd", "abcd", 2);    // Fails
+* atto_memneq("abcd", "abcd", 4);    // Fails
+* atto_memneq("abcd", "abcd", 100);  // UNDEFINED as exceeding known memory
+* atto_memneq("abcd", "abCD", 4);    // Passes
+* ```
+*/
+#define atto_memneq(a, b, len) atto_assert(memcmp((a), (b), len) != 0)
+
+/**
+* Verifies if a memory section is filled with just zeros.
+*
+* Otherwise stops the test case and reports on standard output.
+*
+* Example:
+* ```
+* atto_zeros("abcd", 2);        // Fails
+* atto_zeros("\0\0cd", 2);      // Passes
+* atto_zeros("\0\0cd", 4);      // Fails
+* atto_zeros("\0\0\0\0", 4);    // Passes
+* atto_zeros("\0\0\0\0", 100);  // UNDEFINED as exceeding known memory
+* ```
+*/
+#define atto_zeros(x, len) \
+    for (unsigned long long atto_idx = 0; atto_idx < (len); atto_idx ++) { \
+        atto_eq((x)[atto_idx], 0); \
+    }
 
 /**
  * Forces a failure of the test case, stopping it and reporting on standard
