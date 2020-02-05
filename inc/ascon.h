@@ -115,6 +115,8 @@ struct s_ascon_aead_ctx
 
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;
+
+    uint8_t flow;
 };
 typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 
@@ -152,8 +154,6 @@ void ascon128_init(ascon_aead_ctx_t* ctx,
 void ascon128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
                                 size_t assoc_data_len);
-
-void ascon128_assoc_data_final(ascon_aead_ctx_t* ctx);
 
 // Generates [0, plaintext_len] ciphertext bytes
 // Returns # of ciphertext bytes generated

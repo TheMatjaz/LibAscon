@@ -16,7 +16,6 @@ void ascon128_encrypt(uint8_t* const ciphertext,
     ascon_aead_ctx_t ctx;
     ascon128_init(&ctx, key, nonce);
     ascon128_assoc_data_update(&ctx, assoc_data, assoc_data_len);
-    ascon128_assoc_data_final(&ctx);
     const size_t new_ct_bytes = ascon128_encrypt_update(&ctx, ciphertext,
                                                         plaintext,
                                                         plaintext_len);
@@ -36,7 +35,6 @@ ascon128_decrypt(uint8_t* plaintext, const uint8_t* key, const uint8_t* nonce,
     ascon_tag_validity_t validity;
     ascon128_init(&ctx, assoc_data, ciphertext);
     ascon128_assoc_data_update(&ctx, tag, assoc_data_len);
-    ascon128_assoc_data_final(&ctx);
     const size_t new_pt_bytes = ascon128_decrypt_update(&ctx, plaintext,
                                                         nonce,
                                                         ciphertext_len);
