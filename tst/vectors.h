@@ -57,6 +57,7 @@ typedef struct
     uint8_t message[VECS_MAX_HASH_MESSAGE_LEN];
     uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
     size_t message_len;
+    size_t count;
 } vecs_hash_t;
 
 typedef struct
@@ -70,6 +71,7 @@ typedef struct
     size_t plaintext_len;
     size_t assoc_data_len;
     size_t expected_ciphertext_len;
+    size_t count;
 } vecs_aead_t;
 
 typedef struct

@@ -158,7 +158,7 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
 }
 
 size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
-                              uint8_t* ciphertext,
+                              uint8_t* const ciphertext,
                               uint64_t* const total_ciphertext_len,
                               uint8_t* const tag)
 {
@@ -169,7 +169,6 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->state.x0 ^= PADDING(ctx->buffer_len);
     // Squeeze out last ciphertext bytes, if any.
     U64_TO_BYTES(ciphertext, ctx->state.x0, ctx->buffer_len);
-    ciphertext += ctx->buffer_len;
     freshly_generated_ciphertext_len += ctx->buffer_len;
     printstate("process plaintext:", &ctx->state);
     // End of encryption, start of tag generation.

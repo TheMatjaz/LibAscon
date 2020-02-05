@@ -74,6 +74,7 @@ static vecs_err_t fscan_count_hash(vecs_ctx_t* const ctx,
     {
         return VECS_FORMAT_TOO_LARGE_PLAINTEXT;
     }
+    testcase->count = count;
     return VECS_OK;
 }
 
@@ -162,6 +163,7 @@ static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
     {
         return VECS_FORMAT_INCORRECT_COUNT_HDR;
     }
+    testcase->count = count;
     return VECS_OK;
 }
 
@@ -345,6 +347,7 @@ void vecs_aead_log(const vecs_aead_t* const testcase,
                    const uint64_t obtained_ciphertext_len)
 {
 #ifdef DEBUG
+    printf("---\nCount: %zu\n", testcase->count);
     log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
     log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
     log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
@@ -356,6 +359,7 @@ void vecs_aead_log(const vecs_aead_t* const testcase,
         log_hexbytes("Obtained CT", obtained_ciphertext,
                      obtained_ciphertext_len);
     }
+    log_hexbytes("Expected tag", testcase->expected_tag, ASCON_AEAD_TAG_LEN);
     if (obtained_tag != NULL)
     {
         log_hexbytes("Obtained tag", obtained_tag, ASCON_AEAD_TAG_LEN);
