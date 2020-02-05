@@ -334,7 +334,6 @@ static void test_encrypt_batch(void)
         {
             break;
         }
-        printf("VECS: %d\n", errcode);
         atto_eq(errcode, VECS_OK);
         ascon128_encrypt(obtained_ciphertext,
                          obtained_tag,
