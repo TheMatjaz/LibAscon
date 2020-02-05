@@ -8,7 +8,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(LIB_SRC_FILES
         src/common.c
         src/ref/hash.c
-        src/ref/aead128.c)
+        src/ref/aead128.c
+        src/ref/permutations.c)
 set(TEST_FRAMEWORK
         tst/atto/atto.c
         tst/main.c
@@ -18,9 +19,10 @@ set(TEST_SRC_FILES
         tst/test_hash.c
         tst/test_aead128.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
-add_library(libascon STATIC ${LIB_SRC_FILES})
+add_library(staticascon OBJECT ${LIB_SRC_FILES})
+add_library(ascon SHARED $<TARGET_OBJECTS:staticascon>)
 add_executable(testascon
-        ${LIB_SRC_FILES}
+        $<TARGET_OBJECTS:staticascon>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
 file(COPY tst/vectors DESTINATION ${CMAKE_BINARY_DIR})

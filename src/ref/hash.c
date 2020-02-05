@@ -45,7 +45,7 @@ void buffered_process(ascon_hash_ctx_t* const ctx,
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
+            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
             ascon_permutation_a12(&ctx->state);
             ctx->buffer_len = 0;
         }
@@ -66,7 +66,7 @@ void buffered_process(ascon_hash_ctx_t* const ctx,
     // Absorb remaining data (if any) one block at the time.
     while (data_len >= ASCON_RATE)
     {
-        ctx->state.x0 ^= BYTES_TO_U64(data, ASCON_RATE);
+        ctx->state.x0 ^= bytes_to_u64(data, ASCON_RATE);
         ascon_permutation_a12(&ctx->state);
         data_len -= ASCON_RATE;
         data += ASCON_RATE;
@@ -97,7 +97,7 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
+            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
             ascon_permutation_a12(&ctx->state);
             ctx->buffer_len = 0;
         }
@@ -118,7 +118,7 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
     // Absorb remaining data (if any) one block at the time.
     while (data_len >= ASCON_RATE)
     {
-        ctx->state.x0 ^= BYTES_TO_U64(data, ASCON_RATE);
+        ctx->state.x0 ^= bytes_to_u64(data, ASCON_RATE);
         ascon_permutation_a12(&ctx->state);
         data_len -= ASCON_RATE;
         data += ASCON_RATE;
@@ -138,18 +138,18 @@ void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+    ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
     ctx->state.x0 ^= PADDING(ctx->buffer_len);
     // Squeeze the digest from the inner state.
     while (digest_size > ASCON_RATE)
     {
         ascon_permutation_a12(&ctx->state);
-        U64_TO_BYTES(digest, ctx->state.x0, ASCON_RATE);
+        u64_to_bytes(digest, ctx->state.x0, ASCON_RATE);
         digest_size -= ASCON_RATE;
         digest += ASCON_RATE;
     }
     ascon_permutation_a12(&ctx->state);
-    U64_TO_BYTES(digest, ctx->state.x0, digest_size);
+    u64_to_bytes(digest, ctx->state.x0, digest_size);
     // Final security cleanup of the internal state and buffer.
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }

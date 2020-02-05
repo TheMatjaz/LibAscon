@@ -10,13 +10,13 @@ void ascon128_init(ascon_aead_ctx_t* const ctx,
                    const uint8_t* const nonce)
 {
     // Store the key in the context as it's required in the final step.
-    ctx->k0 = BYTES_TO_U64(key, sizeof(uint64_t));
-    ctx->k1 = BYTES_TO_U64(key + sizeof(uint64_t), sizeof(uint64_t));
+    ctx->k0 = bytes_to_u64(key, sizeof(uint64_t));
+    ctx->k1 = bytes_to_u64(key + sizeof(uint64_t), sizeof(uint64_t));
     ctx->state.x0 = AEAD128_IV;
     ctx->state.x1 = ctx->k0;
     ctx->state.x2 = ctx->k1;
-    ctx->state.x3 = BYTES_TO_U64(nonce, sizeof(uint64_t));;
-    ctx->state.x4 = BYTES_TO_U64(nonce + sizeof(uint64_t), sizeof(uint64_t));;
+    ctx->state.x3 = bytes_to_u64(nonce, sizeof(uint64_t));;
+    ctx->state.x4 = bytes_to_u64(nonce + sizeof(uint64_t), sizeof(uint64_t));;
     printstate("initial value:", &ctx->state);
     ascon_permutation_a12(&ctx->state);
     ctx->state.x3 ^= ctx->k0;
@@ -45,7 +45,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
+            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
             ascon_permutation_b6(&ctx->state);
             ctx->buffer_len = 0;
         }
@@ -66,7 +66,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
     // Absorb remaining data (if any) one block at the time.
     while (assoc_data_len >= ASCON_RATE)
     {
-        ctx->state.x0 ^= BYTES_TO_U64(assoc_data, ASCON_RATE);
+        ctx->state.x0 ^= bytes_to_u64(assoc_data, ASCON_RATE);
         ascon_permutation_b6(&ctx->state);
         assoc_data_len -= ASCON_RATE;
         assoc_data += ASCON_RATE;
@@ -91,7 +91,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data absorbed beforehand.
     if (ctx->assoc_data_state == FLOW_SOME_ASSOC_DATA)
     {
-        ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+        ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
         ctx->state.x0 ^= PADDING(ctx->buffer_len);
         ascon_permutation_b6(&ctx->state);
         ctx->buffer_len = 0;
@@ -129,10 +129,10 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
+            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
             ctx->buffer_len = 0;
             // Squeeze out some ciphertext
-            U64_TO_BYTES(ciphertext, ctx->state.x0, ASCON_RATE);
+            u64_to_bytes(ciphertext, ctx->state.x0, ASCON_RATE);
             ciphertext += ASCON_RATE;
             freshly_generated_ciphertext_len += ASCON_RATE;
             // Permute the state
@@ -157,11 +157,11 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
     while (plaintext_len >= ASCON_RATE)
     {
         // Absorb plaintext
-        ctx->state.x0 ^= BYTES_TO_U64(plaintext, ASCON_RATE);
+        ctx->state.x0 ^= bytes_to_u64(plaintext, ASCON_RATE);
         plaintext += ASCON_RATE;
         plaintext_len -= ASCON_RATE;
         // Squeeze out ciphertext
-        U64_TO_BYTES(ciphertext, ctx->state.x0, ASCON_RATE);
+        u64_to_bytes(ciphertext, ctx->state.x0, ASCON_RATE);
         ciphertext += ASCON_RATE;
         freshly_generated_ciphertext_len += ASCON_RATE;
         // Permute the state
@@ -191,10 +191,10 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     size_t freshly_generated_ciphertext_len = 0;
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
-    ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+    ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
     ctx->state.x0 ^= PADDING(ctx->buffer_len);
     // Squeeze out last ciphertext bytes, if any.
-    U64_TO_BYTES(ciphertext, ctx->state.x0, ctx->buffer_len);
+    u64_to_bytes(ciphertext, ctx->state.x0, ctx->buffer_len);
     freshly_generated_ciphertext_len += ctx->buffer_len;
     printstate("process plaintext:", &ctx->state);
     // End of encryption, start of tag generation.
@@ -206,8 +206,8 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->state.x4 ^= ctx->k1;
     printstate("finalization:", &ctx->state);
     // Squeeze out tag into is buffer.
-    U64_TO_BYTES(tag, ctx->state.x3, sizeof(uint64_t));
-    U64_TO_BYTES(tag + sizeof(uint64_t), ctx->state.x4, sizeof(uint64_t));
+    u64_to_bytes(tag, ctx->state.x3, sizeof(uint64_t));
+    u64_to_bytes(tag + sizeof(uint64_t), ctx->state.x4, sizeof(uint64_t));
     if (total_ciphertext_len != NULL)
     {
         *total_ciphertext_len =
@@ -242,8 +242,8 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
-            c0 = BYTES_TO_U64(ctx->buffer, ASCON_RATE);
-            U64_TO_BYTES(plaintext, ctx->state.x0 ^ c0, ASCON_RATE);
+            c0 = bytes_to_u64(ctx->buffer, ASCON_RATE);
+            u64_to_bytes(plaintext, ctx->state.x0 ^ c0, ASCON_RATE);
             ctx->state.x0 = c0;
             ascon_permutation_b6(&ctx->state);
             ciphertext += ASCON_RATE;
@@ -268,8 +268,8 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
     // while squeezing out plaintext.
     while (plaintext_len >= ASCON_RATE)
     {
-        c0 = BYTES_TO_U64(ciphertext, ASCON_RATE);
-        U64_TO_BYTES(plaintext, ctx->state.x0 ^ c0, ASCON_RATE);
+        c0 = bytes_to_u64(ciphertext, ASCON_RATE);
+        u64_to_bytes(plaintext, ctx->state.x0 ^ c0, ASCON_RATE);
         ctx->state.x0 = c0;
         ascon_permutation_b6(&ctx->state);
         plaintext_len -= ASCON_RATE;
@@ -298,9 +298,9 @@ size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
     // If there is any remaining less-than-a-block ciphertext to be absorbed
     // cached in the buffer, pad it and absorb it.
     size_t freshly_generated_plaintext_len = 0;
-    const uint64_t c0 = BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
-    U64_TO_BYTES(plaintext, ctx->state.x0 ^ c0, ctx->buffer_len);
-    ctx->state.x0 &= ~BYTE_MASK(ctx->buffer_len);
+    const uint64_t c0 = bytes_to_u64(ctx->buffer, ctx->buffer_len);
+    u64_to_bytes(plaintext, ctx->state.x0 ^ c0, ctx->buffer_len);
+    ctx->state.x0 &= ~byte_mask(ctx->buffer_len);
     ctx->state.x0 |= c0;
     ctx->state.x0 ^= PADDING(ctx->buffer_len);
     freshly_generated_plaintext_len += ctx->buffer_len;
@@ -314,8 +314,8 @@ size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->state.x4 ^= ctx->k1;
     printstate("finalization:", &ctx->state);
     // Validate tag
-    if (((ctx->state.x3 ^ BYTES_TO_U64(tag, sizeof(uint64_t)))
-         | (ctx->state.x4 ^ BYTES_TO_U64(tag + sizeof(uint64_t),
+    if (((ctx->state.x3 ^ bytes_to_u64(tag, sizeof(uint64_t)))
+         | (ctx->state.x4 ^ bytes_to_u64(tag + sizeof(uint64_t),
                                          sizeof(uint64_t)))) != 0)
     {
         *tag_validity = ASCON_TAG_INVALID;
