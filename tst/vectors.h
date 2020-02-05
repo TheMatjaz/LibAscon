@@ -88,10 +88,15 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
 void vecs_hash_log(const vecs_hash_t* testcase,
                    const uint8_t* obtained_digest);
 
-void vecs_aead_log(const vecs_aead_t* testcase,
-                   const uint8_t* obtained_ciphertext,
-                   const uint8_t* obtained_tag,
-                   uint64_t obtained_ciphertext_len);
+void vecs_aead_enc_log(const vecs_aead_t* testcase,
+                       const uint8_t* obtained_ciphertext,
+                       const uint8_t* obtained_tag,
+                       uint64_t obtained_ciphertext_len);
+
+void vecs_aead_dec_log(const vecs_aead_t* testcase,
+                       const uint8_t* obtained_plaintext,
+                       const uint8_t* obtained_tag,
+                       uint64_t obtained_plaintext_len);
 
 #ifdef __cplusplus
 }

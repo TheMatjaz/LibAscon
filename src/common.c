@@ -25,11 +25,14 @@ void ascon128_encrypt(uint8_t* const ciphertext,
 
 // TODO consider sorting pointers in alphabetic order or something to make it
 // less probable to make a mistake by swapping 2 pointers
-ascon_tag_validity_t
-ascon128_decrypt(uint8_t* plaintext, const uint8_t* key, const uint8_t* nonce,
-                 const uint8_t* ciphertext, const uint8_t* assoc_data,
-                 const uint8_t* tag, size_t assoc_data_len,
-                 size_t ciphertext_len)
+ascon_tag_validity_t ascon128_decrypt(uint8_t* plaintext,
+                                      const uint8_t* key,
+                                      const uint8_t* nonce,
+                                      const uint8_t* assoc_data,
+                                      const uint8_t* ciphertext,
+                                      const uint8_t* tag,
+                                      size_t assoc_data_len,
+                                      size_t ciphertext_len)
 {
     ascon_aead_ctx_t ctx;
     ascon_tag_validity_t validity;

@@ -18,7 +18,8 @@ set(TEST_FRAMEWORK
 set(TEST_SRC_FILES
         tst/test_xof.c
         tst/test_hash.c
-        tst/test_aead128.c)
+        tst/test_aead128_enc.c
+        tst/test_aead128_dec.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
 add_library(staticascon OBJECT ${LIB_SRC_FILES})
 add_library(ascon SHARED $<TARGET_OBJECTS:staticascon>)
