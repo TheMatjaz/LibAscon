@@ -1,10 +1,9 @@
 #include "ascon.h"
 #include "permutations.h"
 
-#define FLOW_JUST_INITIALISED 0
-#define FLOW_GOT_SOME_ASSOC_DATA 1
-#define FLOW_GOT_SOME_PLAINTEXT 3
-#define FLOW_GOT_SOME_CIPHERTEXT 4
+#define FLOW_NO_ASSOC_DATA 0
+#define FLOW_SOME_ASSOC_DATA 1
+#define FLOW_ASSOC_DATA_FINALISED 2
 
 void ascon128_init(ascon_aead_ctx_t* const ctx,
                    const uint8_t* const key,
@@ -24,7 +23,7 @@ void ascon128_init(ascon_aead_ctx_t* const ctx,
     ctx->state.x4 ^= ctx->k1;
     ctx->buffer_len = 0;
     ctx->total_output_len = 0;
-    ctx->flow = FLOW_JUST_INITIALISED;
+    ctx->assoc_data_state = FLOW_NO_ASSOC_DATA;
     printstate("initialization:", &ctx->state);
 }
 
@@ -42,13 +41,13 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
         ctx->buffer_len += into_buffer;
         assoc_data += into_buffer;
         assoc_data_len -= into_buffer;
-        ctx->flow = 1;
+        ctx->assoc_data_state = FLOW_SOME_ASSOC_DATA;
         if (ctx->buffer_len == ASCON_RATE)
         {
             // The buffer was filled completely, thus absorb it.
             ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ASCON_RATE);
             ascon_permutation_b6(&ctx->state);
-            ctx->buffer_len = FLOW_GOT_SOME_ASSOC_DATA;
+            ctx->buffer_len = 0;
         }
         else
         {
@@ -71,7 +70,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
         ascon_permutation_b6(&ctx->state);
         assoc_data_len -= ASCON_RATE;
         assoc_data += ASCON_RATE;
-        ctx->flow = FLOW_GOT_SOME_ASSOC_DATA;
+        ctx->assoc_data_state = FLOW_SOME_ASSOC_DATA;
     }
     // If there is any remaining less-than-a-block data to be absorbed,
     // cache it into the buffer for the next update call or digest call.
@@ -79,29 +78,34 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
     {
         memcpy(&ctx->buffer, assoc_data, assoc_data_len);
         ctx->buffer_len = assoc_data_len;
-        ctx->flow = FLOW_GOT_SOME_ASSOC_DATA;
+        ctx->assoc_data_state = FLOW_SOME_ASSOC_DATA;
     }
 }
 
-static void assoc_data_final(ascon_aead_ctx_t* const ctx)
+static void finalise_assoc_data_if_needed(ascon_aead_ctx_t* const ctx)
 {
-    // If there was at least some associated data obtained so far
-    // and/or if there is any remaining less-than-a-block associated data to be
-    // absorbed cached in the buffer, pad it and absorb it.
-    // Note: this step is performed even if the buffer is empty because
-    // a state permutation is required if there was at least some associated
-    // data to absorb beforehand.
-    if (ctx->flow == FLOW_GOT_SOME_ASSOC_DATA)
+    // Finalise the associated data only once.
+    if (ctx->assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
     {
-        ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
-        ctx->state.x0 ^= PADDING(ctx->buffer_len);
-        ascon_permutation_b6(&ctx->state);
-        ctx->buffer_len = 0;
+        // If there was at least some associated data obtained so far,
+        // pad it and absorb any content of the buffer.
+        // Note: this step is performed even if the buffer is now empty because
+        // a state permutation is required if there was at least some associated
+        // data absorbed beforehand.
+        if (ctx->assoc_data_state == FLOW_SOME_ASSOC_DATA)
+        {
+            ctx->state.x0 ^= BYTES_TO_U64(ctx->buffer, ctx->buffer_len);
+            ctx->state.x0 ^= PADDING(ctx->buffer_len);
+            ascon_permutation_b6(&ctx->state);
+            ctx->buffer_len = 0;
+        }
+        // Application of a constant at end of associated data for domain
+        // separation. Done always, regardless if there was some associated
+        // data or not.
+        ctx->state.x4 ^= 1;
+        ctx->assoc_data_state = FLOW_ASSOC_DATA_FINALISED;
+        printstate("process associated data:", &ctx->state);
     }
-    // Application of a constant at end of associated data for domain separation
-    // Done always, regardless if there was some associated data or not.
-    ctx->state.x4 ^= 1;
-    printstate("process associated data:", &ctx->state);
 }
 
 size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
@@ -109,14 +113,7 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
                                const uint8_t* plaintext,
                                size_t plaintext_len)
 {
-    if (ctx->flow != FLOW_GOT_SOME_PLAINTEXT)
-    {
-        // If this is the first call of this function, finalise the
-        // associated data absorption first.
-        assoc_data_final(ctx);
-        ctx->flow = FLOW_GOT_SOME_PLAINTEXT;
-    }
-    // End of associated data absorption.
+    finalise_assoc_data_if_needed(ctx);
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
     size_t freshly_generated_ciphertext_len = 0;
     if (ctx->buffer_len > 0)
@@ -186,12 +183,7 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                               uint64_t* const total_ciphertext_len,
                               uint8_t* const tag)
 {
-    if (ctx->flow != FLOW_GOT_SOME_PLAINTEXT)
-    {
-        // No ciphertext was provided thus far, so we finalise the associated
-        // data absorption first.
-        assoc_data_final(ctx);
-    }
+    finalise_assoc_data_if_needed(ctx);
     size_t freshly_generated_ciphertext_len = 0;
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
@@ -229,6 +221,7 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
                                const uint8_t* ciphertext,
                                size_t plaintext_len)
 {
+    finalise_assoc_data_if_needed(ctx);
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     size_t freshly_generated_plaintext_len = 0;
     uint64_t c0;
@@ -297,6 +290,7 @@ size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
                               ascon_tag_validity_t* const tag_validity,
                               const uint8_t* const tag)
 {
+    finalise_assoc_data_if_needed(ctx);
     // If there is any remaining less-than-a-block ciphertext to be absorbed
     // cached in the buffer, pad it and absorb it.
     size_t freshly_generated_plaintext_len = 0;

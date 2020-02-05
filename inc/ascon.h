@@ -116,7 +116,7 @@ struct s_ascon_aead_ctx
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;
 
-    uint8_t flow;
+    uint8_t assoc_data_state;
 };
 typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 
