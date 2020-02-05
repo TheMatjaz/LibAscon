@@ -6,15 +6,15 @@
 
 void ascon128_encrypt(uint8_t* const ciphertext,
                       uint8_t* const tag,
-                      const uint8_t* const plaintext,
-                      const uint8_t* const assoc_data,
-                      const uint8_t* const nonce,
                       const uint8_t* const key,
-                      const size_t plaintext_len,
-                      const size_t assoc_data_len)
+                      const uint8_t* const nonce,
+                      const uint8_t* const assoc_data,
+                      const uint8_t* const plaintext,
+                      const size_t assoc_data_len,
+                      const size_t plaintext_len)
 {
     ascon_aead_ctx_t ctx;
-    ascon128_init(&ctx, nonce, key);
+    ascon128_init(&ctx, key, nonce);
     ascon128_assoc_data_update(&ctx, assoc_data, assoc_data_len);
     ascon128_assoc_data_final(&ctx);
     const size_t new_ct_bytes = ascon128_encrypt_update(&ctx, ciphertext,
@@ -26,25 +26,22 @@ void ascon128_encrypt(uint8_t* const ciphertext,
 
 // TODO consider sorting pointers in alphabetic order or something to make it
 // less probable to make a mistake by swapping 2 pointers
-ascon_tag_validity_t ascon128_decrypt(uint8_t* const plaintext,
-                                      const uint8_t* const assoc_data,
-                                      const uint8_t* const ciphertext,
-                                      const uint8_t* const tag,
-                                      const uint8_t* const nonce,
-                                      const uint8_t* const key,
-                                      const size_t assoc_data_len,
-                                      const size_t ciphertext_len)
+ascon_tag_validity_t
+ascon128_decrypt(uint8_t* plaintext, const uint8_t* key, const uint8_t* nonce,
+                 const uint8_t* ciphertext, const uint8_t* assoc_data,
+                 const uint8_t* tag, size_t assoc_data_len,
+                 size_t ciphertext_len)
 {
     ascon_aead_ctx_t ctx;
     ascon_tag_validity_t validity;
-    ascon128_init(&ctx, nonce, key);
-    ascon128_assoc_data_update(&ctx, assoc_data, assoc_data_len);
+    ascon128_init(&ctx, assoc_data, ciphertext);
+    ascon128_assoc_data_update(&ctx, tag, assoc_data_len);
     ascon128_assoc_data_final(&ctx);
     const size_t new_pt_bytes = ascon128_decrypt_update(&ctx, plaintext,
-                                                        ciphertext,
+                                                        nonce,
                                                         ciphertext_len);
     ascon128_decrypt_final(&ctx, plaintext + new_pt_bytes,
-                           NULL, &validity, tag);
+                           NULL, &validity, key);
     return validity;
 }
 

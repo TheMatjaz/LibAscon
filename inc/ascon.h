@@ -71,11 +71,9 @@ extern "C"
  */
 typedef enum e_ascon_tag_validity
 {
-    /** The tag is valid thus the decryption too. */
-    ASCON_TAG_OK = 0,
-
-    /** The tag is invalid thus the decrypted data should be ignored. */
-    ASCON_TAG_INVALID = 1,
+    ASCON_TAG_OK = 0, /** The tag is valid thus the decryption too. */
+    ASCON_TAG_INVALID = 1, /** The tag is invalid thus the decrypted data
+                             * should be ignored. */
 } ascon_tag_validity_t;
 
 // TODO activate all compiler checks
@@ -140,16 +138,16 @@ typedef struct s_ascon_hash_ctx ascon_hash_ctx_t;
 // Ciphertext must support plaintext_len bytes.
 void ascon128_encrypt(uint8_t* ciphertext,
                       uint8_t* tag,
-                      const uint8_t* plaintext,
-                      const uint8_t* assoc_data,
-                      const uint8_t* nonce,
                       const uint8_t* key,
-                      size_t plaintext_len,
-                      size_t assoc_data_len);
+                      const uint8_t* nonce,
+                      const uint8_t* assoc_data,
+                      const uint8_t* plaintext,
+                      size_t assoc_data_len,
+                      size_t plaintext_len);
 
 void ascon128_init(ascon_aead_ctx_t* ctx,
-                   const uint8_t* nonce,
-                   const uint8_t* key);
+                   const uint8_t* key,
+                   const uint8_t* nonce);
 
 void ascon128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                 const uint8_t* assoc_data,
@@ -175,13 +173,13 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
 // Plaintext must support ciphertext_len bytes
 // This function fails if the tag is invalid
 ascon_tag_validity_t ascon128_decrypt(uint8_t* plaintext,
-                             const uint8_t* assoc_data,
-                             const uint8_t* ciphertext,
-                             const uint8_t* tag,
-                             const uint8_t* nonce,
-                             const uint8_t* key,
-                             size_t assoc_data_len,
-                             size_t ciphertext_len);
+                                      const uint8_t* key,
+                                      const uint8_t* nonce,
+                                      const uint8_t* ciphertext,
+                                      const uint8_t* assoc_data,
+                                      const uint8_t* tag,
+                                      size_t assoc_data_len,
+                                      size_t ciphertext_len);
 
 // Generates [0, ciphertext_len] plaintext bytes
 // Returns # of plaintext bytes generated

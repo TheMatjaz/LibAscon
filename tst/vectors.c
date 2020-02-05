@@ -40,7 +40,7 @@ static vecs_err_t fscan_variable_hexbytes(FILE* const handle,
     size_t i = 0;
     while (1)
     {
-        if (i >= VECS_MAX_HEXBYTES)
+        if (i >= VECS_MAX_HEXBYTES_LEN)
         {
             return VECS_FORMAT_TOO_LARGE_HEXBYTES;
         }
@@ -65,7 +65,7 @@ static vecs_err_t fscan_count_hash(vecs_ctx_t* const ctx,
         return VECS_FORMAT_INCORRECT_COUNT_HDR;
     }
     testcase->message_len = count - 1;
-    if (testcase->message_len > VECS_MAX_HASH_MESSAGE_SIZE)
+    if (testcase->message_len > VECS_MAX_HASH_MESSAGE_LEN)
     {
         return VECS_FORMAT_TOO_LARGE_PLAINTEXT;
     }
@@ -221,6 +221,10 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
     {
         return errcode;
     }
+    if (testcase->expected_ciphertext_len < ASCON_AEAD_TAG_LEN)
+    {
+        return VECS_FORMAT_TOO_SHORT_CIPHERTEXT;
+    }
     testcase->expected_ciphertext_len -= ASCON_AEAD_TAG_LEN;
     memcpy(testcase->expected_tag,
            &testcase->expected_ciphertext[testcase->expected_ciphertext_len],
@@ -292,6 +296,7 @@ void vecs_hash_log(const vecs_hash_t* const testcase,
 
 void vecs_aead_log(const vecs_aead_t* const testcase,
                    const uint8_t* const obtained_ciphertext,
+                   const uint8_t* const obtained_tag,
                    const uint64_t obtained_ciphertext_len)
 {
 #ifdef DEBUG
@@ -306,10 +311,15 @@ void vecs_aead_log(const vecs_aead_t* const testcase,
         log_hexbytes("Obtained CT", obtained_ciphertext,
                      obtained_ciphertext_len);
     }
+    if (obtained_tag != NULL)
+    {
+        log_hexbytes("Obtained tag", obtained_tag, ASCON_AEAD_TAG_LEN);
+    }
     fflush(stdout);
 #else
     (void) testcase;
     (void) obtained_ciphertext;
+    (void) obtained_tag;
     (void) obtained_ciphertext_len;
 #endif
 }

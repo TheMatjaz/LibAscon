@@ -2,8 +2,8 @@
 #include "permutations.h"
 
 void ascon128_init(ascon_aead_ctx_t* const ctx,
-                   const uint8_t* const nonce,
-                   const uint8_t* const key)
+                   const uint8_t* const key,
+                   const uint8_t* const nonce)
 {
     // Store the key in the context as it's required in the final step.
     ctx->k0 = BYTES_TO_U64(key, sizeof(uint64_t));
