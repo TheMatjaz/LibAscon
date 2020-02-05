@@ -11,7 +11,7 @@
 #include "ascon.h"
 
 #define AEAD128_IV ( \
-     ((uint64_t)(8 * (ASCON_AEAD_KEY_SIZE)) << 56U) \
+     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
      | ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
      | ((uint64_t)(PA_ROUNDS) << 40U) \
      | ((uint64_t)(PB_ROUNDS) << 32U) \
@@ -20,7 +20,7 @@
     ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
     | ((uint64_t)(PA_ROUNDS) << 40U) \
     )
-#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_SIZE))
+#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
 #define PADDING(bytes) (0x80ULL << (56 - 8 * ((size_t) bytes)))
 
 #define PA_ROUNDS 12

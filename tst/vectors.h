@@ -54,7 +54,7 @@ typedef enum
 typedef struct
 {
     uint8_t message[VECS_MAX_HASH_MESSAGE_SIZE];
-    uint8_t expected_digest[ASCON_HASH_DIGEST_SIZE];
+    uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
     size_t message_len;
 } vecs_hash_t;
 
@@ -63,9 +63,9 @@ typedef struct
     uint8_t plaintext[VECS_MAX_AEAD_PLAINTEXT_SIZE];
     uint8_t assoc_data[VECS_MAX_AEAD_ASSOC_DATA_SIZE];
     uint8_t expected_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_SIZE];
-    uint8_t key[ASCON_AEAD_KEY_SIZE];
-    uint8_t nonce[ASCON_AEAD_NONCE_SIZE];
-    uint8_t expected_tag[ASCON_AEAD_TAG_SIZE];
+    uint8_t key[ASCON_AEAD_KEY_LEN];
+    uint8_t nonce[ASCON_AEAD_NONCE_LEN];
+    uint8_t expected_tag[ASCON_AEAD_TAG_LEN];
     size_t plaintext_len;
     size_t assoc_data_len;
     size_t expected_ciphertext_len;

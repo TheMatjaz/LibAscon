@@ -265,6 +265,7 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
 size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
                               uint8_t* plaintext,
                               uint64_t* const total_plaintext_len,
+                              ascon_tag_validity_t* const tag_validity,
                               const uint8_t* const tag)
 {
     // If there is any remaining less-than-a-block ciphertext to be absorbed
@@ -286,13 +287,15 @@ size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->state.x4 ^= ctx->k1;
     printstate("finalization:", &ctx->state);
     // Validate tag
-    ascon_err_t errcode = ASCON_OK;
     if (((ctx->state.x3 ^ BYTES_TO_U64(tag, sizeof(uint64_t)))
          | (ctx->state.x4 ^ BYTES_TO_U64(tag + sizeof(uint64_t),
                                          sizeof(uint64_t)))) != 0)
     {
-        errcode = ASCON_INVALID_TAG;
-        // TODO provide the errcode back somehow
+        *tag_validity = ASCON_TAG_INVALID;
+    }
+    else
+    {
+        *tag_validity = ASCON_TAG_OK;
     }
     if (total_plaintext_len != NULL)
     {

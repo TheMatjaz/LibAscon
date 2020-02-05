@@ -157,5 +157,5 @@ void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
 
 void inline ascon_hash_final(ascon_hash_ctx_t* const ctx, uint8_t* digest)
 {
-    ascon_hash_final_xof(ctx, digest, ASCON_HASH_DIGEST_SIZE);
+    ascon_hash_final_xof(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }

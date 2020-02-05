@@ -100,7 +100,7 @@ static vecs_err_t fscan_digest(vecs_ctx_t* const ctx,
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
                                                     testcase->expected_digest,
-                                                    ASCON_HASH_DIGEST_SIZE);
+                                                    ASCON_HASH_DIGEST_LEN);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_DIGEST;
@@ -155,7 +155,7 @@ static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
                                                     testcase->key,
-                                                    ASCON_AEAD_KEY_SIZE);
+                                                    ASCON_AEAD_KEY_LEN);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_KEY;
@@ -173,7 +173,7 @@ static vecs_err_t fscan_nonce(vecs_ctx_t* const ctx,
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
                                                     testcase->nonce,
-                                                    ASCON_AEAD_NONCE_SIZE);
+                                                    ASCON_AEAD_NONCE_LEN);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_NONCE;
@@ -221,10 +221,10 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
     {
         return errcode;
     }
-    testcase->expected_ciphertext_len -= ASCON_AEAD_TAG_SIZE;
+    testcase->expected_ciphertext_len -= ASCON_AEAD_TAG_LEN;
     memcpy(testcase->expected_tag,
            &testcase->expected_ciphertext[testcase->expected_ciphertext_len],
-           ASCON_AEAD_TAG_SIZE);
+           ASCON_AEAD_TAG_LEN);
     return VECS_OK;
 }
 
@@ -277,11 +277,11 @@ void vecs_hash_log(const vecs_hash_t* const testcase,
 #ifdef DEBUG
     log_hexbytes("Msg", testcase->message, testcase->message_len);
     log_hexbytes("Expected digest", testcase->expected_digest,
-                 ASCON_HASH_DIGEST_SIZE);
+                 ASCON_HASH_DIGEST_LEN);
     if (obtained_digest != NULL)
     {
         log_hexbytes("Obtained digest", obtained_digest,
-                     ASCON_HASH_DIGEST_SIZE);
+                     ASCON_HASH_DIGEST_LEN);
     }
     fflush(stdout);
 #else
@@ -295,8 +295,8 @@ void vecs_aead_log(const vecs_aead_t* const testcase,
                    const uint64_t obtained_ciphertext_len)
 {
 #ifdef DEBUG
-    log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_SIZE);
-    log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_SIZE);
+    log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
+    log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
     log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
     log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
     log_hexbytes("Expected CT", testcase->expected_ciphertext,

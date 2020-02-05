@@ -34,7 +34,7 @@ static void test_aead_empty(void)
     atto_eq(testcase.plaintext_len,
             testcase.expected_ciphertext_len);
     uint8_t obtained_ciphertext[testcase.expected_ciphertext_len * 2];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_SIZE];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
     uint64_t ciphertext_len = 0;
     ascon_aead_ctx_t aead_ctx;
 
@@ -47,8 +47,9 @@ static void test_aead_empty(void)
     vecs_aead_log(&testcase, obtained_ciphertext, ciphertext_len);
     atto_memeq(obtained_ciphertext, testcase.expected_ciphertext,
                testcase.expected_ciphertext_len);
-    atto_memeq(obtained_tag, &testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, &testcase.expected_tag, ASCON_AEAD_TAG_LEN);
     ciphertext_len = 0;
+
 
     // Without any update call at all
     ascon128_init(&aead_ctx, testcase.nonce, testcase.key);
@@ -64,7 +65,7 @@ static void test_aead_empty(void)
     atto_memeq(obtained_ciphertext,
                testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, &testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, &testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 
 
     // With AD update calls of zero length
@@ -81,7 +82,7 @@ static void test_aead_empty(void)
     atto_memeq(obtained_ciphertext,
                testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 
     // With PT update calls of zero length
     ascon128_init(&aead_ctx, testcase.nonce, testcase.key);
@@ -104,7 +105,7 @@ static void test_aead_empty(void)
     atto_eq(ciphertext_len, testcase.expected_ciphertext_len);
     atto_memeq(obtained_ciphertext, testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 
     // With AD and PT update calls of zero length
     ascon128_init(&aead_ctx, testcase.nonce, testcase.key);
@@ -130,7 +131,7 @@ static void test_aead_empty(void)
     atto_eq(ciphertext_len, testcase.expected_ciphertext_len);
     atto_memeq(obtained_ciphertext, testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 }
 
 
@@ -158,7 +159,7 @@ static void test_aead_1_byte_ad_empty_pt(void)
     atto_eq(testcase.plaintext_len,
             testcase.expected_ciphertext_len);
     uint8_t obtained_ciphertext[testcase.expected_ciphertext_len * 2];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_SIZE];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
     uint64_t ciphertext_len = 0;
     ascon_aead_ctx_t aead_ctx;
     size_t new_ct_len;
@@ -175,7 +176,7 @@ static void test_aead_1_byte_ad_empty_pt(void)
     atto_eq(ciphertext_len, testcase.expected_ciphertext_len);
     atto_memeq(obtained_ciphertext, testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 
     // With PT call
     ascon128_init(&aead_ctx, testcase.nonce, testcase.key);
@@ -194,9 +195,8 @@ static void test_aead_1_byte_ad_empty_pt(void)
     atto_memeq(obtained_ciphertext,
                testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 }
-
 
 static void test_aead_1_byte_pt_empty_ad(void)
 {
@@ -223,7 +223,7 @@ static void test_aead_1_byte_pt_empty_ad(void)
     atto_eq(testcase.plaintext_len,
             testcase.expected_ciphertext_len);
     uint8_t obtained_ciphertext[testcase.expected_ciphertext_len * 2];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_SIZE];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
     uint64_t ciphertext_len = 0;
     ascon_aead_ctx_t aead_ctx;
     size_t new_ct_len;
@@ -243,7 +243,7 @@ static void test_aead_1_byte_pt_empty_ad(void)
     atto_memeq(obtained_ciphertext,
                testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 
     // With AD call
     ascon128_init(&aead_ctx, testcase.nonce, testcase.key);
@@ -262,9 +262,8 @@ static void test_aead_1_byte_pt_empty_ad(void)
     atto_memeq(obtained_ciphertext,
                testcase.expected_ciphertext,
                ciphertext_len);
-    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_SIZE);
+    atto_memeq(obtained_tag, testcase.expected_tag, ASCON_AEAD_TAG_LEN);
 }
-
 
 static void test_aead_1_byte_pt_1_byte_ad(void)
 {
@@ -291,7 +290,7 @@ static void test_aead_1_byte_pt_1_byte_ad(void)
             };
     atto_eq(testcase.plaintext_len, testcase.expected_ciphertext_len);
     uint8_t obtained_ciphertext[testcase.expected_ciphertext_len * 2];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_SIZE];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
     uint64_t ciphertext_len = 0;
     ascon_aead_ctx_t aead_ctx;
     size_t new_ct_len;
@@ -314,6 +313,9 @@ static void test_aead_1_byte_pt_1_byte_ad(void)
                ciphertext_len);
 }
 
+// TODO test decryption
+// TODO test all branches in the algorithm
+// TODO perform heavy code analysis, including statical, valgrind and fuzzying
 /*
 
 static void test_aead_1_byte(void)

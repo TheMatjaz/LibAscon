@@ -22,7 +22,7 @@ static void test_hash_empty(void)
                             0x4F, 0xA7, 0x96, 0xA8, 0x0D, 0x25, 0x1F, 0x91
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Without update call
@@ -33,7 +33,7 @@ static void test_hash_empty(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // With update calls of zero length
     ascon_hash_init(&hash_ctx);
@@ -45,7 +45,7 @@ static void test_hash_empty(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_1_byte(void)
@@ -61,7 +61,7 @@ static void test_hash_1_byte(void)
                             0xFD, 0xEC, 0x29, 0x60, 0x9D, 0x3C, 0x43, 0xA2
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     ascon_hash_init(&hash_ctx);
@@ -72,7 +72,7 @@ static void test_hash_1_byte(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 
@@ -89,7 +89,7 @@ static void test_hash_2_bytes(void)
                             0xF6, 0x45, 0x54, 0x5C, 0xF9, 0xE0, 0x84, 0x24
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -101,7 +101,7 @@ static void test_hash_2_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -114,7 +114,7 @@ static void test_hash_2_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_7_bytes(void)
@@ -130,7 +130,7 @@ static void test_hash_7_bytes(void)
                             0xDA, 0x5E, 0xBE, 0x28, 0x3D, 0xF8, 0xD3, 0xF6
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -142,7 +142,7 @@ static void test_hash_7_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -156,7 +156,7 @@ static void test_hash_7_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 
@@ -175,7 +175,7 @@ static void test_hash_8_bytes(void)
                             0x96, 0x5F, 0x7E, 0x77, 0x80, 0xCD, 0x69, 0xCF
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -188,7 +188,7 @@ static void test_hash_8_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -202,7 +202,7 @@ static void test_hash_8_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_9_bytes(void)
@@ -221,7 +221,7 @@ static void test_hash_9_bytes(void)
                             0x8F, 0x78, 0x84, 0xCA, 0x56, 0x4A, 0xCE, 0xC1
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -233,7 +233,7 @@ static void test_hash_9_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -247,7 +247,7 @@ static void test_hash_9_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_15_bytes(void)
@@ -266,7 +266,7 @@ static void test_hash_15_bytes(void)
                             0xC3, 0x15, 0x69, 0xD8, 0x94, 0x2F, 0xC4, 0x23
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -278,7 +278,7 @@ static void test_hash_15_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -292,7 +292,7 @@ static void test_hash_15_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_16_bytes(void)
@@ -311,7 +311,7 @@ static void test_hash_16_bytes(void)
                             0xE6, 0xE8, 0x29, 0x29, 0x21, 0xBC, 0x84, 0x1D
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -323,7 +323,7 @@ static void test_hash_16_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -337,7 +337,7 @@ static void test_hash_16_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 
@@ -360,7 +360,7 @@ static void test_hash_33_bytes(void)
                             0x6D, 0x37, 0x43, 0x05, 0x86, 0xBA, 0x93, 0x81
                     }
             };
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE] = {42};
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t hash_ctx;
 
     // Single update call
@@ -372,7 +372,7 @@ static void test_hash_33_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -386,14 +386,14 @@ static void test_hash_33_bytes(void)
     vecs_hash_log(&testcase, obtained_digest);
     atto_memeq(obtained_digest,
                testcase.expected_digest,
-               ASCON_HASH_DIGEST_SIZE);
+               ASCON_HASH_DIGEST_LEN);
 }
 
 static void test_hash_batch(void)
 {
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE];
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN];
     vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 
@@ -409,7 +409,7 @@ static void test_hash_batch(void)
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
-                   ASCON_HASH_DIGEST_SIZE);
+                   ASCON_HASH_DIGEST_LEN);
     }
 }
 
@@ -417,7 +417,7 @@ static void test_hash_update_single_byte(void)
 {
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
-    uint8_t obtained_digest[ASCON_HASH_DIGEST_SIZE];
+    uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN];
     vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
     ascon_hash_ctx_t hash_ctx;
@@ -441,7 +441,7 @@ static void test_hash_update_single_byte(void)
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
-                   ASCON_HASH_DIGEST_SIZE);
+                   ASCON_HASH_DIGEST_LEN);
     }
 }
 
