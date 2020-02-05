@@ -1,5 +1,24 @@
 /**
  * @file
+ * LibAscon header file.
+ *
+ * Interface to the Ascon library providing:
+ * - the Ascon AEAD cipher
+ * - the Ascon fixed-size output hash
+ * - the Ascon variable-size output hash (xof)
+ *
+ * All functionalities are available in:
+ * - online form (init-update-final): the data is processed one chunk at the
+ *   time
+ * - offline form: the data is available as a whole in memory and processed
+ *   in one go
+ *
+ * Library dependencies:
+ * - only the C99 or C11 standard libary, as seen in the `#include` statements
+ *   below
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #ifndef ASCON_H
@@ -10,9 +29,9 @@ extern "C"
 {
 #endif
 
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
+#include <stdint.h> /* For uint8_t, uint64_t */
+#include <stddef.h> /* For size_t, NULL */
+#include <string.h> /* For memcpy() */
 
 /**
  * Length in bytes of the secret symmetric key used for authenticated
