@@ -262,19 +262,19 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
     }
     vecs_err_t errcode = fscan_variable_hexbytes(
             ctx->handle,
-            testcase->expected_ciphertext,
-            &testcase->expected_ciphertext_len);
+            testcase->ciphertext,
+            &testcase->ciphertext_len);
     if (errcode != VECS_OK)
     {
         return errcode;
     }
-    if (testcase->expected_ciphertext_len < ASCON_AEAD_TAG_LEN)
+    if (testcase->ciphertext_len < ASCON_AEAD_TAG_LEN)
     {
         return VECS_FORMAT_TOO_SHORT_CIPHERTEXT;
     }
-    testcase->expected_ciphertext_len -= ASCON_AEAD_TAG_LEN;
-    memcpy(testcase->expected_tag,
-           &testcase->expected_ciphertext[testcase->expected_ciphertext_len],
+    testcase->ciphertext_len -= ASCON_AEAD_TAG_LEN;
+    memcpy(testcase->tag,
+           &testcase->ciphertext[testcase->ciphertext_len],
            ASCON_AEAD_TAG_LEN);
     return VECS_OK;
 }
@@ -352,14 +352,14 @@ void vecs_aead_log(const vecs_aead_t* const testcase,
     log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
     log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
     log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
-    log_hexbytes("Expected CT", testcase->expected_ciphertext,
-                 testcase->expected_ciphertext_len);
+    log_hexbytes("Expected CT", testcase->ciphertext,
+                 testcase->ciphertext_len);
     if (obtained_ciphertext != NULL)
     {
         log_hexbytes("Obtained CT", obtained_ciphertext,
                      obtained_ciphertext_len);
     }
-    log_hexbytes("Expected tag", testcase->expected_tag, ASCON_AEAD_TAG_LEN);
+    log_hexbytes("Expected tag", testcase->tag, ASCON_AEAD_TAG_LEN);
     if (obtained_tag != NULL)
     {
         log_hexbytes("Obtained tag", obtained_tag, ASCON_AEAD_TAG_LEN);

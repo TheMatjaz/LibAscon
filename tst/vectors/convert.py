@@ -19,7 +19,7 @@ with open('aead128.txt') as f, open('aead128.c', 'w') as o:
             if fields[0] == '.plaintext':
                 fields[1] += f'\n.plaintext_len = {len(bites)},'
             if fields[0] == '.expected_ciphertext':
-                fields[1] += f'\n.expected_ciphertext_len = {len(bites)},'
+                fields[1] += f'\n.ciphertext_len = {len(bites)},'
             if fields[0] == '.assoc_data':
                 fields[1] += f'\n.assoc_data_len = {len(bites)},'
         except (ValueError, IndexError):
