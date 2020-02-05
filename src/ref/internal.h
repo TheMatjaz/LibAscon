@@ -4,13 +4,13 @@
  *
  * Common code (mostly the code state permutations) applied during
  * encryption, decryption and hashing.
- * 
+ *
  * @license Creative Commons Zero (CC0) 1.0
  * @authors see AUTHORS.md file
  */
 
-#ifndef PERMUTATIONS_H
-#define PERMUTATIONS_H
+#ifndef ASCON_INTERNAL_H
+#define ASCON_INTERNAL_H
 
 #ifdef __cplusplus
 extern "C"
@@ -29,7 +29,7 @@ extern "C"
     )
 #define AEAD128_IV ( \
      ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | XOF_IF \
+     | XOF_IV \
      | ((uint64_t)(PERMUTATION_B_ROUNDS) << 32U) \
      )
 #define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
@@ -37,7 +37,7 @@ extern "C"
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-void inline printstate(const char* text, const ascon_state_t* state);
+void printstate(const char* text, const ascon_state_t* state);
 
 uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
@@ -55,4 +55,4 @@ void ascon_permutation_b6(ascon_state_t* state);
 }
 #endif
 
-#endif  /* PERMUTATIONS_H */
+#endif  /* ASCON_INTERNAL_H */

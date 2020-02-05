@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "ascon.h"
+#include "internal.h"
 
 #ifdef DEBUG_PERMUTATIONS
 #include <stdio.h>

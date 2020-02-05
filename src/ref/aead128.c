@@ -1,5 +1,13 @@
+/**
+ * @file
+ * Implementation of Ascon128 AEAD cipher.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
+ */
+
 #include "ascon.h"
-#include "permutations.h"
+#include "internal.h"
 
 #define FLOW_NO_ASSOC_DATA 0
 #define FLOW_SOME_ASSOC_DATA 1

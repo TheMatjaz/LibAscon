@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG_PERMUTATIONS")
 
 set(LIB_SRC_FILES
+        src/ref/internal.h
         src/common.c
         src/ref/hash.c
         src/ref/aead128.c

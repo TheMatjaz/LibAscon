@@ -1,5 +1,13 @@
+/**
+ * @file
+ * Implementation of Ascon-Hash and Ascon-Xof.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
+ */
+
 #include "ascon.h"
-#include "permutations.h"
+#include "internal.h"
 
 _Static_assert(ASCON_RATE <= 255,
                "Hash rate does not fit in a uint8_t. "
