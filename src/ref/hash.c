@@ -44,8 +44,8 @@ void buffered_process(ascon_hash_ctx_t* const ctx,
     {
         // There is data in the buffer already.
         // Place as much as possible of the new data into the buffer.
-        const size_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
-        const size_t into_buffer = MIN(space_in_buffer, data_len);
+        const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
+        const uint_fast8_t into_buffer = MIN(space_in_buffer, data_len);
         memcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
         ctx->buffer_len += into_buffer;
         data += into_buffer;
