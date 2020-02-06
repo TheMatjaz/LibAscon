@@ -38,7 +38,7 @@ static void test_encrypt_empty(void)
     uint64_t ciphertext_len = 0;
     ascon_aead_ctx_t aead_ctx;
 
-    // Batched
+    // Offline
     ascon128_encrypt(obtained_ciphertext,
                      obtained_tag,
                      testcase.key,
@@ -336,6 +336,7 @@ static void test_encrypt_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         ascon128_encrypt(obtained_ciphertext,
                          obtained_tag,
                          testcase.key,
@@ -372,6 +373,7 @@ static void test_encrypt_update_single_byte(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         // Many 1-byte update calls
         ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
@@ -410,7 +412,7 @@ static void test_encrypt_update_single_byte(void)
     }
 }
 
-void test_aead128(void)
+void test_aead128_encryption(void)
 {
     test_encrypt_empty();
     test_encrypt_1_byte_ad_empty_pt();

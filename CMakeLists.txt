@@ -21,13 +21,20 @@ set(TEST_SRC_FILES
         tst/test_aead128_enc.c
         tst/test_aead128_dec.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
-add_library(staticascon OBJECT ${LIB_SRC_FILES})
-add_library(ascon SHARED $<TARGET_OBJECTS:staticascon>)
+add_library(objlibascon OBJECT ${LIB_SRC_FILES})
+add_library(ascon SHARED $<TARGET_OBJECTS:objlibascon>)
 add_executable(testascon
-        $<TARGET_OBJECTS:staticascon>
+        $<TARGET_OBJECTS:objlibascon>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
-file(COPY tst/vectors DESTINATION ${CMAKE_BINARY_DIR})
+# Copy test vectors files to build directory after the make-build
+add_custom_command(
+        TARGET testascon POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/tst/vectors
+        ${CMAKE_BINARY_DIR}/vectors)
 
 
 # TODO https://stackoverflow.com/questions/10487256/cmake-how-to-properly-copy-static-librarys-header-file-into-usr-include
+# TODO https://stackoverflow.com/questions/12899582/cmake-how-can-i-build-a-shared-and-a-static-library-without-recompiling-the-sou
+# TODO https://stackoverflow.com/questions/17511496/how-to-create-a-shared-library-with-cmake

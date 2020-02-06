@@ -18,7 +18,9 @@ void test_xof(void);
 
 void test_hash(void);
 
-void test_aead128(void);
+void test_aead128_encryption(void);
+
+void test_aead128_decryption(void);
 
 #ifdef __cplusplus
 }

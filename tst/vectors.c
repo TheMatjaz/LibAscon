@@ -375,7 +375,6 @@ void vecs_aead_enc_log(const vecs_aead_t* const testcase,
 
 void vecs_aead_dec_log(const vecs_aead_t* const testcase,
                        const uint8_t* const obtained_plaintext,
-                       const uint8_t* const obtained_tag,
                        const uint64_t obtained_plaintext_len)
 {
 #ifdef DEBUG
@@ -391,15 +390,10 @@ void vecs_aead_dec_log(const vecs_aead_t* const testcase,
                      obtained_plaintext_len);
     }
     log_hexbytes("Expected tag", testcase->tag, ASCON_AEAD_TAG_LEN);
-    if (obtained_tag != NULL)
-    {
-        log_hexbytes("Obtained tag", obtained_tag, ASCON_AEAD_TAG_LEN);
-    }
     fflush(stdout);
 #else
     (void) testcase;
     (void) obtained_plaintext;
-    (void) obtained_tag;
     (void) obtained_plaintext_len;
 #endif
 }
