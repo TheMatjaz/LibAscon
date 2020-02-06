@@ -42,8 +42,6 @@ uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
 void u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 
-void smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount);
-
 uint64_t byte_mask(uint_fast8_t n);
 
 void ascon_permutation_a12(ascon_sponge_t* sponge);

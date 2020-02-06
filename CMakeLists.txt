@@ -10,7 +10,7 @@ set(LIB_SRC_FILES
         src/common.c
         src/ref/hash.c
         src/ref/aead128.c
-        src/ref/permutations.c)
+        src/ref/permutations.c src/ref/buffering.c)
 set(TEST_FRAMEWORK
         tst/atto/atto.c
         tst/main.c
