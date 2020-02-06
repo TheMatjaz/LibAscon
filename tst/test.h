@@ -14,6 +14,8 @@ extern "C"
 {
 #endif
 
+void test_structs(void);
+
 void test_xof(void);
 
 void test_hash(void);

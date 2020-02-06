@@ -32,7 +32,8 @@ set(TEST_SRC_FILES
         tst/test_hash.c
         tst/test_aead128_enc.c
         tst/test_aead128_dec.c
-        tst/test_aead128_inplace.c)
+        tst/test_aead128_inplace.c
+        tst/test_structs.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
 add_library(objlibascon OBJECT ${LIB_SRC_FILES})
 add_library(ascon SHARED $<TARGET_OBJECTS:objlibascon>)

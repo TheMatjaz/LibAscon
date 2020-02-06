@@ -451,7 +451,7 @@ static void test_xof_batch_custom_digest_len(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     const size_t digest_len = 30;
-    uint8_t obtained_digest[digest_len + 2] = {0};
+    uint8_t obtained_digest[32] = {0};
     vecs_err_t errcode = vecs_init(&ctx, XOF_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 

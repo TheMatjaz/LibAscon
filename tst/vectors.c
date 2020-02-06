@@ -60,7 +60,7 @@ static vecs_err_t fscan_count_hash(vecs_ctx_t* const ctx,
 {
     unsigned int count = 1;
     char string[10];
-    size_t obtained_len = fscanf(ctx->handle, " %s = %u ", string, &count);
+    const int obtained_len = fscanf(ctx->handle, " %s = %u ", string, &count);
     if (obtained_len != 2)
     {
         return VECS_FORMAT_INCORRECT_COUNT_HDR;
@@ -82,7 +82,7 @@ static vecs_err_t fscan_msg(vecs_ctx_t* const ctx,
                             vecs_hash_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " %s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " %s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_MESSAGE_HDR;
@@ -105,7 +105,7 @@ static vecs_err_t fscan_digest(vecs_ctx_t* const ctx,
                                vecs_hash_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " %s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " %s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_DIGEST_HDR;
@@ -154,7 +154,7 @@ static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
 {
     unsigned int count = 1;
     char string[10];
-    size_t obtained_len = fscanf(ctx->handle, " _%s = %u ", string, &count);
+    const int obtained_len = fscanf(ctx->handle, " _%s = %u ", string, &count);
     if (obtained_len != 2)
     {
         return VECS_FORMAT_INCORRECT_COUNT_HDR;
@@ -171,7 +171,7 @@ static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
                             vecs_aead_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_KEY_HDR;
@@ -194,7 +194,7 @@ static vecs_err_t fscan_nonce(vecs_ctx_t* const ctx,
                               vecs_aead_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_NONCE_HDR;
@@ -217,7 +217,7 @@ static vecs_err_t fscan_plaintext(vecs_ctx_t* const ctx,
                                   vecs_aead_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_PLAINTEXT_HDR;
@@ -234,7 +234,7 @@ static vecs_err_t fscan_assoc_data(vecs_ctx_t* const ctx,
                                    vecs_aead_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_ASSOC_DATA_HDR;
@@ -251,7 +251,7 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
                                    vecs_aead_t* const testcase)
 {
     char string[10];
-    const size_t obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
     {
         return VECS_FORMAT_INCORRECT_CIPHERTEXT_HDR;
@@ -310,6 +310,7 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
     }
 }
 
+#ifdef DEBUG
 static void log_hexbytes(const char* const name,
                          const uint8_t* const array,
                          const size_t amount)
@@ -321,6 +322,7 @@ static void log_hexbytes(const char* const name,
     }
     puts("");
 }
+#endif
 
 void vecs_hash_log(const vecs_hash_t* const testcase,
                    const uint8_t* const obtained_digest)
