@@ -22,6 +22,8 @@ void test_aead128_encryption(void);
 
 void test_aead128_decryption(void);
 
+void test_aead128_inplace(void);
+
 #ifdef __cplusplus
 }
 #endif

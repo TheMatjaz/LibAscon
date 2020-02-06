@@ -348,7 +348,7 @@ static void test_encrypt_1_byte_pt_1_byte_ad(void)
 // TODO test all branches in the algorithm, all NULLable parameters
 // TODO perform heavy code analysis, including statical, valgrind and fuzzying
 
-static void test_encrypt_batch(void)
+static void test_encrypt_offline(void)
 {
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
@@ -460,6 +460,6 @@ void test_aead128_encryption(void)
     test_encrypt_1_byte_ad_empty_pt();
     test_encrypt_1_byte_pt_empty_ad();
     test_encrypt_1_byte_pt_1_byte_ad();
-    test_encrypt_batch();
+    test_encrypt_offline();
     test_encrypt_update_single_byte();
 }

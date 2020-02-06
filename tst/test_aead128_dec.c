@@ -324,7 +324,7 @@ static void test_decrypt_1_byte_pt_1_byte_ad(void)
 // TODO test all branches in the algorithm, all NULLable parameters
 // TODO perform heavy code analysis, including statical, valgrind and fuzzying
 
-static void test_decrypt_batch(void)
+static void test_decrypt_offline(void)
 {
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
@@ -425,12 +425,70 @@ static void test_decrypt_update_single_byte(void)
     }
 }
 
+
+static void test_decrypt_offline_with_corrupted_data(void)
+{
+    vecs_ctx_t ctx;
+    vecs_aead_t testcase;
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    atto_eq(errcode, VECS_OK);
+
+    while (1)
+    {
+        errcode = vecs_aead_next(&ctx, &testcase);
+        if (errcode == VECS_EOF)
+        {
+            break;
+        }
+        atto_ctr(testcase.count);
+        atto_eq(errcode, VECS_OK);
+        atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
+        memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
+        if (testcase.assoc_data_len == 0
+            && testcase.ciphertext_len == 0)
+        {
+            // Skip test where there is nothing to corrupt.
+            continue;
+        }
+        if (testcase.assoc_data_len > 0)
+        {
+            // Corrupt associated data
+            testcase.assoc_data[0]++;
+        }
+        if (testcase.ciphertext_len > 0)
+        {
+            // Corrupt ciphertext
+            testcase.ciphertext[0]++;
+        }
+        const ascon_tag_validity_t validity = ascon128_decrypt(
+                obtained_plaintext,
+                testcase.key,
+                testcase.nonce,
+                testcase.assoc_data,
+                testcase.ciphertext,
+                testcase.tag,
+                testcase.assoc_data_len,
+                testcase.ciphertext_len);
+        vecs_aead_dec_log(&testcase, obtained_plaintext,
+                          testcase.plaintext_len);
+        atto_neq(validity, ASCON_TAG_OK);
+        if (testcase.plaintext_len > 0)
+        {
+            atto_memneq(obtained_plaintext,
+                        testcase.plaintext,
+                        testcase.plaintext_len);
+        }
+    }
+}
+
 void test_aead128_decryption(void)
 {
     test_decrypt_empty();
     test_decrypt_1_byte_ad_empty_pt();
     test_decrypt_1_byte_pt_empty_ad();
     test_decrypt_1_byte_pt_1_byte_ad();
-    test_decrypt_batch();
+    test_decrypt_offline();
     test_decrypt_update_single_byte();
+    test_decrypt_offline_with_corrupted_data();
 }
