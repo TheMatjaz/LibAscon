@@ -83,6 +83,14 @@ uint64_t byte_mask(const uint_fast8_t n)
     return x;
 }
 
+void inline smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
+{
+    while (amount--)
+    {
+        *(dst++) = *(src++);
+    }
+}
+
 static void ascon_round(ascon_state_t* const p, const uint_fast8_t round_const)
 {
     // TODO this function leaves state traces on the stack in state and t structs

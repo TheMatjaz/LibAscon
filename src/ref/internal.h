@@ -34,7 +34,6 @@ extern "C"
      )
 #define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
 #define PADDING(bytes) (0x80ULL << (56 - 8 * ((size_t) bytes)))
-
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 void printstate(const char* text, const ascon_state_t* state);
@@ -42,6 +41,8 @@ void printstate(const char* text, const ascon_state_t* state);
 uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
 void u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
+
+void smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount);
 
 uint64_t byte_mask(uint_fast8_t n);
 

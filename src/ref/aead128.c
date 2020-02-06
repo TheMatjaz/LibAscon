@@ -45,7 +45,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
         // Place as much as possible of the new associated data into the buffer.
         const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
         const uint_fast8_t into_buffer = MIN(space_in_buffer, assoc_data_len);
-        memcpy(&ctx->buffer[ctx->buffer_len], assoc_data, into_buffer);
+        smallcpy(&ctx->buffer[ctx->buffer_len], assoc_data, into_buffer);
         ctx->buffer_len += into_buffer;
         assoc_data += into_buffer;
         assoc_data_len -= into_buffer;
@@ -84,7 +84,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (assoc_data_len > 0)
     {
-        memcpy(&ctx->buffer, assoc_data, assoc_data_len);
+        smallcpy(ctx->buffer, assoc_data, assoc_data_len);
         ctx->buffer_len = assoc_data_len;
         ctx->assoc_data_state = FLOW_SOME_ASSOC_DATA;
     }
@@ -130,7 +130,7 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
         // Place as much as possible of the new plaintext into the buffer.
         const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
         const uint_fast8_t into_buffer = MIN(space_in_buffer, plaintext_len);
-        memcpy(&ctx->buffer[ctx->buffer_len], plaintext, into_buffer);
+        smallcpy(&ctx->buffer[ctx->buffer_len], plaintext, into_buffer);
         ctx->buffer_len += into_buffer;
         plaintext += into_buffer;
         plaintext_len -= into_buffer;
@@ -179,7 +179,7 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
     // cache it into the buffer for the next update call or final call.
     if (plaintext_len > 0)
     {
-        memcpy(&ctx->buffer, plaintext, plaintext_len);
+        smallcpy(ctx->buffer, plaintext, plaintext_len);
         ctx->buffer_len = plaintext_len;
     }
     ctx->total_output_len += freshly_generated_ciphertext_len;
@@ -247,7 +247,7 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
         // Place as much as possible of the new ciphertext into the buffer.
         const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
         const uint_fast8_t into_buffer = MIN(space_in_buffer, ciphertext_len);
-        memcpy(&ctx->buffer[ctx->buffer_len], ciphertext, into_buffer);
+        smallcpy(&ctx->buffer[ctx->buffer_len], ciphertext, into_buffer);
         ctx->buffer_len += into_buffer;
         ciphertext += into_buffer;
         ciphertext_len -= into_buffer;
@@ -298,7 +298,7 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
     // cache it into the buffer for the next update call or final call.
     if (ciphertext_len > 0)
     {
-        memcpy(&ctx->buffer, ciphertext, ciphertext_len);
+        smallcpy(ctx->buffer, ciphertext, ciphertext_len);
         ctx->buffer_len = ciphertext_len;
     }
     ctx->total_output_len += freshly_generated_plaintext_len;

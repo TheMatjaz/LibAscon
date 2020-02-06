@@ -46,7 +46,7 @@ void buffered_process(ascon_hash_ctx_t* const ctx,
         // Place as much as possible of the new data into the buffer.
         const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
         const uint_fast8_t into_buffer = MIN(space_in_buffer, data_len);
-        memcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
+        smallcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
         ctx->buffer_len += into_buffer;
         data += into_buffer;
         data_len -= into_buffer;
@@ -83,7 +83,7 @@ void buffered_process(ascon_hash_ctx_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_len > 0)
     {
-        memcpy(&ctx->buffer, data, data_len);
+        smallcpy(ctx->buffer, data, data_len);
         ctx->buffer_len = data_len;
     }
 }
@@ -98,7 +98,7 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
         // Place as much as possible of the new data into the buffer.
         const size_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
         const size_t into_buffer = MIN(space_in_buffer, data_len);
-        memcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
+        smallcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
         ctx->buffer_len += into_buffer;
         data += into_buffer;
         data_len -= into_buffer;
@@ -135,7 +135,7 @@ void ascon_hash_update(ascon_hash_ctx_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_len > 0)
     {
-        memcpy(&ctx->buffer, data, data_len);
+        smallcpy(ctx->buffer, data, data_len);
         ctx->buffer_len = data_len;
     }
 }
