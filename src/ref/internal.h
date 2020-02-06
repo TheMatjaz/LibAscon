@@ -33,10 +33,10 @@ extern "C"
      | ((uint64_t)(PERMUTATION_B_ROUNDS) << 32U) \
      )
 #define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
-#define PADDING(bytes) (0x80ULL << (56 - 8 * ((size_t) bytes)))
+#define PADDING(bytes) (0x80ULL << (56 - 8 * ((unsigned int) (bytes))))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-void printstate(const char* text, const ascon_sponge_t* sponge);
+void log_sponge(const char* text, const ascon_sponge_t* sponge);
 
 uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 

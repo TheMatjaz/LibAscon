@@ -37,14 +37,14 @@ static void test_inplace_offline(void)
 
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
-        ascon128_encrypt(transformed,
-                         obtained_tag,
-                         testcase.key,
-                         testcase.nonce,
-                         testcase.assoc_data,
-                         transformed,
-                         testcase.assoc_data_len,
-                         testcase.plaintext_len);
+        ascon_aead128_encrypt(transformed,
+                              obtained_tag,
+                              testcase.key,
+                              testcase.nonce,
+                              testcase.assoc_data,
+                              transformed,
+                              testcase.assoc_data_len,
+                              testcase.plaintext_len);
         vecs_aead_enc_log(&testcase, transformed, obtained_tag,
                           testcase.ciphertext_len);
         atto_memeq(transformed,
@@ -53,7 +53,7 @@ static void test_inplace_offline(void)
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
 
         // Decrypt
-        const ascon_tag_validity_t validity = ascon128_decrypt(
+        const ascon_tag_validity_t validity = ascon_aead128_decrypt(
                 transformed,
                 testcase.key,
                 testcase.nonce,
@@ -96,15 +96,16 @@ static void test_inplace_update_single_byte(void)
 
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
-        ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
+        ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
-            ascon128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i], 1);
+            ascon_aead128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+                                            1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
-            new_bytes = ascon128_encrypt_update(
+            new_bytes = ascon_aead128_encrypt_update(
                     &aead_ctx,
                     transformed +
                     aead_ctx.bufstate.total_output_len,
@@ -121,10 +122,11 @@ static void test_inplace_update_single_byte(void)
             }
         }
         uint64_t total_ct_len = 0;
-        new_bytes = ascon128_encrypt_final(&aead_ctx,
-                                           transformed
-                                           + aead_ctx.bufstate.total_output_len,
-                                           &total_ct_len, obtained_tag);
+        new_bytes = ascon_aead128_encrypt_final(&aead_ctx,
+                                                transformed
+                                                +
+                                                aead_ctx.bufstate.total_output_len,
+                                                &total_ct_len, obtained_tag);
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_len, testcase.ciphertext_len);
@@ -136,19 +138,20 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
 
         // Decrypt
-        ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
+        ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
-            ascon128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i], 1);
+            ascon_aead128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+                                            1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
-            new_bytes = ascon128_decrypt_update(&aead_ctx,
-                                                transformed +
-                                                aead_ctx.bufstate.total_output_len,
-                                                &transformed[i],
-                                                1);
+            new_bytes = ascon_aead128_decrypt_update(&aead_ctx,
+                                                     transformed +
+                                                     aead_ctx.bufstate.total_output_len,
+                                                     &transformed[i],
+                                                     1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
@@ -160,11 +163,11 @@ static void test_inplace_update_single_byte(void)
             }
         }
         uint64_t total_pt_len = 0;
-        new_bytes = ascon128_decrypt_final(&aead_ctx,
-                                           transformed +
-                                           aead_ctx.bufstate.total_output_len,
-                                           &total_pt_len,
-                                           &validity, testcase.tag);
+        new_bytes = ascon_aead128_decrypt_final(&aead_ctx,
+                                                transformed +
+                                                aead_ctx.bufstate.total_output_len,
+                                                &total_pt_len,
+                                                &validity, testcase.tag);
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);

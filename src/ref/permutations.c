@@ -3,9 +3,7 @@
  */
 
 #include <stdint.h>
-#include <stddef.h>
 #include "ascon.h"
-#include "internal.h"
 
 #ifdef DEBUG_PERMUTATIONS
 #include <stdio.h>
@@ -24,7 +22,8 @@ const uint8_t ROUND_CONSTANTS[] = {
 #define PERMUTATION_8_START 4
 #define PERMUTATION_6_START 6
 
-void inline printstate(const char* text, const ascon_sponge_t* sponge)
+void inline log_sponge(const char* const text,
+                       const ascon_sponge_t* const sponge)
 {
 #ifdef DEBUG_PERMUTATIONS
     printf("%s sponge\n", text);
@@ -48,12 +47,12 @@ static inline uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
 
 void ascon_round(ascon_sponge_t* const p, const uint_fast8_t round_const)
 {
-    // TODO this function leaves sponge traces on the stack in sponge and t structs
+    // TODO this function leaves sponge traces on the stack in sponge and t
     ascon_sponge_t sponge = *p;
     ascon_sponge_t t;
     // addition of round constant
     sponge.x2 ^= round_const;
-    printstate(" addition of round constant:", &sponge);
+    log_sponge(" addition of round constant:", &sponge);
     // substitution layer
     sponge.x0 ^= sponge.x4;
     sponge.x4 ^= sponge.x3;
@@ -79,21 +78,21 @@ void ascon_round(ascon_sponge_t* const p, const uint_fast8_t round_const)
     sponge.x0 ^= sponge.x4;
     sponge.x3 ^= sponge.x2;
     sponge.x2 = ~sponge.x2;
-    printstate(" substitution layer:", &sponge);
+    log_sponge(" substitution layer:", &sponge);
     // linear diffusion layer
     sponge.x0 ^= rotr64(sponge.x0, 19) ^ rotr64(sponge.x0, 28);
     sponge.x1 ^= rotr64(sponge.x1, 61) ^ rotr64(sponge.x1, 39);
     sponge.x2 ^= rotr64(sponge.x2, 1) ^ rotr64(sponge.x2, 6);
     sponge.x3 ^= rotr64(sponge.x3, 10) ^ rotr64(sponge.x3, 17);
     sponge.x4 ^= rotr64(sponge.x4, 7) ^ rotr64(sponge.x4, 41);
-    printstate(" linear diffusion layer:", &sponge);
+    log_sponge(" linear diffusion layer:", &sponge);
     *p = sponge;
     // TODO erase sponge and t
 }
 
 void inline ascon_permutation_a12(ascon_sponge_t* const sponge)
 {
-    printstate(" permutation input:", sponge);
+    log_sponge(" permutation input:", sponge);
     for (uint_fast8_t i = PERMUTATION_12_START; i < ROUND_CONSTANTS_AMOUNT; i++)
     {
         ascon_round(sponge, ROUND_CONSTANTS[i]);
@@ -102,7 +101,7 @@ void inline ascon_permutation_a12(ascon_sponge_t* const sponge)
 
 void inline ascon_permutation_8(ascon_sponge_t* const sponge)
 {
-    printstate(" permutation input:", sponge);
+    log_sponge(" permutation input:", sponge);
     for (uint_fast8_t i = PERMUTATION_8_START; i < ROUND_CONSTANTS_AMOUNT; i++)
     {
         ascon_round(sponge, ROUND_CONSTANTS[i]);
@@ -111,7 +110,7 @@ void inline ascon_permutation_8(ascon_sponge_t* const sponge)
 
 void inline ascon_permutation_b6(ascon_sponge_t* const sponge)
 {
-    printstate(" permutation input:", sponge);
+    log_sponge(" permutation input:", sponge);
     for (uint_fast8_t i = PERMUTATION_6_START; i < ROUND_CONSTANTS_AMOUNT; i++)
     {
         ascon_round(sponge, ROUND_CONSTANTS[i]);

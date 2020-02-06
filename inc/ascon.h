@@ -14,7 +14,7 @@
  *   in one go
  *
  * Library dependencies:
- * - only the C99 or C11 standard libary, as seen in the `#include` statements
+ * - only the C99 or C11 standard library, as seen in the `#include` statements
  *   below
  *
  * @license Creative Commons Zero (CC0) 1.0
@@ -151,63 +151,65 @@ typedef struct s_ascon_bufstate ascon_hash_ctx_t;
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Ciphertext must support plaintext_len bytes.
-void ascon128_encrypt(uint8_t* ciphertext,
-                      uint8_t* tag,
-                      const uint8_t* key,
-                      const uint8_t* nonce,
-                      const uint8_t* assoc_data,
-                      const uint8_t* plaintext,
-                      size_t assoc_data_len,
-                      size_t plaintext_len);
+void ascon_aead128_encrypt(uint8_t* ciphertext,
+                           uint8_t* tag,
+                           const uint8_t* key,
+                           const uint8_t* nonce,
+                           const uint8_t* assoc_data,
+                           const uint8_t* plaintext,
+                           size_t assoc_data_len,
+                           size_t plaintext_len);
 
-void ascon128_init(ascon_aead_ctx_t* ctx,
-                   const uint8_t* key,
-                   const uint8_t* nonce);
+void ascon_aead128_init(ascon_aead_ctx_t* ctx,
+                        const uint8_t* key,
+                        const uint8_t* nonce);
 
-void ascon128_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                const uint8_t* assoc_data,
-                                size_t assoc_data_len);
+void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                     const uint8_t* assoc_data,
+                                     size_t assoc_data_len);
 
 // Generates [0, plaintext_len] ciphertext bytes
 // Returns # of ciphertext bytes generated
-size_t ascon128_encrypt_update(ascon_aead_ctx_t* ctx,
-                               uint8_t* ciphertext,
-                               const uint8_t* plaintext,
-                               size_t plaintext_len);
+size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
+                                    uint8_t* ciphertext,
+                                    const uint8_t* plaintext,
+                                    size_t plaintext_len);
 
 // Generates [0, ASCON_RATE - 1] ciphertext bytes
 // Returns # of ciphertext bytes generated
-size_t ascon128_encrypt_final(ascon_aead_ctx_t* ctx,
-                              uint8_t* ciphertext,
-                              uint64_t* total_ciphertext_len, // Could be NULL
-                              uint8_t* tag);
+// total_ciphertext_len could be NULL
+size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
+                                   uint8_t* ciphertext,
+                                   uint64_t* total_ciphertext_len,
+                                   uint8_t* tag);
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Plaintext must support ciphertext_len bytes
 // This function fails if the tag is invalid
-ascon_tag_validity_t ascon128_decrypt(uint8_t* plaintext,
-                                      const uint8_t* key,
-                                      const uint8_t* nonce,
-                                      const uint8_t* assoc_data,
-                                      const uint8_t* ciphertext,
-                                      const uint8_t* tag,
-                                      size_t assoc_data_len,
-                                      size_t ciphertext_len);
+ascon_tag_validity_t ascon_aead128_decrypt(uint8_t* plaintext,
+                                           const uint8_t* key,
+                                           const uint8_t* nonce,
+                                           const uint8_t* assoc_data,
+                                           const uint8_t* ciphertext,
+                                           const uint8_t* tag,
+                                           size_t assoc_data_len,
+                                           size_t ciphertext_len);
 
 // Generates [0, ciphertext_len] plaintext bytes
 // Returns # of plaintext bytes generated
-size_t ascon128_decrypt_update(ascon_aead_ctx_t* ctx,
-                               uint8_t* plaintext,
-                               const uint8_t* ciphertext,
-                               size_t ciphertext_len);
+size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
+                                    uint8_t* plaintext,
+                                    const uint8_t* ciphertext,
+                                    size_t ciphertext_len);
 
 // Generates [0, ASCON_RATE - 1] plaintext bytes
 // Returns # of plaintext bytes generated
-size_t ascon128_decrypt_final(ascon_aead_ctx_t* ctx,
-                              uint8_t* plaintext,
-                              uint64_t* total_plaintext_len, // Could be NULL
-                              ascon_tag_validity_t* tag_validity,
-                              const uint8_t* tag);
+// total_plaintext_len could be NULL
+size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
+                                   uint8_t* plaintext,
+                                   uint64_t* total_plaintext_len,
+                                   ascon_tag_validity_t* tag_validity,
+                                   const uint8_t* tag);
 
 void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len);
 

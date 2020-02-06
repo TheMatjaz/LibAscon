@@ -17,9 +17,9 @@ void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
     ctx->sponge.x3 = 0;
     ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
-    printstate("initial value:", &ctx->sponge);
+    log_sponge("initial value:", &ctx->sponge);
     ascon_permutation_a12(&ctx->sponge);
-    printstate("initialization:", &ctx->sponge);
+    log_sponge("initialization:", &ctx->sponge);
 }
 
 void inline ascon_hash_init(ascon_hash_ctx_t* const ctx)
@@ -33,8 +33,8 @@ void inline ascon_hash_init_xof(ascon_hash_ctx_t* const ctx)
 }
 
 void absorb_hash_data(ascon_sponge_t* const sponge,
-                             uint8_t* const data_out,
-                             const uint8_t* const data)
+                      uint8_t* const data_out,
+                      const uint8_t* const data)
 {
     (void) data_out;
     sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
