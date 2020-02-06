@@ -15,15 +15,15 @@ _Static_assert(ASCON_RATE <= 255,
 
 static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
 {
-    ctx->state.x0 = iv;
-    ctx->state.x1 = 0;
-    ctx->state.x2 = 0;
-    ctx->state.x3 = 0;
-    ctx->state.x4 = 0;
+    ctx->sponge.x0 = iv;
+    ctx->sponge.x1 = 0;
+    ctx->sponge.x2 = 0;
+    ctx->sponge.x3 = 0;
+    ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
-    printstate("initial value:", &ctx->state);
-    ascon_permutation_a12(&ctx->state);
-    printstate("initialization:", &ctx->state);
+    printstate("initial value:", &ctx->sponge);
+    ascon_permutation_a12(&ctx->sponge);
+    printstate("initialization:", &ctx->sponge);
 }
 
 void inline ascon_hash_init(ascon_hash_ctx_t* const ctx)
@@ -36,108 +36,20 @@ void inline ascon_hash_init_xof(ascon_hash_ctx_t* const ctx)
     init(ctx, XOF_IV);
 }
 
-void buffered_process(ascon_hash_ctx_t* const ctx,
-                      const uint8_t* data,
-                      size_t data_len)
+static void absorb_hash_data(ascon_sponge_t* const sponge,
+                             uint8_t* const data_out,
+                             const uint8_t* const data)
 {
-    if (ctx->buffer_len > 0)
-    {
-        // There is data in the buffer already.
-        // Place as much as possible of the new data into the buffer.
-        const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
-        const uint_fast8_t into_buffer = MIN(space_in_buffer, data_len);
-        smallcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
-        ctx->buffer_len += into_buffer;
-        data += into_buffer;
-        data_len -= into_buffer;
-        if (ctx->buffer_len == ASCON_RATE)
-        {
-            // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
-            ascon_permutation_a12(&ctx->state);
-            ctx->buffer_len = 0;
-        }
-        else
-        {
-            // Do nothing.
-            // The buffer contains some data, but it's not full yet
-            // and there is no more data in this update call.
-            // Keep it cached for the next update call or the digest call.
-        }
-    }
-    else
-    {
-        // Do nothing.
-        // The buffer contains no data, because this is the first update call
-        // or because the last update had no less-than-a-block trailing data.
-    }
-    // Absorb remaining data (if any) one block at the time.
-    while (data_len >= ASCON_RATE)
-    {
-        ctx->state.x0 ^= bytes_to_u64(data, ASCON_RATE);
-        ascon_permutation_a12(&ctx->state);
-        data_len -= ASCON_RATE;
-        data += ASCON_RATE;
-    }
-    // If there is any remaining less-than-a-block data to be absorbed,
-    // cache it into the buffer for the next update call or digest call.
-    if (data_len > 0)
-    {
-        smallcpy(ctx->buffer, data, data_len);
-        ctx->buffer_len = data_len;
-    }
+    (void) data_out;
+    sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
+    ascon_permutation_a12(sponge);
 }
 
-void ascon_hash_update(ascon_hash_ctx_t* const ctx,
-                       const uint8_t* data,
-                       size_t data_len)
+void inline ascon_hash_update(ascon_hash_ctx_t* const ctx,
+                              const uint8_t* data,
+                              size_t data_len)
 {
-    if (ctx->buffer_len > 0)
-    {
-        // There is data in the buffer already.
-        // Place as much as possible of the new data into the buffer.
-        const size_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
-        const size_t into_buffer = MIN(space_in_buffer, data_len);
-        smallcpy(&ctx->buffer[ctx->buffer_len], data, into_buffer);
-        ctx->buffer_len += into_buffer;
-        data += into_buffer;
-        data_len -= into_buffer;
-        if (ctx->buffer_len == ASCON_RATE)
-        {
-            // The buffer was filled completely, thus absorb it.
-            ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ASCON_RATE);
-            ascon_permutation_a12(&ctx->state);
-            ctx->buffer_len = 0;
-        }
-        else
-        {
-            // Do nothing.
-            // The buffer contains some data, but it's not full yet
-            // and there is no more data in this update call.
-            // Keep it cached for the next update call or the digest call.
-        }
-    }
-    else
-    {
-        // Do nothing.
-        // The buffer contains no data, because this is the first update call
-        // or because the last update had no less-than-a-block trailing data.
-    }
-    // Absorb remaining data (if any) one block at the time.
-    while (data_len >= ASCON_RATE)
-    {
-        ctx->state.x0 ^= bytes_to_u64(data, ASCON_RATE);
-        ascon_permutation_a12(&ctx->state);
-        data_len -= ASCON_RATE;
-        data += ASCON_RATE;
-    }
-    // If there is any remaining less-than-a-block data to be absorbed,
-    // cache it into the buffer for the next update call or digest call.
-    if (data_len > 0)
-    {
-        smallcpy(ctx->buffer, data, data_len);
-        ctx->buffer_len = data_len;
-    }
+    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len);
 }
 
 void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
@@ -146,18 +58,18 @@ void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    ctx->state.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
-    ctx->state.x0 ^= PADDING(ctx->buffer_len);
+    ctx->sponge.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
+    ctx->sponge.x0 ^= PADDING(ctx->buffer_len);
     // Squeeze the digest from the inner state.
     while (digest_size > ASCON_RATE)
     {
-        ascon_permutation_a12(&ctx->state);
-        u64_to_bytes(digest, ctx->state.x0, ASCON_RATE);
+        ascon_permutation_a12(&ctx->sponge);
+        u64_to_bytes(digest, ctx->sponge.x0, ASCON_RATE);
         digest_size -= ASCON_RATE;
         digest += ASCON_RATE;
     }
-    ascon_permutation_a12(&ctx->state);
-    u64_to_bytes(digest, ctx->state.x0, digest_size);
+    ascon_permutation_a12(&ctx->sponge);
+    u64_to_bytes(digest, ctx->sponge.x0, digest_size);
     // Final security cleanup of the internal state and buffer.
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }

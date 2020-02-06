@@ -61,7 +61,7 @@ static void test_encrypt_empty(void)
     memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
     memset(obtained_tag, 0, sizeof(obtained_tag));
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
-    atto_eq(aead_ctx.buffer_len, 0);
+    atto_eq(aead_ctx.bufstate.buffer_len, 0);
     size_t new_ct_len = ascon128_encrypt_final(&aead_ctx,
                                                obtained_ciphertext,
                                                &ciphertext_len,
@@ -414,17 +414,18 @@ static void test_encrypt_update_single_byte(void)
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
             ascon128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i], 1);
-            atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
-            new_ct_bytes = ascon128_encrypt_update(&aead_ctx,
-                                                   obtained_ciphertext +
-                                                   aead_ctx.total_output_len,
-                                                   &testcase.plaintext[i],
-                                                   1);
-            atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
-            if (aead_ctx.buffer_len == 0)
+            new_ct_bytes = ascon128_encrypt_update(
+                    &aead_ctx,
+                    obtained_ciphertext +
+                    aead_ctx.bufstate.total_output_len,
+                    &testcase.plaintext[i],
+                    1);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            if (aead_ctx.bufstate.buffer_len == 0)
             {
                 atto_eq(new_ct_bytes, ASCON_RATE);
             }
@@ -440,7 +441,8 @@ static void test_encrypt_update_single_byte(void)
         // a separate buffer.
         new_ct_bytes = ascon128_encrypt_final(&aead_ctx,
                                               obtained_ciphertext
-                                              + aead_ctx.total_output_len,
+                                              +
+                                              aead_ctx.bufstate.total_output_len,
                                               &total_ct_len, obtained_tag);
         atto_lt(new_ct_bytes, ASCON_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);

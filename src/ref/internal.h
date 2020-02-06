@@ -36,7 +36,7 @@ extern "C"
 #define PADDING(bytes) (0x80ULL << (56 - 8 * ((size_t) bytes)))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-void printstate(const char* text, const ascon_state_t* state);
+void printstate(const char* text, const ascon_sponge_t* sponge);
 
 uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
@@ -46,11 +46,21 @@ void smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount);
 
 uint64_t byte_mask(uint_fast8_t n);
 
-void ascon_permutation_a12(ascon_state_t* state);
+void ascon_permutation_a12(ascon_sponge_t* sponge);
 
-void ascon_permutation_8(ascon_state_t* state);
+void ascon_permutation_8(ascon_sponge_t* sponge);
 
-void ascon_permutation_b6(ascon_state_t* state);
+void ascon_permutation_b6(ascon_sponge_t* sponge);
+
+typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
+                             uint8_t* data_out,
+                             const uint8_t* data);
+
+size_t buffered_accumulation(ascon_bufstate_t* ctx,
+                             uint8_t* data_out,
+                             const uint8_t* data_in,
+                             absorb_fptr absorb,
+                             size_t data_in_len);
 
 #ifdef __cplusplus
 }
