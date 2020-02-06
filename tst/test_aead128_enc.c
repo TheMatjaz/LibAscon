@@ -439,11 +439,10 @@ static void test_encrypt_update_single_byte(void)
         // position or the cipher internally?
         // I guess the user, because each update call could write into
         // a separate buffer.
-        new_ct_bytes = ascon128_encrypt_final(&aead_ctx,
-                                              obtained_ciphertext
-                                              +
-                                              aead_ctx.bufstate.total_output_len,
-                                              &total_ct_len, obtained_tag);
+        new_ct_bytes = ascon128_encrypt_final(
+                &aead_ctx,
+                obtained_ciphertext + aead_ctx.bufstate.total_output_len,
+                &total_ct_len, obtained_tag);
         atto_lt(new_ct_bytes, ASCON_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_len, testcase.ciphertext_len);

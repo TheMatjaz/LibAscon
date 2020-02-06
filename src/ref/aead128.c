@@ -101,6 +101,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // separation. Done always, regardless if there was some associated
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1;
+    ctx->bufstate.total_output_len = 0;
     ctx->assoc_data_state = FLOW_ASSOC_DATA_FINALISED;
     printstate("process associated data:", &ctx->bufstate.sponge);
 }
