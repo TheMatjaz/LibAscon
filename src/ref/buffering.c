@@ -106,8 +106,8 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_in_len > 0)
     {
-        smallcpy(ctx->buffer, data_in, (uint_fast8_t) data_in_len);
-        ctx->buffer_len = (uint_fast8_t) data_in_len;
+        smallcpy(ctx->buffer, data_in, (uint8_t) data_in_len);
+        ctx->buffer_len = (uint8_t) data_in_len;
     }
     ctx->total_output_len += fresh_out_bytes;
     return fresh_out_bytes;

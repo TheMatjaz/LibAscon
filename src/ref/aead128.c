@@ -32,7 +32,7 @@ void ascon128_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
     ctx->bufstate.total_output_len = 0;
-    ctx->assoc_data_state = FLOW_NO_ASSOC_DATA;
+    ctx->bufstate.assoc_data_state = FLOW_NO_ASSOC_DATA;
     printstate("initialization:", &ctx->bufstate.sponge);
 }
 
@@ -76,7 +76,7 @@ void ascon128_assoc_data_update(ascon_aead_ctx_t* const ctx,
 {
     if (assoc_data_len > 0)
     {
-        ctx->assoc_data_state = FLOW_SOME_ASSOC_DATA;
+        ctx->bufstate.assoc_data_state = FLOW_SOME_ASSOC_DATA;
         buffered_accumulation(&ctx->bufstate, NULL, assoc_data,
                               absorb_assoc_data, assoc_data_len);
     }
@@ -89,7 +89,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // Note: this step is performed even if the buffer is now empty because
     // a state permutation is required if there was at least some associated
     // data absorbed beforehand.
-    if (ctx->assoc_data_state == FLOW_SOME_ASSOC_DATA)
+    if (ctx->bufstate.assoc_data_state == FLOW_SOME_ASSOC_DATA)
     {
         ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
                                                 ctx->bufstate.buffer_len);
@@ -102,7 +102,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1;
     ctx->bufstate.total_output_len = 0;
-    ctx->assoc_data_state = FLOW_ASSOC_DATA_FINALISED;
+    ctx->bufstate.assoc_data_state = FLOW_ASSOC_DATA_FINALISED;
     printstate("process associated data:", &ctx->bufstate.sponge);
 }
 
@@ -111,7 +111,7 @@ size_t ascon128_encrypt_update(ascon_aead_ctx_t* const ctx,
                                const uint8_t* plaintext,
                                size_t plaintext_len)
 {
-    if (ctx->assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
@@ -126,7 +126,7 @@ size_t ascon128_encrypt_final(ascon_aead_ctx_t* const ctx,
                               uint64_t* const total_ciphertext_len,
                               uint8_t* const tag)
 {
-    if (ctx->assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
@@ -169,7 +169,7 @@ size_t ascon128_decrypt_update(ascon_aead_ctx_t* const ctx,
                                const uint8_t* ciphertext,
                                size_t ciphertext_len)
 {
-    if (ctx->assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
@@ -185,7 +185,7 @@ size_t ascon128_decrypt_final(ascon_aead_ctx_t* const ctx,
                               ascon_tag_validity_t* const tag_validity,
                               const uint8_t* const tag)
 {
-    if (ctx->assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);

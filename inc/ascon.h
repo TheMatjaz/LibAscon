@@ -107,13 +107,29 @@ struct s_ascon_bufstate
 
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;
+
+    /**
+     * State of the processing of the associated data.
+     *
+     * Note: this variable is not semantically relevant in THIS struct,
+     * as it should belong in the struct s_ascon_aead_ctx, but by having it
+     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit)
+     * at the end of the struct s_ascon_aead_ctx.
+     *
+     * This struct has anyway some padding at the end.
+     */
+    uint8_t assoc_data_state;
+
+    /* Unused padding to the next uint64_t (sponge.x0). */
+    uint8_t pad[6];
 };
 typedef struct s_ascon_bufstate ascon_bufstate_t;
 
-// TODO check that all structs are aligned and compressed
-// TODO add explicit struct paddings, where required.
 /**
  * Cipher context for authenticated encryption and validated decryption.
+ *
+ * Half of this context's size is the cipher's sponge state, the remaining
+ * part is holding the key and the buffering of online data (and some padding).
  */
 struct s_ascon_aead_ctx
 {
@@ -125,8 +141,6 @@ struct s_ascon_aead_ctx
 
     /** Copy of the key, to be used in the final step, part 2. */
     uint64_t k1;
-
-    uint8_t assoc_data_state;
 };
 typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 
