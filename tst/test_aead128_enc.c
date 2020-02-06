@@ -335,6 +335,7 @@ static void test_encrypt_batch(void)
         {
             break;
         }
+        atto_ctr(testcase.count);
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         ascon128_encrypt(obtained_ciphertext,
@@ -372,6 +373,7 @@ static void test_encrypt_update_single_byte(void)
         {
             break;
         }
+        atto_ctr(testcase.count);
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         // Many 1-byte update calls

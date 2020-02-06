@@ -31,3 +31,4 @@
  */
 
 char atto_at_least_one_fail = 0;
+unsigned long long atto_counter = 0;

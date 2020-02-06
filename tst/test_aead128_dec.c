@@ -51,8 +51,7 @@ static void test_decrypt_empty(void)
             testcase.ciphertext_len);
     vecs_aead_dec_log(&testcase, obtained_plaintext, testcase.plaintext_len);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_memeq(obtained_plaintext, testcase.plaintext,
-               testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
 
     // Without any update call at all
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
@@ -65,10 +64,8 @@ static void test_decrypt_empty(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 
     // With AD update calls of zero length
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
@@ -81,10 +78,8 @@ static void test_decrypt_empty(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 
     // With PT update calls of zero length
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
@@ -105,10 +100,8 @@ static void test_decrypt_empty(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 
     // With AD and PT update calls of zero length
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
@@ -132,10 +125,8 @@ static void test_decrypt_empty(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 }
 
 
@@ -178,18 +169,16 @@ static void test_decrypt_1_byte_ad_empty_pt(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 
     // With PT call
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
     ascon128_assoc_data_update(&aead_ctx, testcase.assoc_data,
                                testcase.assoc_data_len);
     new_pt_len = ascon128_decrypt_update(&aead_ctx, obtained_plaintext,
-                                         testcase.plaintext,
-                                         testcase.plaintext_len);
+                                         testcase.ciphertext,
+                                         testcase.ciphertext_len);
     atto_eq(new_pt_len, 0);
     new_pt_len = ascon128_decrypt_final(&aead_ctx, obtained_plaintext,
                                         &plaintext_len, &validity, testcase
@@ -197,10 +186,8 @@ static void test_decrypt_1_byte_ad_empty_pt(void)
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
     atto_eq(new_pt_len, 0);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 }
 
 static void test_decrypt_1_byte_pt_empty_ad(void)
@@ -236,38 +223,34 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
     // Without AD update call
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
     new_pt_len = ascon128_decrypt_update(&aead_ctx, obtained_plaintext,
-                                         testcase.plaintext,
-                                         testcase.plaintext_len);
+                                         testcase.ciphertext,
+                                         testcase.ciphertext_len);
     atto_eq(new_pt_len, 0);
     new_pt_len = ascon128_decrypt_final(&aead_ctx, obtained_plaintext,
-                                        &plaintext_len, &validity, testcase
-                                                .tag);
+                                        &plaintext_len, &validity,
+                                        testcase.tag);
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
-    atto_eq(new_pt_len, 0);
+    atto_eq(new_pt_len, 1);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 
     // With AD call
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
     ascon128_assoc_data_update(&aead_ctx, testcase.assoc_data,
                                testcase.assoc_data_len);
     new_pt_len = ascon128_decrypt_update(&aead_ctx, obtained_plaintext,
-                                         testcase.plaintext,
-                                         testcase.plaintext_len);
+                                         testcase.ciphertext,
+                                         testcase.ciphertext_len);
     atto_eq(new_pt_len, 0);
     new_pt_len = ascon128_decrypt_final(&aead_ctx, obtained_plaintext,
                                         &plaintext_len, &validity, testcase
                                                 .tag);
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
-    atto_eq(new_pt_len, 0);
+    atto_eq(new_pt_len, 1);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 }
 
 static void test_decrypt_1_byte_pt_1_byte_ad(void)
@@ -304,19 +287,17 @@ static void test_decrypt_1_byte_pt_1_byte_ad(void)
     ascon128_assoc_data_update(&aead_ctx, testcase.assoc_data,
                                testcase.assoc_data_len);
     new_pt_len = ascon128_decrypt_update(&aead_ctx, obtained_plaintext,
-                                         testcase.plaintext,
-                                         testcase.plaintext_len);
+                                         testcase.ciphertext,
+                                         testcase.ciphertext_len);
     atto_eq(new_pt_len, 0);
     new_pt_len = ascon128_decrypt_final(&aead_ctx, obtained_plaintext,
                                         &plaintext_len, &validity, testcase
                                                 .tag);
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
-    atto_eq(new_pt_len, 0);
+    atto_eq(new_pt_len, 1);
     atto_eq(validity, ASCON_TAG_OK);
-    atto_eq(plaintext_len, testcase.ciphertext_len);
-    atto_memeq(obtained_plaintext,
-               testcase.ciphertext,
-               plaintext_len);
+    atto_eq(plaintext_len, testcase.plaintext_len);
+    atto_memeq(obtained_plaintext, testcase.plaintext, plaintext_len);
 }
 
 // TODO test decryption
@@ -327,8 +308,7 @@ static void test_decrypt_batch(void)
 {
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
-    uint8_t obtained_plaintext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 
@@ -339,6 +319,7 @@ static void test_decrypt_batch(void)
         {
             break;
         }
+        atto_ctr(testcase.count);
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         const ascon_tag_validity_t validity = ascon128_decrypt(
@@ -363,8 +344,7 @@ static void test_decrypt_update_single_byte(void)
 {
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
-    uint8_t obtained_plaintext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
     ascon_aead_ctx_t aead_ctx;
@@ -378,6 +358,7 @@ static void test_decrypt_update_single_byte(void)
         {
             break;
         }
+        atto_ctr(testcase.count);
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         // Many 1-byte update calls
@@ -408,7 +389,7 @@ static void test_decrypt_update_single_byte(void)
                                               &total_pt_len,
                                               &validity, testcase.tag);
         atto_lt(new_pt_bytes, ASCON_RATE);
-        atto_eq(new_pt_bytes, testcase.ciphertext_len % ASCON_RATE);
+        atto_eq(new_pt_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);
         vecs_aead_dec_log(&testcase, obtained_plaintext,
                           testcase.plaintext_len);

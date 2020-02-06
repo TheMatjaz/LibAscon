@@ -31,7 +31,7 @@ extern "C"
 
 #include <stdint.h> /* For uint8_t, uint64_t */
 #include <stddef.h> /* For size_t, NULL */
-#include <string.h> /* For memcpy() */
+#include <string.h> /* For memset() */
 
 /**
  * Length in bytes of the secret symmetric key used for authenticated

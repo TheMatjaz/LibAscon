@@ -55,6 +55,7 @@ extern "C"
  * failed.
  */
 extern char atto_at_least_one_fail;
+extern unsigned long long atto_counter;
 
 /**
  * Absolute tolerance when comparing two single-precision floating point
@@ -73,6 +74,8 @@ extern char atto_at_least_one_fail;
  * tolerance, the assertion fails.
  */
 #define ATTO_DOUBLE_EQ_ABSTOL (1e-8)
+
+#define atto_ctr(x) (atto_counter = (x))
 
 /**
  * Verifies if the given boolean expression is true.
@@ -98,8 +101,8 @@ extern char atto_at_least_one_fail;
  */
 #define atto_assert(expression) do { \
     if (!(expression)) { \
-        printf("FAIL | File: %s | Line: %4d | Test case: %s\n", \
-               __FILE__, __LINE__, __func__); \
+        printf("FAIL | File: %s | Line: %4d | Test case: %s | Ctr: %llu\n", \
+               __FILE__, __LINE__, __func__, atto_counter); \
         atto_at_least_one_fail = 1U; \
         return; \
     } \

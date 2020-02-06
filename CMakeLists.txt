@@ -34,7 +34,7 @@ add_custom_command(
         ${CMAKE_SOURCE_DIR}/tst/vectors
         ${CMAKE_BINARY_DIR}/vectors)
 
-
+# TODO add release builds
 # TODO https://stackoverflow.com/questions/10487256/cmake-how-to-properly-copy-static-librarys-header-file-into-usr-include
 # TODO https://stackoverflow.com/questions/12899582/cmake-how-can-i-build-a-shared-and-a-static-library-without-recompiling-the-sou
 # TODO https://stackoverflow.com/questions/17511496/how-to-create-a-shared-library-with-cmake
