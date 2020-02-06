@@ -27,7 +27,7 @@ static const uint8_t ROUND_CONSTANTS[] = {
 void inline printstate(const char* text, const ascon_state_t* state)
 {
 #ifdef DEBUG_PERMUTATIONS
-    printf("%state\n", text);
+    printf("%s state\n", text);
     printf("  x0=%016llx\n", state->x0);
     printf("  x1=%016llx\n", state->x1);
     printf("  x2=%016llx\n", state->x2);
