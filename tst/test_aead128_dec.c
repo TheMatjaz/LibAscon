@@ -394,7 +394,7 @@ static void test_decrypt_update_single_byte(void)
         {
             new_pt_bytes = ascon128_decrypt_update(&aead_ctx,
                                                    obtained_plaintext,
-                                                   &testcase.plaintext[i],
+                                                   &testcase.ciphertext[i],
                                                    1);
             atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
             if (aead_ctx.buffer_len == 0)
