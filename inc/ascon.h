@@ -81,7 +81,7 @@ typedef enum e_ascon_tag_validity
 /**
  * Internal cipher sponge state (320 bits).
  */
-struct s_ascon_state
+struct s_ascon_sponge
 {
     uint64_t x0;
     uint64_t x1;
@@ -89,23 +89,15 @@ struct s_ascon_state
     uint64_t x3;
     uint64_t x4;
 };
-typedef struct s_ascon_state ascon_state_t;
+typedef struct s_ascon_sponge ascon_sponge_t;
 
-// TODO check that all structs are aligned and compressed
-// TODO add explicit struct paddings, where required.
 /**
- * Cipher context for authenticated encryption and validated decryption.
+ * Internal cipher sponge state with buffer holding for less-than-rate updates.
  */
-struct s_ascon_aead_ctx
+struct s_ascon_bufstate
 {
     /** Cipher sponge state. */
-    ascon_state_t state;
-
-    /** Copy of the key, to be used in the final step, part 1. */
-    uint64_t k0;
-
-    /** Copy of the key, to be used in the final step, part 2. */
-    uint64_t k1;
+    ascon_sponge_t sponge;
 
     /** Counter of all encrypted/decrypted bytes, excluding associated data. */
     uint64_t total_output_len;
@@ -115,6 +107,24 @@ struct s_ascon_aead_ctx
 
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;
+};
+typedef struct s_ascon_bufstate ascon_bufstate_t;
+
+// TODO check that all structs are aligned and compressed
+// TODO add explicit struct paddings, where required.
+/**
+ * Cipher context for authenticated encryption and validated decryption.
+ */
+struct s_ascon_aead_ctx
+{
+    /** Cipher buffered sponge state. */
+    ascon_bufstate_t bufstate;
+
+    /** Copy of the key, to be used in the final step, part 1. */
+    uint64_t k0;
+
+    /** Copy of the key, to be used in the final step, part 2. */
+    uint64_t k1;
 
     uint8_t assoc_data_state;
 };
@@ -123,18 +133,7 @@ typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 /**
  * Cipher context for hashing.
  */
-struct s_ascon_hash_ctx
-{
-    /** Cipher sponge state. */
-    ascon_state_t state;
-
-    /** Buffer caching the less-than-rate long input between update calls. */
-    uint8_t buffer[ASCON_RATE];
-
-    /** Currently used bytes of the buffer. */
-    uint8_t buffer_len;
-};
-typedef struct s_ascon_hash_ctx ascon_hash_ctx_t;
+typedef struct s_ascon_bufstate ascon_hash_ctx_t;
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Ciphertext must support plaintext_len bytes.

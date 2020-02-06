@@ -59,7 +59,7 @@ static void test_decrypt_empty(void)
     plaintext_len = 0;
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
     ascon128_init(&aead_ctx, testcase.key, testcase.nonce);
-    atto_eq(aead_ctx.buffer_len, 0);
+    atto_eq(aead_ctx.bufstate.buffer_len, 0);
     new_pt_len = ascon128_decrypt_final(&aead_ctx,
                                         obtained_plaintext,
                                         &plaintext_len,
@@ -388,17 +388,18 @@ static void test_decrypt_update_single_byte(void)
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
             ascon128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i], 1);
-            atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
-            new_pt_bytes = ascon128_decrypt_update(&aead_ctx,
-                                                   obtained_plaintext +
-                                                   aead_ctx.total_output_len,
-                                                   &testcase.ciphertext[i],
-                                                   1);
-            atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
-            if (aead_ctx.buffer_len == 0)
+            new_pt_bytes = ascon128_decrypt_update(
+                    &aead_ctx,
+                    obtained_plaintext +
+                    aead_ctx.bufstate.total_output_len,
+                    &testcase.ciphertext[i],
+                    1);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            if (aead_ctx.bufstate.buffer_len == 0)
             {
                 atto_eq(new_pt_bytes, ASCON_RATE);
             }
@@ -410,7 +411,7 @@ static void test_decrypt_update_single_byte(void)
         uint64_t total_pt_len = 0;
         new_pt_bytes = ascon128_decrypt_final(&aead_ctx,
                                               obtained_plaintext +
-                                              aead_ctx.total_output_len,
+                                              aead_ctx.bufstate.total_output_len,
                                               &total_pt_len,
                                               &validity, testcase.tag);
         atto_lt(new_pt_bytes, ASCON_RATE);
