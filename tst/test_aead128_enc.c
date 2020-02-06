@@ -419,7 +419,8 @@ static void test_encrypt_update_single_byte(void)
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
             new_ct_bytes = ascon128_encrypt_update(&aead_ctx,
-                                                   obtained_ciphertext,
+                                                   obtained_ciphertext +
+                                                   aead_ctx.total_output_len,
                                                    &testcase.plaintext[i],
                                                    1);
             atto_eq(aead_ctx.buffer_len, (i + 1) % ASCON_RATE);
@@ -433,7 +434,13 @@ static void test_encrypt_update_single_byte(void)
             }
         }
         uint64_t total_ct_len = 0;
-        new_ct_bytes = ascon128_encrypt_final(&aead_ctx, obtained_ciphertext,
+        // TODO should the user keep track of the current obtained CT/PT
+        // position or the cipher internally?
+        // I guess the user, because each update call could write into
+        // a separate buffer.
+        new_ct_bytes = ascon128_encrypt_final(&aead_ctx,
+                                              obtained_ciphertext
+                                              + aead_ctx.total_output_len,
                                               &total_ct_len, obtained_tag);
         atto_lt(new_ct_bytes, ASCON_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
