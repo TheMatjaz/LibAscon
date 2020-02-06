@@ -5,6 +5,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG_PERMUTATIONS")
 
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")  # Warnings as errors!
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wconversion -Wdouble-promotion ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wswitch-default -Wswitch-enum ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wuninitialized -Wno-unused-variable")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wpacked -Wpadded -Wshadow")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wformat-security")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wlogical-not-parentheses")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Waggregate-return")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-declarations -fPIC")
+
 set(LIB_SRC_FILES
         src/ref/internal.h
         src/common.c

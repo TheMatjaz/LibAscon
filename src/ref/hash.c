@@ -9,11 +9,7 @@
 #include "ascon.h"
 #include "internal.h"
 
-_Static_assert(ASCON_RATE <= 255,
-               "Hash rate does not fit in a uint8_t. "
-               "Please increase the s_ascon_hash_&ctx->state.buffer_len type.");
-
-static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
+void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
 {
     ctx->sponge.x0 = iv;
     ctx->sponge.x1 = 0;
@@ -36,7 +32,7 @@ void inline ascon_hash_init_xof(ascon_hash_ctx_t* const ctx)
     init(ctx, XOF_IV);
 }
 
-static void absorb_hash_data(ascon_sponge_t* const sponge,
+void absorb_hash_data(ascon_sponge_t* const sponge,
                              uint8_t* const data_out,
                              const uint8_t* const data)
 {
@@ -69,7 +65,7 @@ void ascon_hash_final_xof(ascon_hash_ctx_t* const ctx,
         digest += ASCON_RATE;
     }
     ascon_permutation_a12(&ctx->sponge);
-    u64_to_bytes(digest, ctx->sponge.x0, digest_size);
+    u64_to_bytes(digest, ctx->sponge.x0, (uint_fast8_t) digest_size);
     // Final security cleanup of the internal state and buffer.
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }

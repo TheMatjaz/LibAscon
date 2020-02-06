@@ -11,7 +11,7 @@
 #include <stdio.h>
 #endif
 
-static const uint8_t ROUND_CONSTANTS[] = {
+const uint8_t ROUND_CONSTANTS[] = {
         // 12-round starts here, index 0
         0xf0, 0xe1, 0xd2, 0xc3,
         // 8-round starts here, index 4
@@ -46,7 +46,7 @@ static inline uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
     return (x << (uint8_t) (64 - n)) | (x >> n);
 }
 
-static void ascon_round(ascon_sponge_t* const p, const uint_fast8_t round_const)
+void ascon_round(ascon_sponge_t* const p, const uint_fast8_t round_const)
 {
     // TODO this function leaves sponge traces on the stack in sponge and t structs
     ascon_sponge_t sponge = *p;

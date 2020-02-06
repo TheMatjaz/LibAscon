@@ -65,7 +65,8 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
         // There is associated data in the buffer already.
         // Place as much as possible of the new associated data into the buffer.
         const uint_fast8_t space_in_buffer = ASCON_RATE - ctx->buffer_len;
-        const uint_fast8_t into_buffer = MIN(space_in_buffer, data_in_len);
+        const uint_fast8_t into_buffer =
+                (uint_fast8_t) MIN(space_in_buffer, data_in_len);
         smallcpy(&ctx->buffer[ctx->buffer_len], data_in, into_buffer);
         ctx->buffer_len += into_buffer;
         data_in += into_buffer;
@@ -105,8 +106,8 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_in_len > 0)
     {
-        smallcpy(ctx->buffer, data_in, data_in_len);
-        ctx->buffer_len = data_in_len;
+        smallcpy(ctx->buffer, data_in, (uint_fast8_t) data_in_len);
+        ctx->buffer_len = (uint_fast8_t) data_in_len;
     }
     ctx->total_output_len += fresh_out_bytes;
     return fresh_out_bytes;
