@@ -51,10 +51,11 @@ const uint16_t TEXT_LENGTHS[] = {1, 8, 16, 32, 64, 1536, MAX_TEXT_LEN};
 typedef struct
 {
     uint8_t ALIGN(16) text[MAX_TEXT_LEN];
-    uint8_t ALIGN(16) assoc_data[MAX_TEXT_LEN];
     uint8_t ALIGN(16) key[ASCON_AEAD_KEY_LEN];
     uint8_t ALIGN(16) nonce[ASCON_AEAD_NONCE_LEN];
+    uint8_t ALIGN(16) assoc_data[MAX_TEXT_LEN];
     uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t ALIGN(16) obtained_digest[ASCON_HASH_DIGEST_LEN];
     size_t text_len;
 } benchmark_data_t;
 
@@ -70,9 +71,9 @@ static void init_benchmark_data(benchmark_data_t* const data,
                                 const size_t text_len)
 {
     init_random_array(data->text, text_len);
-    init_random_array(data->assoc_data, text_len);
     init_random_array(data->key, ASCON_AEAD_KEY_LEN);
     init_random_array(data->nonce, ASCON_AEAD_NONCE_LEN);
+    init_random_array(data->assoc_data, text_len);
     data->text_len = text_len;
 }
 
@@ -85,7 +86,7 @@ static void benchmark_cycles(
     init_cpucycles();
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("\nBenchmarking text len %u B:", TEXT_LENGTHS[len]);
+        printf("\nBenchmarking text len %5u B:", TEXT_LENGTHS[len]);
         const uint64_t repetitions = MAX_TEXT_LEN / TEXT_LENGTHS[len];
         for (size_t run = 0; run < AMOUNT_OF_RUNS; run++)
         {
@@ -95,7 +96,15 @@ static void benchmark_cycles(
             cpucycles(start);
             for (size_t rep = 0; rep < repetitions; rep++)
             {
-                // TODO the algorithm call here
+                ascon_aead128_encrypt(
+                        data.text,
+                        data.obtained_tag,
+                        data.key,
+                        data.nonce,
+                        data.assoc_data,
+                        data.text,
+                        data.text_len,
+                        data.text_len);
             }
             cpucycles(end);
             elapsed_cycles[len][run] = end - start;
@@ -134,7 +143,7 @@ static void print_cycles(
         printf("%5u: ", TEXT_LENGTHS[len]);
         for (size_t run = 0; run < AMOUNT_OF_RUNS; run++)
         {
-            printf("%"PRIu64" ", (elapsed_cycles[len][run] / repetitions));
+            printf("%8"PRIu64" ", (elapsed_cycles[len][run] / repetitions));
         }
         printf("\n");
     }
