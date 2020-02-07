@@ -33,11 +33,11 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
 
 ### Source files
 set(LIB_SRC_FILES
-        src/ref/internal.h
-        src/common.c
-        src/ref/hash.c
-        src/ref/aead128.c
-        src/ref/permutations.c src/ref/buffering.c)
+        src/internal.h
+        src/offline.c
+        src/hash.c
+        src/aead128.c
+        src/permutations.c src/buffering.c)
 set(TEST_FRAMEWORK
         tst/atto/atto.c
         tst/main.c
