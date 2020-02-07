@@ -159,19 +159,19 @@ static void print_stats(
     {
         uint64_t repetitions = MAX_TEXT_LEN / TEXT_LENGTHS[len];
         uint64_t bytes = TEXT_LENGTHS[len] * repetitions;
-        printf("%5u: %6.1f %6.1f\n", TEXT_LENGTHS[len],
+        printf("%5u: %7.1f %7.1f\n", TEXT_LENGTHS[len],
                factor * elapsed_cycles[len][0] / bytes + 0.05,
                factor * elapsed_cycles[len][AMOUNT_OF_RUNS / 2] / bytes + 0.05);
     }
     puts("");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("| %5u ", TEXT_LENGTHS[len]);
+        printf("| %6u ", TEXT_LENGTHS[len]);
     }
     printf("|\n");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("|------:");
+        printf("|-------:");
     }
     printf("|\n");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
@@ -180,11 +180,11 @@ static void print_stats(
         const uint64_t bytes = TEXT_LENGTHS[len] * repetitions;
         if (TEXT_LENGTHS[len] <= 32)
         {
-            printf("| %5.0f ", factor * elapsed_cycles[len][0] / bytes + 0.5);
+            printf("| %6.0f ", factor * elapsed_cycles[len][0] / bytes + 0.5);
         }
         else
         {
-            printf("| %5.1f ", factor * elapsed_cycles[len][0] / bytes + 0.05);
+            printf("| %6.1f ", factor * elapsed_cycles[len][0] / bytes + 0.05);
         }
     }
     printf("|\n");
