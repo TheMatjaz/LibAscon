@@ -9,8 +9,6 @@
 
 #define AEAD_VECTORS_FILE "vectors/aead128.txt"
 
-// TODO add all tests, with/out AD, with/out PL, encryption and decryption
-
 static void test_encrypt_empty(void)
 {
     vecs_aead_t testcase =
@@ -343,10 +341,6 @@ static void test_encrypt_1_byte_pt_1_byte_ad(void)
                testcase.ciphertext,
                ciphertext_len);
 }
-
-// TODO test decryption
-// TODO test all branches in the algorithm, all NULLable parameters
-// TODO perform heavy code analysis, including statical, valgrind and fuzzying
 
 static void test_encrypt_offline(void)
 {

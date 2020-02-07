@@ -43,7 +43,6 @@ static void inline xof_zero_out(ascon_xof_ctx_t* const ctx)
 
 void ascon_xof_final(ascon_xof_ctx_t* ctx, uint8_t* digest)
 {
-    // TODO What about custom tag length passed by user?
     size_t outlen = ASCON_XOF_DIGEST_SIZE;
     while (outlen > ASCON_XOF_RATE)
     {

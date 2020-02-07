@@ -7,7 +7,6 @@
 
 int main(void)
 {
-    // TODO test for ALL pointers being also NULL and not crashing
     test_structs();
     test_xof();
     test_hash();

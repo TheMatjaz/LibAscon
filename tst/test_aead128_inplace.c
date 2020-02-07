@@ -9,14 +9,8 @@
 
 #define AEAD_VECTORS_FILE "vectors/aead128.txt"
 
-// TODO add all tests, with/out AD, with/out PL, decryption and decryption
-
 static void test_inplace_offline(void)
 {
-    // TODO tests with updates of different length
-    // 1B, 2B, ... 16B
-    // Same but with initial offset
-    // Same with pseudorandom sequences like 3, 17, 9, 1, 0, 22
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t transformed[VECS_MAX_AEAD_PLAINTEXT_LEN];

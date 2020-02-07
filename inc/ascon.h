@@ -21,6 +21,17 @@
  * @authors see AUTHORS.md file
  */
 
+// TODO test all branches in the algorithm
+// TODO test all NULLable parameters
+// TODO Clion code analysis
+// TODO static analyser
+// TODO valgrind
+// TODO fuzzer
+// TODO tests with updates of different length (contd.)
+// 1B, 2B, ... 16B
+// Same but with initial offset
+// Same with pseudorandom sequences like 3, 17, 9, 1, 0, 22
+
 #ifndef ASCON_H
 #define ASCON_H
 
@@ -75,8 +86,6 @@ typedef enum e_ascon_tag_validity
     ASCON_TAG_INVALID = 1, /** The tag is invalid thus the decrypted data
                              * should be ignored. */
 } ascon_tag_validity_t;
-
-// TODO activate all compiler checks
 
 /**
  * Internal cipher sponge state (320 bits).
