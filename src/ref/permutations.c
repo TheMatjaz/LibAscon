@@ -46,49 +46,46 @@ static inline uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
     return (x << (uint8_t) (64 - n)) | (x >> n);
 }
 
-void ascon_round(ascon_sponge_t* const p, const uint_fast8_t round_const)
+void ascon_round(ascon_sponge_t* sponge, const uint_fast8_t round_const)
 {
-    // TODO this function leaves sponge traces on the stack in sponge and t
-    ascon_sponge_t sponge = *p;
-    ascon_sponge_t t;
+    ascon_sponge_t temp;
     // addition of round constant
-    sponge.x2 ^= round_const;
-    log_sponge(" addition of round constant:", &sponge);
+    sponge->x2 ^= round_const;
+    log_sponge(" addition of round constant:", sponge);
     // substitution layer
-    sponge.x0 ^= sponge.x4;
-    sponge.x4 ^= sponge.x3;
-    sponge.x2 ^= sponge.x1;
+    sponge->x0 ^= sponge->x4;
+    sponge->x4 ^= sponge->x3;
+    sponge->x2 ^= sponge->x1;
     // start of keccak s-box
-    t.x0 = ~sponge.x0;
-    t.x1 = ~sponge.x1;
-    t.x2 = ~sponge.x2;
-    t.x3 = ~sponge.x3;
-    t.x4 = ~sponge.x4;
-    t.x0 &= sponge.x1;
-    t.x1 &= sponge.x2;
-    t.x2 &= sponge.x3;
-    t.x3 &= sponge.x4;
-    t.x4 &= sponge.x0;
-    sponge.x0 ^= t.x1;
-    sponge.x1 ^= t.x2;
-    sponge.x2 ^= t.x3;
-    sponge.x3 ^= t.x4;
-    sponge.x4 ^= t.x0;
+    temp.x0 = ~sponge->x0;
+    temp.x1 = ~sponge->x1;
+    temp.x2 = ~sponge->x2;
+    temp.x3 = ~sponge->x3;
+    temp.x4 = ~sponge->x4;
+    temp.x0 &= sponge->x1;
+    temp.x1 &= sponge->x2;
+    temp.x2 &= sponge->x3;
+    temp.x3 &= sponge->x4;
+    temp.x4 &= sponge->x0;
+    sponge->x0 ^= temp.x1;
+    sponge->x1 ^= temp.x2;
+    sponge->x2 ^= temp.x3;
+    sponge->x3 ^= temp.x4;
+    sponge->x4 ^= temp.x0;
+    // TODO erase temp to avoid leaving traces?
     // end of keccak s-box
-    sponge.x1 ^= sponge.x0;
-    sponge.x0 ^= sponge.x4;
-    sponge.x3 ^= sponge.x2;
-    sponge.x2 = ~sponge.x2;
-    log_sponge(" substitution layer:", &sponge);
+    sponge->x1 ^= sponge->x0;
+    sponge->x0 ^= sponge->x4;
+    sponge->x3 ^= sponge->x2;
+    sponge->x2 = ~sponge->x2;
+    log_sponge(" substitution layer:", sponge);
     // linear diffusion layer
-    sponge.x0 ^= rotr64(sponge.x0, 19) ^ rotr64(sponge.x0, 28);
-    sponge.x1 ^= rotr64(sponge.x1, 61) ^ rotr64(sponge.x1, 39);
-    sponge.x2 ^= rotr64(sponge.x2, 1) ^ rotr64(sponge.x2, 6);
-    sponge.x3 ^= rotr64(sponge.x3, 10) ^ rotr64(sponge.x3, 17);
-    sponge.x4 ^= rotr64(sponge.x4, 7) ^ rotr64(sponge.x4, 41);
-    log_sponge(" linear diffusion layer:", &sponge);
-    *p = sponge;
-    // TODO erase sponge and t
+    sponge->x0 ^= rotr64(sponge->x0, 19) ^ rotr64(sponge->x0, 28);
+    sponge->x1 ^= rotr64(sponge->x1, 61) ^ rotr64(sponge->x1, 39);
+    sponge->x2 ^= rotr64(sponge->x2, 1) ^ rotr64(sponge->x2, 6);
+    sponge->x3 ^= rotr64(sponge->x3, 10) ^ rotr64(sponge->x3, 17);
+    sponge->x4 ^= rotr64(sponge->x4, 7) ^ rotr64(sponge->x4, 41);
+    log_sponge(" linear diffusion layer:", sponge);
 }
 
 void inline ascon_permutation_a12(ascon_sponge_t* const sponge)

@@ -9,8 +9,8 @@
 #include <time.h>
 #include "ascon.h"
 
-#define ITERATIONS 200000U
-//0.000084
+#define ITERATIONS 300000U
+
 int main(void)
 {
     uint8_t transformed[1024];
@@ -28,7 +28,7 @@ int main(void)
             45, 77, 77, 77
     };
     printf("Benchmarking: %u iterations\n", ITERATIONS);
-    printf("On a 64-bit Intel i5 this should last about %u seconds.\n",
+    printf("On a 64-bit Intel i5 this should last up to %u seconds.\n",
            (unsigned) (0.000090f * ITERATIONS));
     fflush(stdout);
     const clock_t start = clock();
