@@ -1,3 +1,11 @@
+/**
+ * @file
+ * Benchmarking tool measuring the average CPU cycles per byte processed.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

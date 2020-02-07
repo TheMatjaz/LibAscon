@@ -1,5 +1,9 @@
 /**
  * @file
+ * Tests of the AEAD128 decryption.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "atto.h"

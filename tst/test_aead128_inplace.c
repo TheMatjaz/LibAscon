@@ -1,5 +1,10 @@
 /**
  * @file
+ * Tests of the AEAD128 encryption and decryption in-place, that is
+ * writing the output data into the input buffer itself.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "atto.h"

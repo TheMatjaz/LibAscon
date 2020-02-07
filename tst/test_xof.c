@@ -1,5 +1,9 @@
 /**
  * @file
+ * Tests of the Ascon-Xof.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "atto.h"

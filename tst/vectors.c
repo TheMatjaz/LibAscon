@@ -1,5 +1,9 @@
 /**
  * @file
+ * Implementation of the test vectors file iterator.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "vectors.h"

@@ -1,5 +1,11 @@
 /**
  * @file
+ * Main file of the test suite, running it.
+ *
+ * Returns non-zero in case at least 1 testcase failed.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "atto.h"
