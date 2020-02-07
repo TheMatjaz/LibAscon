@@ -11,7 +11,7 @@
 
 #define ITERATIONS 300000U
 
-int main(void)
+static void benchmark_with_clock(void)
 {
     uint8_t transformed[1024];
     uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
@@ -51,5 +51,5 @@ int main(void)
     printf("~%lu cycles, ~%f cycles/iteration\n"
            "~%f seconds, ~%f seconds/iteration\n",
            delta, delta_per_iteration, seconds, seconds_per_iteration);
-    return 0;
 }
+
