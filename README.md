@@ -34,11 +34,14 @@ and the following implementations:
 | Intel Core i5-6300U      |  367 |   58 |   35 |   23 | 17.6 | 11.9 | 11.4 |
 | Intel Core i5-4200U      |  521 |   81 |   49 |   32 | 23.9 | 16.2 | 15.8 |
 | Cortex-A15 (ARMv7)\*     |      |      |      |      | 69.8 | 36.2 | 34.6 |
+| Intel Core i5-4258U\*\*  |  975 |  160 |  102 |   74 | 58.1 | 44.3 | 43.6 |
 | Cortex-A7 (NEON)         | 2182 |  249 |  148 |   97 | 71.7 | 47.5 | 46.5 |
 | Cortex-A7 (ARMv7)        | 1871 |  292 |  175 |  115 | 86.6 | 58.3 | 57.2 |
 | ARM1176JZF-S (ARMv6)     | 2189 |  340 |  202 |  133 | 97.9 | 64.4 | 65.3 |
 
 \* Results taken from eBACS: http://bench.cr.yp.to/
+\*\* Of current reference implementation optimised for **size**, which is
+in fact about 43% smaller than the reference implementation: 14.1 kB vs. 24.7 kB
 
 
 ## Performance results of Ascon-128a on different CPUs in cycles per byte:
