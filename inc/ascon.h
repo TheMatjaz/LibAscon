@@ -1,15 +1,20 @@
 /**
  * @file
- * LibAscon header file.
+ * Ascon cipher - Lightweight Authenticated Encryption & Hashing
  *
- * Interface to the Ascon library providing:
- * - the Ascon AEAD cipher
+ * Ascon is a family of authenticated encryption and hashing algorithms
+ * designed to be lightweight and easy to implement, even with added
+ * countermeasures against side-channel attacks.
+ *
+ * This file is the interface to the Ascon library providing:
+ * - the Ascon symmetric AEAD cipher
  * - the Ascon fixed-size output hash
  * - the Ascon variable-size output hash (xof)
  *
  * All functionalities are available in:
- * - online form (init-update-final): the data is processed one chunk at the
- *   time
+ * - online form (init-update-final paradigm): the data is processed one
+ *   chunk at the time; useful if is still being received or does not
+ *   fit into memory
  * - offline form: the data is available as a whole in memory and processed
  *   in one go
  *
@@ -19,11 +24,11 @@
  *
  * @license Creative Commons Zero (CC0) 1.0
  * @authors see AUTHORS.md file
+ * @link https://ascon.iaik.tugraz.at/
  */
 
 // TODO test all branches in the algorithm
 // TODO test all NULLable parameters
-// TODO Clion code analysis
 // TODO static analyser
 // TODO valgrind
 // TODO fuzzer
@@ -71,8 +76,8 @@ extern "C"
 /**
  * Rate in bytes at which the input data is processed by the cipher.
  *
- * The cipher can absorb this many bytes simultaneously except for the last
- * few bytes that are padded.
+ * The cipher can absorb only chunks of this many bytes. Any trailing bytes
+ * of the processed data are padded.
  */
 #define ASCON_RATE 8U
 
@@ -101,7 +106,8 @@ struct s_ascon_sponge
 typedef struct s_ascon_sponge ascon_sponge_t;
 
 /**
- * Internal cipher sponge state with buffer holding for less-than-rate updates.
+ * Internal cipher sponge state associated with a buffer holding for
+ * less-than-rate updates. Used for the Init-Update-Final implementation.
  */
 struct s_ascon_bufstate
 {
@@ -129,7 +135,7 @@ struct s_ascon_bufstate
      */
     uint8_t assoc_data_state;
 
-    /* Unused padding to the next uint64_t (sponge.x0). */
+    /** Unused padding to the next uint64_t (sponge.x0). */
     uint8_t pad[6];
 };
 typedef struct s_ascon_bufstate ascon_bufstate_t;
@@ -145,33 +151,56 @@ struct s_ascon_aead_ctx
     /** Cipher buffered sponge state. */
     ascon_bufstate_t bufstate;
 
-    /** Copy of the key, to be used in the final step, part 1. */
+    /** Copy of the secret key, to be used in the final step, first half. */
     uint64_t k0;
 
-    /** Copy of the key, to be used in the final step, part 2. */
+    /** Copy of the secret key, to be used in the final step, second half. */
     uint64_t k1;
 };
 typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
 
-/**
- * Cipher context for hashing.
- */
+/** Cipher context for hashing. */
 typedef struct s_ascon_bufstate ascon_hash_ctx_t;
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Ciphertext must support plaintext_len bytes.
+//TODO use [in], [out] in all doxygen @param
+/**
+ * Offline symmetric encryption using Ascon128.
+ *
+ * Encrypts the data which is already available as a whole in a contiguous
+ * buffer, authenticating any optional associated data in the process.
+ * Provides the ciphertext and the authentication tag as output.
+ *
+ * @param[out] ciphertext encrypted plaintext with the same length as the
+ *       plaintext, thus \p plaintext_len will be written in this buffer.
+ *       This pointer may also point to the same location as \p plaintext
+ *       to encrypt the plaintext in-place, sparing on memory instead
+ *       of writing into a separate output buffer.
+ * @param[out] tag authentication tag of the associated data and
+ *        the ciphertext of ASCON_AEAD_TAG_LEN bytes
+ * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes
+ * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes
+ * @param[in] assoc_data optional data to be authenticated with the same tag
+ *        but not encrypted
+ * @param[in] plaintext data to be encrypted into \p ciphertext.
+ * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
+ *        bytes
+ * @param[in] plaintext_len length of the data pointed by \p plaintext in
+ *        bytes
+ */
 void ascon_aead128_encrypt(uint8_t* ciphertext,
-                           uint8_t* tag,
-                           const uint8_t* key,
-                           const uint8_t* nonce,
+                           uint8_t tag[ASCON_AEAD_TAG_LEN],
+                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                            const uint8_t* assoc_data,
                            const uint8_t* plaintext,
                            size_t assoc_data_len,
                            size_t plaintext_len);
 
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
-                        const uint8_t* key,
-                        const uint8_t* nonce);
+                        const uint8_t key[ASCON_AEAD_KEY_LEN],
+                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                      const uint8_t* assoc_data,
@@ -190,19 +219,20 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* ciphertext,
                                    uint64_t* total_ciphertext_len,
-                                   uint8_t* tag);
+                                   uint8_t tag[ASCON_AEAD_TAG_LEN]);
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Plaintext must support ciphertext_len bytes
 // This function fails if the tag is invalid
-ascon_tag_validity_t ascon_aead128_decrypt(uint8_t* plaintext,
-                                           const uint8_t* key,
-                                           const uint8_t* nonce,
-                                           const uint8_t* assoc_data,
-                                           const uint8_t* ciphertext,
-                                           const uint8_t* tag,
-                                           size_t assoc_data_len,
-                                           size_t ciphertext_len);
+ascon_tag_validity_t
+ascon_aead128_decrypt(uint8_t* plaintext,
+                      const uint8_t key[ASCON_AEAD_KEY_LEN],
+                      const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                      const uint8_t* assoc_data,
+                      const uint8_t* ciphertext,
+                      const uint8_t tag[ASCON_AEAD_TAG_LEN],
+                      size_t assoc_data_len,
+                      size_t ciphertext_len);
 
 // Generates [0, ciphertext_len] plaintext bytes
 // Returns # of plaintext bytes generated
