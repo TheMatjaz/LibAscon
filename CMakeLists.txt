@@ -34,6 +34,8 @@ set(TEST_SRC_FILES
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
         tst/test_structs.c)
+set(BENCHMARK_SRC_FILES
+        tst/benchmark.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
 add_library(objlibascon OBJECT ${LIB_SRC_FILES})
 add_library(ascon SHARED $<TARGET_OBJECTS:objlibascon>)
@@ -47,6 +49,9 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/tst/vectors
         ${CMAKE_BINARY_DIR}/vectors)
+add_executable(benchmark
+        $<TARGET_OBJECTS:objlibascon>
+        ${BENCHMARK_SRC_FILES})
 
 # TODO add release builds
 # TODO https://stackoverflow.com/questions/10487256/cmake-how-to-properly-copy-static-librarys-header-file-into-usr-include
