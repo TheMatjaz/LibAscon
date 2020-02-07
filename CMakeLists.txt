@@ -50,7 +50,7 @@ set(TEST_SRC_FILES
         tst/test_aead128_inplace.c
         tst/test_structs.c)
 set(BENCHMARK_SRC_FILES
-        tst/getcycles.c)
+        tst/benchmark.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
 
 ### Targets
