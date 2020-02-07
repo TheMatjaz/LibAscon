@@ -9,6 +9,7 @@
 #include "ascon.h"
 #include "internal.h"
 
+/* States used to understand when to finalise the associated data. */
 #define FLOW_NO_ASSOC_DATA 0
 #define FLOW_SOME_ASSOC_DATA 1
 #define FLOW_ASSOC_DATA_FINALISED 2
@@ -36,6 +37,11 @@ void ascon_aead128_init(ascon_aead_ctx_t* const ctx,
     log_sponge("initialization:", &ctx->bufstate.sponge);
 }
 
+/**
+ * @internal
+ * Function passed to buffered_accumulation() to absorb the associated data to
+ * be authenticated, both during encryption and decryption.
+ */
 static void absorb_assoc_data(ascon_sponge_t* sponge,
                               uint8_t* const data_out,
                               const uint8_t* const data)
@@ -45,18 +51,11 @@ static void absorb_assoc_data(ascon_sponge_t* sponge,
     ascon_permutation_b6(sponge);
 }
 
-static void absorb_ciphertext(ascon_sponge_t* const sponge,
-                              uint8_t* const ciphertext,
-                              const uint8_t* const plaintext)
-{
-    // Absorb the plaintext.
-    sponge->x0 ^= bytes_to_u64(plaintext, ASCON_RATE);
-    // Squeeze out some ciphertext
-    u64_to_bytes(ciphertext, sponge->x0, ASCON_RATE);
-    // Permute the state
-    ascon_permutation_b6(sponge);
-}
-
+/**
+ * @internal
+ * Function passed to buffered_accumulation() to absorb the plaintext
+ * and squeeze out ciphertext during encryption.
+ */
 static void absorb_plaintext(ascon_sponge_t* const sponge,
                              uint8_t* const plaintext,
                              const uint8_t* const ciphertext)
@@ -70,6 +69,24 @@ static void absorb_plaintext(ascon_sponge_t* const sponge,
     ascon_permutation_b6(sponge);
 }
 
+/**
+ * @internal
+ * Function passed to buffered_accumulation() to absorb the ciphertext
+ * and squeeze out plaintext during decryption.
+ */
+static void absorb_ciphertext(ascon_sponge_t* const sponge,
+                              uint8_t* const ciphertext,
+                              const uint8_t* const plaintext)
+{
+    // Absorb the plaintext.
+    sponge->x0 ^= bytes_to_u64(plaintext, ASCON_RATE);
+    // Squeeze out some ciphertext
+    u64_to_bytes(ciphertext, sponge->x0, ASCON_RATE);
+    // Permute the state
+    ascon_permutation_b6(sponge);
+}
+
+
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len)
@@ -82,6 +99,17 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
     }
 }
 
+/**
+ * @internals
+ * Handles the finalisation of the associated data before any plaintext or
+ * ciphertext is being processed.
+ *
+ * MUST be called ONLY once! In other words, when
+ * ctx->bufstate.assoc_data_state == FLOW_ASSOC_DATA_FINALISED
+ * then it MUST NOT be called anymore.
+ *
+ * It handles both the case when some or none associated data was given.
+ */
 static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
 {
     // If there was at least some associated data obtained so far,

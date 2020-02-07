@@ -1,5 +1,12 @@
 /**
  * @file
+ * Implementations of offline AEAD and hashing functions, that is functions
+ * that operate on the unfragmented data, feeding it into the state in one go.
+ *
+ * They are implemented as a simple wrapper around the Init-Update-Final API.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #include "ascon.h"

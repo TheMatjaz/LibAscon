@@ -1,9 +1,15 @@
 /**
  * @file
+ * Core cryptographic operations, i.e. permutations of the sponge state.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #include <stdint.h>
 #include "ascon.h"
+/* Linter warnings about #include "internal.h" being unused are WRONG.
+ * If you do not include the header, the linker cannot find the references. */
 #include "internal.h"
 
 #ifdef DEBUG_PERMUTATIONS

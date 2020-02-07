@@ -1,5 +1,10 @@
 /**
  * @file
+ * Implementation of buffering used for the Init-Update-Final paradigm
+ * of both the AEAD ciphers and hashing.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #include <stdint.h>
@@ -7,7 +12,13 @@
 #include "ascon.h"
 #include "internal.h"
 
-
+/**
+ * @internal
+ * Simplistic clone of memcpy for small arrays.
+ *
+ * It should work faster than memcpy for very small amounts of bytes given
+ * the reduced overhead.
+ */
 static void inline smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
 {
     while (amount--)

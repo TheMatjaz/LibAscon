@@ -32,6 +32,10 @@ void inline ascon_hash_init_xof(ascon_hash_ctx_t* const ctx)
     init(ctx, XOF_IV);
 }
 
+/**
+ * @internal
+ * Function passed to buffered_accumulation() to absorb data to be hashed.
+ */
 void absorb_hash_data(ascon_sponge_t* const sponge,
                       uint8_t* const data_out,
                       const uint8_t* const data)
