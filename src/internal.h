@@ -51,9 +51,9 @@ extern "C"
  *
  * Does nothing unless the macro DEBUG_PERMUTATIONS is defined.
  *
- * @param text string to print before the state, used to indicate when the
+ * @param[in] text string to print before the state, used to indicate when the
  *        printing is performed
- * @param sponge the state to print
+ * @param[in] sponge the state to print
  */
 void log_sponge(const char* text, const ascon_sponge_t* sponge);
 
@@ -104,10 +104,10 @@ void ascon_permutation_b6(ascon_sponge_t* sponge);
  * buffered_accumulation() when ASCON_RATE bytes ara available in the buffer to
  * be absorbed.
  *
- * @param sponge the sponge state to absorb data into.
- * @param data_out optional outgoing data from the sponge, which happends during
- *        encryption or decryption, but not during hashing.
- * @param data_in the input data to be absorbed by the sponge.
+ * @param[in, out] sponge the sponge state to absorb data into.
+ * @param[out] data_out optional outgoing data from the sponge, which happens
+ *       during encryption or decryption, but not during hashing.
+ * @param[in] data_in the input data to be absorbed by the sponge.
  */
 typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
                              uint8_t* data_out,
@@ -126,12 +126,12 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  * It is not used during the Final step, as that requires paddings and special
  * additional operations such as tag/digest generation.
  *
- * @param ctx the sponge and the buffer to accumulate data in
- * @param data_out optional output data squeezed from the sponge
- * @param data_in input data to be absorbed by the sponge
- * @param absorb function that handles the absorption and optional squeezing
+ * @param[in, out] ctx the sponge and the buffer to accumulate data in
+ * @param[out] data_out optional output data squeezed from the sponge
+ * @param[in] data_in input data to be absorbed by the sponge
+ * @param[in] absorb function that handles the absorption and optional squeezing
  *        of the sponge
- * @param data_in_len length of the \p data_in in bytes
+ * @param[in] data_in_len length of the \p data_in in bytes
  * @return number of bytes written into \p data_out
  */
 size_t buffered_accumulation(ascon_bufstate_t* ctx,

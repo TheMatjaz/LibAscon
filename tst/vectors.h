@@ -90,8 +90,8 @@ typedef struct
  * @internal
  * Creates the iterator of test vectors, opening the test file.
  *
- * @param ctx iterator state
- * @param file_name file where to read the test vectors from
+ * @param[in, out] ctx iterator state
+ * @param[in] file_name file where to read the test vectors from
  * @return any error during file opening
  */
 vecs_err_t vecs_init(vecs_ctx_t* ctx, const char* file_name);
@@ -103,8 +103,8 @@ vecs_err_t vecs_init(vecs_ctx_t* ctx, const char* file_name);
  *
  * Closes the file automatically on EOF or parsing error.
  *
- * @param ctx iterator state
- * @param testcase parsed test vectors
+ * @param[in, out] ctx iterator state
+ * @param[out] testcase parsed test vectors
  * @return any error during file parsing or EOF indication
  */
 vecs_err_t vecs_hash_next(vecs_ctx_t* ctx, vecs_hash_t* testcase);
@@ -116,8 +116,8 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* ctx, vecs_hash_t* testcase);
  *
  * Closes the file automatically on EOF or parsing error.
  *
- * @param ctx iterator state
- * @param testcase parsed test vectors
+ * @param[in, out] ctx iterator state
+ * @param[out] testcase parsed test vectors
  * @return any error during file parsing or EOF indication
  */
 vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
@@ -126,8 +126,8 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
  * @internal
  * Logs the hashing testcase to stdout if DEBUG is defined.
  *
- * @param testcase the test vector to log
- * @param obtained_digest optional digest obtained from the
+ * @param[in] testcase the test vector to log
+ * @param[in] obtained_digest optional digest obtained from the
  *        hashing function. Prints it only if not NULL.
  */
 void vecs_hash_log(const vecs_hash_t* testcase,
@@ -137,12 +137,12 @@ void vecs_hash_log(const vecs_hash_t* testcase,
  * @internal
  * Logs the AEAD encryption testcase to stdout if DEBUG is defined.
  *
- * @param testcase the test vector to log
- * @param obtained_ciphertext optional ciphertext obtained from the
+ * @param[in] testcase the test vector to log
+ * @param[in] obtained_ciphertext optional ciphertext obtained from the
  *        AEAD encryption function. Prints it only if not NULL.
- * @param obtained_tag optional tag obtained from the
+ * @param[in] obtained_tag optional tag obtained from the
  *        AEAD encryption function. Prints it only if not NULL.
- * @param obtained_ciphertext_len length in bytes of \p obtained_ciphertext.
+ * @param[in] obtained_ciphertext_len length in bytes of \p obtained_ciphertext.
  *        Ignored if \p obtained_ciphertext is NULL.
  */
 void vecs_aead_enc_log(const vecs_aead_t* testcase,
@@ -154,10 +154,10 @@ void vecs_aead_enc_log(const vecs_aead_t* testcase,
  * @internal
  * Logs the AEAD decryption testcase to stdout if DEBUG is defined.
  *
- * @param testcase the test vector to log
- * @param obtained_plaintext optional plaintext obtained from the
+ * @param[in] testcase the test vector to log
+ * @param[in] obtained_plaintext optional plaintext obtained from the
  *        AEAD decryption function. Prints it only if not NULL.
- * @param obtained_plaintext_len length in bytes of \p obtained_plaintext.
+ * @param[in] obtained_plaintext_len length in bytes of \p obtained_plaintext.
  *        Ignored if \p obtained_plaintext is NULL.
  */
 void vecs_aead_dec_log(const vecs_aead_t* testcase,
