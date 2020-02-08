@@ -6,6 +6,9 @@
  * designed to be lightweight and easy to implement, even with added
  * countermeasures against side-channel attacks.
  *
+ * For more information on the Ascon cipher itself, visit
+ * https://ascon.iaik.tugraz.at/
+ *
  * This file is the interface to the Ascon library providing:
  * - the Ascon symmetric AEAD cipher
  * - the Ascon fixed-size output hash
@@ -23,8 +26,7 @@
  *   below
  *
  * @license Creative Commons Zero (CC0) 1.0
- * @authors see AUTHORS.md file
- * @link https://ascon.iaik.tugraz.at/
+ * @authors See AUTHORS.md file
  */
 
 // TODO test all branches in the algorithm
@@ -87,9 +89,10 @@ extern "C"
  */
 typedef enum e_ascon_tag_validity
 {
-    ASCON_TAG_OK = 0, /** The tag is valid thus the decryption too. */
-    ASCON_TAG_INVALID = 1, /** The tag is invalid thus the decrypted data
-                             * should be ignored. */
+    /** The tag is valid thus the decryption too. */
+    ASCON_TAG_OK = 0,
+    /** The tag is invalid thus the decrypted data should be ignored. */
+    ASCON_TAG_INVALID = 1,
 } ascon_tag_validity_t;
 
 /**
@@ -171,6 +174,8 @@ typedef struct s_ascon_bufstate ascon_hash_ctx_t;
  * Encrypts the data which is already available as a whole in a contiguous
  * buffer, authenticating any optional associated data in the process.
  * Provides the ciphertext and the authentication tag as output.
+ *
+ * @image html encrypt.png
  *
  * @param[out] ciphertext encrypted plaintext with the same length as the
  *       plaintext, thus \p plaintext_len will be written in this buffer.
