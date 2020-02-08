@@ -126,7 +126,7 @@ if (DOXYGEN_FOUND)
             ALL # Build doxygen on make-all
             # List of input files for Doxygen
             ${PROJECT_SOURCE_DIR}/inc/ascon.h
-            ${PROJECT_SOURCE_DIR}/LICENSE
+            ${PROJECT_SOURCE_DIR}/LICENSE.md
             ${PROJECT_SOURCE_DIR}/AUTHORS.md
             ${PROJECT_SOURCE_DIR}/README.md
             ${PROJECT_SOURCE_DIR}/CHANGELOG.md)
