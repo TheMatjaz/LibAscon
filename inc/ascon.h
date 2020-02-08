@@ -87,7 +87,7 @@ extern "C"
  * Possible outputs of the final step of the decryption that also validates
  * the tag.
  */
-typedef enum e_ascon_tag_validity
+typedef enum
 {
     /** The tag is valid thus the decryption too. */
     ASCON_TAG_OK = 0,
@@ -98,21 +98,20 @@ typedef enum e_ascon_tag_validity
 /**
  * Internal cipher sponge state (320 bits).
  */
-struct s_ascon_sponge
+typedef struct
 {
     uint64_t x0;
     uint64_t x1;
     uint64_t x2;
     uint64_t x3;
     uint64_t x4;
-};
-typedef struct s_ascon_sponge ascon_sponge_t;
+} ascon_sponge_t;
 
 /**
  * Internal cipher sponge state associated with a buffer holding for
  * less-than-rate updates. Used for the Init-Update-Final implementation.
  */
-struct s_ascon_bufstate
+typedef struct
 {
     /** Cipher sponge state. */
     ascon_sponge_t sponge;
@@ -130,9 +129,10 @@ struct s_ascon_bufstate
      * State of the processing of the associated data.
      *
      * Note: this variable is not semantically relevant in THIS struct,
-     * as it should belong in the struct s_ascon_aead_ctx, but by having it
+     * as it should belong in the struct ascon_aead_ctx_t, but by having it
      * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit)
-     * at the end of the struct s_ascon_aead_ctx.
+     * at the end of the struct ascon_aead_ctx_t, by using the padding space
+     * this struct anyway has.
      *
      * This struct has anyway some padding at the end.
      */
@@ -140,8 +140,7 @@ struct s_ascon_bufstate
 
     /** Unused padding to the next uint64_t (sponge.x0). */
     uint8_t pad[6];
-};
-typedef struct s_ascon_bufstate ascon_bufstate_t;
+} ascon_bufstate_t;
 
 /**
  * Cipher context for authenticated encryption and validated decryption.
@@ -149,7 +148,7 @@ typedef struct s_ascon_bufstate ascon_bufstate_t;
  * Half of this context's size is the cipher's sponge state, the remaining
  * part is holding the key and the buffering of online data (and some padding).
  */
-struct s_ascon_aead_ctx
+typedef struct
 {
     /** Cipher buffered sponge state. */
     ascon_bufstate_t bufstate;
@@ -159,11 +158,10 @@ struct s_ascon_aead_ctx
 
     /** Copy of the secret key, to be used in the final step, second half. */
     uint64_t k1;
-};
-typedef struct s_ascon_aead_ctx ascon_aead_ctx_t;
+} ascon_aead_ctx_t;
 
 /** Cipher context for hashing. */
-typedef struct s_ascon_bufstate ascon_hash_ctx_t;
+typedef ascon_bufstate_t ascon_hash_ctx_t;
 
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Ciphertext must support plaintext_len bytes.
