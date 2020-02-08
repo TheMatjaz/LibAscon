@@ -123,6 +123,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
     doxygen_add_docs(doxygen
+            ALL # Build doxygen on make-all
             # List of input files for Doxygen
             ${PROJECT_SOURCE_DIR}/inc/ascon.h
             ${PROJECT_SOURCE_DIR}/LICENSE
