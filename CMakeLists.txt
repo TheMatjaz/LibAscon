@@ -31,20 +31,17 @@ if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
 endif ()
 
 # Mini-sized release build: compile with optimisation for size
-# convert warnings into errors, have position independent code
-# and some other optimisations
+# convert warnings into errors and some other optimisations
 set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} \
         ${WARNING_FLAGS} \
-        -Os -Werror -fPIC -fomit-frame-pointer -march=native -mtune=native")
+        -Os -Werror -fomit-frame-pointer -march=native -mtune=native")
 
 # Performance-oriented release build: compile with optimisation for speed
-# convert warnings into errors, have position independent code
-# and some other optimisations
+# convert warnings into errors and some other optimisations
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
         ${WARNING_FLAGS} \
-        -O3 -Werror -fPIC -fomit-frame-pointer -march=native -mtune=native \
+        -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops")
-
 
 
 # -----------------------------------------------------------------------------
@@ -80,14 +77,19 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # Build the library first into an object, but keep `objlibascon` as
 # a reference to it, so there is no need to recompile it when building
 # a different target, that uses the same source files.
-add_library(objlibascon OBJECT ${LIB_SRC_FILES})
+# Static library (.a)
+add_library(staticascon STATIC ${LIB_SRC_FILES})
 
-# Shared library (dylib / dll)
-add_library(ascon SHARED $<TARGET_OBJECTS:objlibascon>)
+# Shared library (.dylib / .dll)
+# Does not reuse the static library object files, as they may be
+# recompiled in order to have position-independent code
+add_library(ascon SHARED ${LIB_SRC_FILES})
+set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# Test runner executable
+# Test runner executable, reuse the static libary instead of recompiling
+# the source files
 add_executable(testascon
-        $<TARGET_OBJECTS:objlibascon>
+        $<TARGET_OBJECTS:staticascon>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
 # Copy test vectors files to build directory after the make-build.
@@ -102,9 +104,10 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
         "${CMAKE_BINARY_DIR}/vectors")
 
-# Benchmark runner executable
+# Benchmark runner executable, reuse the static libary instead of recompiling
+# the source files
 add_executable(benchmark
-        $<TARGET_OBJECTS:objlibascon>
+        $<TARGET_OBJECTS:staticascon>
         ${BENCHMARK_SRC_FILES})
 
 # Doxygen documentation builder
