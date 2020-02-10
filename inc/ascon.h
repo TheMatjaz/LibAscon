@@ -90,9 +90,9 @@ extern "C"
 typedef enum
 {
     /** The tag is valid thus the decryption too. */
-    ASCON_TAG_OK = 0,
+            ASCON_TAG_OK = 0,
     /** The tag is invalid thus the decrypted data should be ignored. */
-    ASCON_TAG_INVALID = 1,
+            ASCON_TAG_INVALID = 1,
 } ascon_tag_validity_t;
 
 /**
@@ -163,8 +163,6 @@ typedef struct
 /** Cipher context for hashing. */
 typedef ascon_bufstate_t ascon_hash_ctx_t;
 
-// TODO add notes that AD is optional
-// TODO add notes that PT is optional but not recommended
 // TODO difference between AEAD(key, nonce, ad, NO_PT) and HASH
 //  (key||nonce||msg)?
 /**
@@ -180,7 +178,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *
  * In case of no plaintext at all to be encrypted, set
  * \p plaintext_len to 0. Iff that is the case, \p plaintext can
- * be set to NULL.
+ * be set to NULL (see warning).
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -194,9 +192,10 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       plaintext, thus \p plaintext_len will be written in this buffer.
  *       This pointer may also point to the same location as \p plaintext
  *       to encrypt the plaintext in-place, sparing on memory instead
- *       of writing into a separate output buffer, not NULL.
- * @param[out] tag authentication tag of the associated data and
- *        the ciphertext of ASCON_AEAD_TAG_LEN bytes, not NULL.
+ *       of writing into a separate output buffer. Not NULL.
+ * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ *       fingerprint), used to validate the integrity and authenticity of the
+ *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
  * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
@@ -205,7 +204,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. Can be 0.
  * @param[in] plaintext_len length of the data pointed by \p plaintext in
- *        bytes. Can be 0 (not recommended, use hashing to just authenticate).
+ *        bytes. Can be 0 (not recommended, see warning).
  */
 void ascon_aead128_encrypt(uint8_t* ciphertext,
                            uint8_t tag[ASCON_AEAD_TAG_LEN],
@@ -381,10 +380,10 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       if the sum is not of interest.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext.
+ *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE - 1], i.e. whatever remained in the buffer
- *        afte the last update call.
+ *        after the last update call.
  */
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* ciphertext,
@@ -394,6 +393,46 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
 // Tag must support ASCON_AEAD_TAG_LEN bytes
 // Plaintext must support ciphertext_len bytes
 // This function fails if the tag is invalid
+
+/**
+ * Offline symmetric decryption using Ascon128.
+ *
+ * Decrypts the data which is already available as a whole in a contiguous
+ * buffer, validating any optional associated data in the process.
+ * Provides the plaintext and the validity of the authentication tag as output.
+ *
+ * In case of no associated data at all to be authenticated, set
+ * \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
+ * be set to NULL.
+ *
+ * In case of no plaintext at all to be encrypted, set
+ * \p plaintext_len to 0. Iff that is the case, \p plaintext can
+ * be set to NULL (see warning of ascon_aead128_encrypt()).
+ *
+ * @image html decrypt.png
+ *
+ * @param[out] plaintext decrypted ciphertext with the same length as the
+ *       ciphertext, thus \p ciphertext_len will be written in this buffer.
+ *       This pointer may also point to the same location as \p ciphertext
+ *       to decrypt the ciphertext in-place, sparing on memory instead
+ *       of writing into a separate output buffer. Not NULL.
+ * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes.
+ * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] assoc_data data to be validated with the same tag
+ *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
+ * @param[in] ciphertext data to be decrypted into \p plaintext.
+ * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ *       fingerprint), used to validate the integrity and authenticity of the
+ *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
+ * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
+ *        bytes. Can be 0.
+ * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
+ *        bytes. Can be 0 (not recommended, see warning of
+ *        ascon_aead128_encrypt()).
+ * @returns #ASCON_OK if the validation of the tag is correct, thus the
+ *        associated data and ciphertext are intact and authentic.
+ *        #ASCON_INVALID_TAG otherwise.
+ */
 ascon_tag_validity_t
 ascon_aead128_decrypt(uint8_t* plaintext,
                       const uint8_t key[ASCON_AEAD_KEY_LEN],
