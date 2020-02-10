@@ -193,7 +193,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *
  * @image html encrypt.png
  *
- * @param[out] ciphertext encrypted plaintext with the same length as the
+ * @param[out] ciphertext encrypted data with the same length as the
  *       plaintext, thus \p plaintext_len will be written in this buffer.
  *       This pointer may also point to the same location as \p plaintext
  *       to encrypt the plaintext in-place, sparing on memory instead
@@ -221,20 +221,20 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                            size_t plaintext_len);
 
 /**
- * Online symmetric encryption using Ascon128, initialisation.
+ * Online symmetric encryption/decryption using Ascon128, initialisation.
  *
- * Prepares to start a new encryption session for plaintext and associated data
- * being provided one chunk at the time, overwriting any previous content of
- * the context.
+ * Prepares to start a new encryption or decryption session for plaintext or
+ * ciphertext and associated data being provided one chunk at the time.
  *
  * The key and nonce are copied/absorbed into the internal state, so they can
  * be deleted from their original location after this function returns.
  *
- * The calling order is:
- * 1. init (once only)
- * 2. associated data update (0 or more times)
- * 3. encryption update (0 or more times, see warning)
- * 4. final (once only)
+ * The calling order for encryption/decryption is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_encrypt_update()/ascon_aead128_decrypt_update() - 0 or
+ *    more times, see warning
+ * 4. ascon_aead128_encrypt_final()/ascon_aead128_encrypt_final() - once only
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -242,14 +242,17 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * Instead use the Ascon hashing or xof functions in the form
  * `H(key || nonce || msg)`.
  *
+ * @image html encrypt.png
+ * @image html decrypt.png
+ *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the ascon_aead128_encrypt_final() call. In case the encryption
- * session is interrupted and never finalised, clear the context with
- * `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
+ * or decryption session is interrupted and never finalised, clear the context
+ * with `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
  *
- * @param[in, out] ctx the encryption context, handling the cipher state
- *       and buffering of incoming data to be processed. Not NULL.
+ * @param[in, out] ctx the encryption/decryption context, handling the cipher
+ *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes. Not NULL.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
@@ -258,25 +261,28 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
- * Online symmetric encryption using Ascon128, feeding associated data.
+ * Online symmetric encryption/decryption using Ascon128, feeding associated
+ * data.
  *
  * Feeds a chunk of associated data to the already initialised encryption
- * session. The data will be authenticated by the tag provided by the final
- * function, but not encrypted.
+ * or decryption session. The data will be authenticated by the tag provided by
+ * the final function, but not encrypted or decrypted.
  *
- * In case of no associated data at all to be authenticated, this function
- * can either be either skipped completely or called (also many times)
+ * In case of no associated data at all to be authenticated/validated, this
+ * function can either be either skipped completely or called (also many times)
  * with \p assoc_data_len set to 0. Iff that is the case, \p assoc_data can
  * be set to NULL.
  *
- * After calling ascon_aead128_encrypt_update(), this function must not be used
- * anymore.
+ * After calling ascon_aead128_encrypt_update() or
+ * ascon_aead128_decrypt_update(), this function must not be used anymore
+ * on the same context.
  *
- * The calling order is:
- * 1. init (once only)
- * 2. associated data update (0 or more times)
- * 3. encryption update (0 or more times, see warning)
- * 4. final (once only)
+ * The calling order for encryption/decryption is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_encrypt_update()/ascon_aead128_decrypt_update() - 0 or
+ *    more times, see warning
+ * 4. ascon_aead128_encrypt_final()/ascon_aead128_encrypt_final() - once only
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -284,10 +290,10 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * Instead use the Ascon hashing or xof functions in the form
  * `H(key || nonce || msg)`.
  *
- * @param[in, out] ctx the encryption context, handling the cipher state
- *       and buffering of incoming data to be processed. Not NULL.
- * @param[in] assoc_data data to be authenticated with the same tag
- *        but not encrypted. May be NULL iff \p assoc_data_len is 0.
+ * @param[in, out] ctx the encryption/decryption context, handling the cipher
+ *       state and buffering of incoming data to be processed. Not NULL.
+ * @param[in] assoc_data data to be authenticated/validated with the same tag
+ *        but not encrypted/decrypted. May be NULL iff \p assoc_data_len is 0.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
@@ -301,16 +307,16 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  *
  * Feeds a chunk of plaintext data to the encryption session after any
  * optional associated data has been processed. The plaintext will be encrypted
- * and provided back in buffered chunks of #ASCON_RATE.
+ * and provided back in buffered chunks of #ASCON_RATE bytes.
  *
  * It will automatically finalise the absorption of any associated data,
  * so no new associated data could be processed after this function is called.
  *
- * The calling order is:
- * 1. init (once only)
- * 2. associated data update (0 or more times)
- * 3. encryption update (0 or more times, see warning)
- * 4. final (once only)
+ * The calling order for encryption is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_encrypt_update() - 0 or more times, see warning
+ * 4. ascon_aead128_encrypt_final() - once only
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -318,11 +324,11 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * Instead use the Ascon hashing or xof functions in the form
  * `H(key || nonce || msg)`.
  *
- * @param[in, out] ctx the encryption context, handling the cipher state
- *       and buffering of incoming data to be processed. Not NULL.
- * @param[out] ciphertext encrypted plaintext, buffered into chunks.
+ * @param[in, out] ctx the encryption context, handling the cipher
+ *       state and buffering of incoming data to be processed. Not NULL.
+ * @param[out] ciphertext encrypted data, buffered into chunks.
  *       This function will write a multiple of #ASCON_RATE bytes in the
- *       interval [0, \p plaintext_len] into \p ciphertext.
+ *       interval [0, \p plaintext_len + #ASCON_RATE[ into \p ciphertext.
  *       The exact number of written bytes is indicated by the return value.
  *       This pointer may also point to the same location as \p plaintext
  *       to encrypt the plaintext in-place, sparing on memory instead
@@ -333,7 +339,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @param[in] plaintext_len length of the data pointed by \p plaintext in
  *        bytes. May be 0.
  * @returns number of bytes written into \p ciphertext. The value is a multiple
- *        of #ASCON_RATE in [0, \p plaintext_len].
+ *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
 size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* ciphertext,
@@ -353,11 +359,11 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *
  * It will securely erase the content of the \p ctx struct before returning.
  *
- * The calling order is:
- * 1. init (once only)
- * 2. associated data update (0 or more times)
- * 3. encryption update (0 or more times, see warning)
- * 4. final (once only)
+ * The calling order for encryption is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_encrypt_update() - 0 or more times, see warning
+ * 4. ascon_aead128_encrypt_final() - once only
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -367,19 +373,19 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the ascon_aead128_encrypt_final() call. In case the encryption
- * session is interrupted and never finalised, clear the context with
- * `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
+ * during the ascon_aead128_encrypt_final() call. In case the
+ * encryption session is interrupted and never finalised, clear the context
+ * with `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
  *
- * @param[in, out] ctx the encryption context, handling the cipher state
- *       and buffering of incoming data to be processed. It will be erased
+ * @param[in, out] ctx the encryption context, handling the cipher
+ *       state and buffering of incoming data to be processed. It will be erased
  *       securely before this function returns. Not NULL.
- * @param[out] ciphertext trailing encrypted plaintext still available in the
- *       buffer of the buffered absorption. This function will write
- *       [0, #ASCON_RATE - 1] bytes into \p ciphertext.
+ * @param[out] ciphertext trailing encrypted data still available in the
+ *       buffer of the buffered updating. This function will write
+ *       [0, #ASCON_RATE[ bytes into \p ciphertext.
  *       The exact number of written bytes is indicated by the return value.
  *       Not NULL.
- * @param[out] total_ciphertext_len sum of all ciphertext bytes generated by
+ * @param[out] total_ecnrypted_bytes sum of all ciphertext bytes generated by
  *       all update calls and this final call of this encryption session.
  *       It's the same as the sum of all plaintext bytes. May be NULL,
  *       if the sum is not of interest.
@@ -387,17 +393,13 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
  * @returns number of bytes written into \p ciphertext. The value is in the
- *        interval [0, #ASCON_RATE - 1], i.e. whatever remained in the buffer
+ *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* ciphertext,
-                                   uint64_t* total_ciphertext_len,
+                                   uint64_t* total_ecnrypted_bytes,
                                    uint8_t tag[ASCON_AEAD_TAG_LEN]);
-
-// Tag must support ASCON_AEAD_TAG_LEN bytes
-// Plaintext must support ciphertext_len bytes
-// This function fails if the tag is invalid
 
 /**
  * Offline symmetric decryption using Ascon128.
@@ -416,7 +418,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *
  * @image html decrypt.png
  *
- * @param[out] plaintext decrypted ciphertext with the same length as the
+ * @param[out] plaintext decrypted data with the same length as the
  *       ciphertext, thus \p ciphertext_len will be written in this buffer.
  *       This pointer may also point to the same location as \p ciphertext
  *       to decrypt the ciphertext in-place, sparing on memory instead
@@ -448,19 +450,95 @@ ascon_aead128_decrypt(uint8_t* plaintext,
                       size_t assoc_data_len,
                       size_t ciphertext_len);
 
-// Generates [0, ciphertext_len] plaintext bytes
-// Returns # of plaintext bytes generated
+/**
+ * Online symmetric decryption using Ascon128, feeding ciphertext and getting
+ * plaintext.
+ *
+ * Feeds a chunk of ciphertext data to the decryption session after any
+ * optional associated data has been processed. The ciphertext will be decrypted
+ * and provided back in buffered chunks of #ASCON_RATE bytes.
+ *
+ * It will automatically finalise the absorption of any associated data,
+ * so no new associated data could be processed after this function is called.
+ *
+ * The calling order is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_decrypt_update() - 0 or more times, see warning
+ * 4. ascon_aead128_decrypt_final() - once only
+ *
+ * @param[in, out] ctx the decryption context, handling the cipher state
+ *       and buffering of incoming data to be processed. Not NULL.
+ * @param[out] plaintext decrypted data, buffered into chunks.
+ *       This function will write a multiple of #ASCON_RATE bytes in the
+ *       interval [0, \p ciphertext_len + #ASCON_RATE[ into \p plaintext.
+ *       The exact number of written bytes is indicated by the return value.
+ *       This pointer may also point to the same location as \p ciphertext
+ *       to decrypt the ciphertext in-place, sparing on memory instead
+ *       of writing into a separate output buffer. Not NULL.
+ * @param[in] ciphertext data to be decrypted into \p plaintext. All of the
+ *       ciphertext will be processed, even if the function provides less than
+ *       \p ciphertext_len output bytes. They are just buffered. Not NULL.
+ * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
+ *        bytes. May be 0.
+ * @returns number of bytes written into \p plaintext. The value is a multiple
+ *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
+ */
 size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* plaintext,
                                     const uint8_t* ciphertext,
                                     size_t ciphertext_len);
 
-// Generates [0, ASCON_RATE - 1] plaintext bytes
-// Returns # of plaintext bytes generated
-// total_plaintext_len could be NULL
+/**
+ * Online symmetric decryption using Ascon128, finalisation and tag validation.
+ *
+ * Finalises the authenticated decryption by returning any remaining buffered
+ * plaintext and the validity of the authentication tag.
+ *
+ * Optionally it can also provide the total plaintext bytes generated during
+ * this session. This is equal to the total ciphertext bytes, but for streaming
+ * data with unknown length in advance, the decryption session keeps track of
+ * the total decrypted bytes.
+ *
+ * It will securely erase the content of the \p ctx struct before returning.
+ *
+ * The calling order for encryption is:
+ * 1. ascon_aead128_init() - once only
+ * 2. ascon_aead128_assoc_data_update() - 0 or more times
+ * 3. ascon_aead128_decrypt_update() - 0 or more times, see warning
+ * 4. ascon_aead128_decrypt_final() - once only
+ *
+ * @warning
+ * A copy of the secret key is kept in the \p ctx struct and securely erased
+ * during the ascon_aead128_decrypt_final() call. In case the
+ * decryption session is interrupted and never finalised, clear the context
+ * with `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
+ *
+ * @param[in, out] ctx the decryption context, handling the cipher
+ *       state and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[out] plaintext trailing decrypted data still available in the
+ *       buffer of the buffered updating. This function will write
+ *       [0, #ASCON_RATE[ bytes into \p plaintext.
+ *       The exact number of written bytes is indicated by the return value.
+ *       Not NULL.
+ * @param[out] total_decrypted_len sum of all plaintext bytes generated by
+ *       all update calls and this final call of this decryption session.
+ *       It's the same as the sum of all ciphertext bytes fed into the
+ *       update calls. May be NULL, if the sum is not of interest.
+ * @param[out] tag_validity #ASCON_TAG_OK if the validation of the tag is
+ *       correct, thus the associated data and ciphertext are intact and
+ *       authentic. #ASCON_TAG_INVALID otherwise.
+ * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ *       fingerprint), used to validate the integrity and authenticity of the
+ *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
+ * @returns number of bytes written into \p plaintext. The value is in the
+ *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
+ *        after the last update call.
+ */
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* plaintext,
-                                   uint64_t* total_plaintext_len,
+                                   uint64_t* total_decrypted_len,
                                    ascon_tag_validity_t* tag_validity,
                                    const uint8_t* tag);
 

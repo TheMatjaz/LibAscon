@@ -151,7 +151,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
 
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* const ciphertext,
-                                   uint64_t* const total_ciphertext_len,
+                                   uint64_t* const total_ecnrypted_bytes,
                                    uint8_t* const tag)
 {
     if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
@@ -181,9 +181,9 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     u64_to_bytes(tag, ctx->bufstate.sponge.x3, sizeof(uint64_t));
     u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
                  sizeof(uint64_t));
-    if (total_ciphertext_len != NULL)
+    if (total_ecnrypted_bytes != NULL)
     {
-        *total_ciphertext_len =
+        *total_ecnrypted_bytes =
                 ctx->bufstate.total_output_len +
                 freshly_generated_ciphertext_len;
     }
@@ -209,7 +209,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* const ctx,
 
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* plaintext,
-                                   uint64_t* const total_plaintext_len,
+                                   uint64_t* const total_decrypted_len,
                                    ascon_tag_validity_t* const tag_validity,
                                    const uint8_t* const tag)
 {
@@ -251,9 +251,9 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     {
         *tag_validity = ASCON_TAG_OK;
     }
-    if (total_plaintext_len != NULL)
+    if (total_decrypted_len != NULL)
     {
-        *total_plaintext_len = ctx->bufstate.total_output_len +
+        *total_decrypted_len = ctx->bufstate.total_output_len +
                                freshly_generated_plaintext_len;
     }
     // Final security cleanup of the internal state, key and buffer.
