@@ -4,6 +4,9 @@ Ascon is a family of lightweight authenticated encryption schemes with associate
 
 For more information on Ascon visit: https://ascon.iaik.tugraz.at/
 
+TODO mention https://tldrlegal.com/license/creative-commons-cc0-1.0-universal
+and CC0 license
+
 This repository contains the following 5 Ascon algorithms:
 
 - `crypto_aead/ascon128v12`: Ascon-128 v1.2

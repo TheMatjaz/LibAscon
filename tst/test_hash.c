@@ -1,5 +1,9 @@
 /**
  * @file
+ * Tests of the Ascon-Hash.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors Matjaž Guštin <dev@matjaz.it>
  */
 
 #include "atto.h"

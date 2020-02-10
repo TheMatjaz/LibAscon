@@ -1,3 +1,11 @@
+/**
+ * @file
+ * Benchmarking tool measuring the average CPU cycles per byte processed.
+ *
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -5,7 +13,7 @@
 #include "ascon.h"
 
 #if !defined(__arm__) && !defined(_M_ARM)
-    #pragma message("Using RDTSC to count cycles")
+    // Using RDTSC to count cycles
     #ifdef _MSC_VER
         #include <intrin.h>
         #define ALIGN(x)
@@ -83,15 +91,14 @@ static void benchmark_cycles(
     benchmark_data_t data;
     cycles_t start;
     cycles_t end;
+    puts("Benchmarking...");
+    fflush(stdout);
     init_cpucycles();
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("\nBenchmarking text len %5u B:", TEXT_LENGTHS[len]);
         const uint64_t repetitions = MAX_TEXT_LEN / TEXT_LENGTHS[len];
         for (size_t run = 0; run < AMOUNT_OF_RUNS; run++)
         {
-            printf(" %zu", run);
-            fflush(stdout);
             init_benchmark_data(&data, TEXT_LENGTHS[len]);
             cpucycles(start);
             for (size_t rep = 0; rep < repetitions; rep++)
@@ -110,7 +117,6 @@ static void benchmark_cycles(
             elapsed_cycles[len][run] = end - start;
         }
     }
-    puts("");
 }
 
 int compare_uint64(const void* const first, const void* const second)
@@ -159,19 +165,19 @@ static void print_stats(
     {
         uint64_t repetitions = MAX_TEXT_LEN / TEXT_LENGTHS[len];
         uint64_t bytes = TEXT_LENGTHS[len] * repetitions;
-        printf("%5u: %7.1f %7.1f\n", TEXT_LENGTHS[len],
+        printf("%5u: %6.1f %6.1f\n", TEXT_LENGTHS[len],
                factor * elapsed_cycles[len][0] / bytes + 0.05,
                factor * elapsed_cycles[len][AMOUNT_OF_RUNS / 2] / bytes + 0.05);
     }
     puts("");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("| %6u ", TEXT_LENGTHS[len]);
+        printf("| %5u ", TEXT_LENGTHS[len]);
     }
     printf("|\n");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
     {
-        printf("|-------:");
+        printf("|------:");
     }
     printf("|\n");
     for (size_t len = 0; len < AMOUNT_OF_TEXT_LENGTHS; len++)
@@ -180,11 +186,11 @@ static void print_stats(
         const uint64_t bytes = TEXT_LENGTHS[len] * repetitions;
         if (TEXT_LENGTHS[len] <= 32)
         {
-            printf("| %6.0f ", factor * elapsed_cycles[len][0] / bytes + 0.5);
+            printf("| %5.0f ", factor * elapsed_cycles[len][0] / bytes + 0.5);
         }
         else
         {
-            printf("| %6.1f ", factor * elapsed_cycles[len][0] / bytes + 0.05);
+            printf("| %5.1f ", factor * elapsed_cycles[len][0] / bytes + 0.05);
         }
     }
     printf("|\n");
