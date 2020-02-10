@@ -14,7 +14,8 @@
 
 int main(void)
 {
-    printf("Testing Ascon v%s\n", ASCON_API_VERSION);
+    printf("Testing Ascon v%d.%d.%d\n", ASCON_API_VERSION_MAJOR,
+            ASCON_API_VERSION_MINOR, ASCON_API_VERSION_BUGFIX);
     test_structs();
     test_xof();
     test_hash();

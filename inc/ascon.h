@@ -1,6 +1,7 @@
 /**
  * @file
- * Ascon cipher - Lightweight Authenticated Encryption & Hashing
+ * Ascon cipher - Lightweight Authenticated Encryption & Hashing,
+ * also with Init-Update-Final paradigm.
  *
  * Ascon is a family of authenticated encryption and hashing algorithms
  * designed to be lightweight and easy to implement, even with added
@@ -12,18 +13,18 @@
  * This file is the interface to the Ascon library providing:
  * - the Ascon symmetric AEAD cipher
  * - the Ascon fixed-size output hash
- * - the Ascon variable-size output hash (xof)
+ * - the Ascon variable-size output hash (XOF)
  *
  * All functionalities are available in:
  * - online form (init-update-final paradigm): the data is processed one
- *   chunk at the time; useful if is still being received or does not
+ *   chunk at the time; useful if it's still being received or does not
  *   fit into memory
  * - offline form: the data is available as a whole in memory and processed
  *   in one go
  *
  * Library dependencies:
  * - only the C99 or C11 standard library, as seen in the `#include` statements
- *   below
+ *   of this file
  *
  * @license Creative Commons Zero (CC0) 1.0
  * @authors See AUTHORS.md file
@@ -51,21 +52,12 @@ extern "C"
 #include <stddef.h> /* For size_t, NULL */
 #include <string.h> /* For memset() */
 
+/** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 0
+/** Minor version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MINOR 1
+/** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 0
-// Double level of indirection to allow precompiler to evaluate the
-// integer macros as strings properly and thus concatenate them in the
-// version string.
-#define _ascon_str2(x) #x
-#define _ascon_str(x) _ascon_str2(x)
-#define ASCON_API_VERSION ( \
-    _ascon_str(ASCON_API_VERSION_MAJOR) \
-    "." \
-    _ascon_str(ASCON_API_VERSION_MINOR) \
-    "." \
-    _ascon_str(ASCON_API_VERSION_BUGFIX) \
-    )
 
 /**
  * Length in bytes of the secret symmetric key used for authenticated
