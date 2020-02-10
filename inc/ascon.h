@@ -100,10 +100,15 @@ typedef enum
  */
 typedef struct
 {
+    /** Sponge's first field */
     uint64_t x0;
+    /** Sponge's second field */
     uint64_t x1;
+    /** Sponge's third field */
     uint64_t x2;
+    /** Sponge's fourth field */
     uint64_t x3;
+    /** Sponge's fifth field */
     uint64_t x4;
 } ascon_sponge_t;
 
@@ -429,9 +434,9 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @returns #ASCON_OK if the validation of the tag is correct, thus the
+ * @returns #ASCON_TAG_OK if the validation of the tag is correct, thus the
  *        associated data and ciphertext are intact and authentic.
- *        #ASCON_INVALID_TAG otherwise.
+ *        #ASCON_TAG_INVALID otherwise.
  */
 ascon_tag_validity_t
 ascon_aead128_decrypt(uint8_t* plaintext,
