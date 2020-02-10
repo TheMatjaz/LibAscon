@@ -10,9 +10,11 @@
 
 #include "atto.h"
 #include "test.h"
+#include "ascon.h"
 
 int main(void)
 {
+    printf("Testing Ascon v%s\n", ASCON_API_VERSION);
     test_structs();
     test_xof();
     test_hash();

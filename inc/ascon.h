@@ -51,6 +51,22 @@ extern "C"
 #include <stddef.h> /* For size_t, NULL */
 #include <string.h> /* For memset() */
 
+#define ASCON_API_VERSION_MAJOR 0
+#define ASCON_API_VERSION_MINOR 1
+#define ASCON_API_VERSION_BUGFIX 0
+// Double level of indirection to allow precompiler to evaluate the
+// integer macros as strings properly and thus concatenate them in the
+// version string.
+#define _ascon_str2(x) #x
+#define _ascon_str(x) _ascon_str2(x)
+#define ASCON_API_VERSION ( \
+    _ascon_str(ASCON_API_VERSION_MAJOR) \
+    "." \
+    _ascon_str(ASCON_API_VERSION_MINOR) \
+    "." \
+    _ascon_str(ASCON_API_VERSION_BUGFIX) \
+    )
+
 /**
  * Length in bytes of the secret symmetric key used for authenticated
  * encryption and decryption.
