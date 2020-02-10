@@ -84,10 +84,7 @@ extern "C"
 #define ASCON_HASH_DIGEST_LEN 32U
 
 /**
- * Rate in bytes at which the input data is processed by the cipher.
- *
- * The cipher can absorb only chunks of this many bytes. Any trailing bytes
- * of the processed data are padded.
+ * Number of bytes the cipher can process at the time.
  */
 #define ASCON_RATE 8U
 
@@ -193,13 +190,13 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * \p plaintext_len to 0. Iff that is the case, \p plaintext can
  * be set to NULL (see warning).
  *
+ * @image html encrypt.png
+ *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
  * `Hash(key || nonce || msg)`.
- *
- * @image html encrypt.png
  *
  * @param[out] ciphertext encrypted data with the same length as the
  *       plaintext, thus \p plaintext_len will be written in this buffer.
@@ -208,8 +205,9 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       of writing into a separate output buffer. Not NULL.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
- * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       NULL.
+ * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
  *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
@@ -240,9 +238,12 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * The calling order for encryption/decryption is:
  * 1. ascon_aead128_init() - once only
  * 2. ascon_aead128_assoc_data_update() - 0 or more times
- * 3. ascon_aead128_encrypt_update()/ascon_aead128_decrypt_update() - 0 or
+ * 3. ascon_aead128_encrypt_update() / ascon_aead128_decrypt_update() - 0 or
  *    more times, see warning
- * 4. ascon_aead128_encrypt_final()/ascon_aead128_encrypt_final() - once only
+ * 4. ascon_aead128_encrypt_final() / ascon_aead128_encrypt_final() - once only
+ *
+ * @image html encrypt.png
+ * @image html decrypt.png
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -255,9 +256,6 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * during the ascon_aead128_encrypt_final() call. In case the encryption
  * or decryption session is interrupted and never finalised, clear the context
  * with `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
- *
- * @image html encrypt.png
- * @image html decrypt.png
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -288,9 +286,9 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * The calling order for encryption/decryption is:
  * 1. ascon_aead128_init() - once only
  * 2. ascon_aead128_assoc_data_update() - 0 or more times
- * 3. ascon_aead128_encrypt_update()/ascon_aead128_decrypt_update() - 0 or
+ * 3. ascon_aead128_encrypt_update() / ascon_aead128_decrypt_update() - 0 or
  *    more times, see warning
- * 4. ascon_aead128_encrypt_final()/ascon_aead128_encrypt_final() - once only
+ * 4. ascon_aead128_encrypt_final() / ascon_aead128_encrypt_final() - once only
  *
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
@@ -329,7 +327,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or xof functions in the form
+ * Instead use the Ascon hashing or XOF functions in the form
  * `Hash(key || nonce || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
@@ -376,7 +374,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or xof functions in the form
+ * Instead use the Ascon hashing or XOF functions in the form
  * `Hash(key || nonce || msg)`.
  *
  * @warning
@@ -399,7 +397,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       if the sum is not of interest.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       NULL.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -438,7 +437,8 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext data to be decrypted into \p plaintext.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. Can be 0.
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
@@ -539,7 +539,8 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *       authentic. #ASCON_TAG_INVALID otherwise.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has ASCON_AEAD_TAG_LEN bytes. Not NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       NULL.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -556,6 +557,8 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it.
  *
+ * @image html hash.png
+ *
  * @remark
  * This function can be used for keyed hashing to generate a MAC by simply
  * prepending a secret key to the message, like `Hash(key || msg)` or
@@ -567,7 +570,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  * For security reasons, a digest length of at least 128 bits (16 bytes) is
  * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
  * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits. For longer digest sizes, use the xof-hash
+ * the amount of wanted security bits. For longer digest sizes, use the XOF-hash
  * functions (ascon_hash_xof() or ascon_hash_xof_init()).
  *
  * @param[out] digest fingerprint of the message, output of the hash function,
@@ -585,6 +588,8 @@ void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  * Prepares to start a new hashing session to get a digest of
  * #ASCON_HASH_DIGEST_LEN bytes.
  *
+ * @image html hash.png
+ *
  * @remark
  * Ascon Hash can be used for keyed hashing to generate a MAC by simply
  * prepending a secret key to the message, like `Hash(key || msg)` or
@@ -596,7 +601,7 @@ void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  * For security reasons, a digest length of at least 128 bits (16 bytes) is
  * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
  * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits. For longer digest sizes, use the xof-hash
+ * the amount of wanted security bits. For longer digest sizes, use the XOF-hash
  * functions (ascon_hash_xof() or ascon_hash_xof_init()).
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
@@ -644,6 +649,9 @@ void ascon_hash_final(ascon_hash_ctx_t* ctx,
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it of the desired length.
  *
+ * @image html hash.png
+ *
+ * @remark
  * This function can be used for keyed hashing to generate a MAC by simply
  * prepending a secret key to the message, like `Hash(key || msg)` or
  * `Hash(key || nonce || msg)` in case also a nonce is used. There
@@ -673,8 +681,10 @@ void ascon_hash_xof(uint8_t* digest,
  *
  * Prepares to start a new hashing session to get a digest of custom length.
  *
+ * @image html encrypt.png
+ *
  * @remark
- * Ascon Hash-Xof can be used for keyed hashing to generate a MAC by simply
+ * Ascon Hash-XOF can be used for keyed hashing to generate a MAC by simply
  * prepending a secret key to the message, like `Hash(key || msg)` or
  * `Hash(key || nonce || msg)` in case also a nonce is used. There
  * is no need to build an HMAC construct around it, as it does not suffer from
@@ -698,7 +708,7 @@ void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
  * Feeds a chunk of data to the already initialised hashing session.
  *
  * In case of no data at all to be hashed, this function can be called (also
- * many times) with \p data_len set to 0.* Iff that is the case, \p data can be
+ * many times) with \p data_len set to 0. Iff that is the case, \p data can be
  * set to NULL.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state

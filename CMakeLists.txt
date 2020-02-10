@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.6)
 project(LibAscon
         VERSION 0.1.0
         LANGUAGES C
-        DESCRIPTION "Lightweight Authenticated Encryption & Hashing")
+        DESCRIPTION
+        "Lightweight Authenticated Encryption & Hashing, \
+        also with Init-Update-Final paradigm.")
 
 # Unless specified, by default create Release builds
 if (NOT CMAKE_BUILD_TYPE)
@@ -119,6 +121,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_GENERATE_MAN YES)
     set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
     set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
+    set(DOXYGEN_SORT_MEMBER_DOCS NO)
     set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/images)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
