@@ -30,7 +30,7 @@ static void test_xof_empty(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Without update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     atto_eq(xof_ctx.buffer_len, 0);
     ascon_hash_final(&xof_ctx, obtained_digest);
 
@@ -40,7 +40,7 @@ static void test_xof_empty(void)
                ASCON_HASH_DIGEST_LEN);
 
     // With update calls of zero length
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, NULL, 0);
     ascon_hash_update(&xof_ctx, obtained_digest, 0);
     ascon_hash_update(&xof_ctx, NULL, 0);
@@ -68,7 +68,7 @@ static void test_xof_1_byte(void)
     uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN] = {42};
     ascon_hash_ctx_t xof_ctx;
 
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, 1);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -97,7 +97,7 @@ static void test_xof_2_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -108,7 +108,7 @@ static void test_xof_2_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, &testcase.message[0], 1);
     atto_eq(xof_ctx.buffer_len, 1);
     ascon_hash_update(&xof_ctx, &testcase.message[1], 1);
@@ -138,7 +138,7 @@ static void test_xof_7_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -149,7 +149,7 @@ static void test_xof_7_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -183,7 +183,7 @@ static void test_xof_8_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, 0);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
@@ -195,7 +195,7 @@ static void test_xof_8_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -229,7 +229,7 @@ static void test_xof_9_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -240,7 +240,7 @@ static void test_xof_9_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -274,7 +274,7 @@ static void test_xof_15_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -285,7 +285,7 @@ static void test_xof_15_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -319,7 +319,7 @@ static void test_xof_16_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -330,7 +330,7 @@ static void test_xof_16_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -368,7 +368,7 @@ static void test_xof_33_bytes(void)
     ascon_hash_ctx_t xof_ctx;
 
     // Single update call
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     ascon_hash_update(&xof_ctx, testcase.message, testcase.message_len);
     atto_eq(xof_ctx.buffer_len, testcase.message_len % ASCON_RATE);
     ascon_hash_final(&xof_ctx, obtained_digest);
@@ -379,7 +379,7 @@ static void test_xof_33_bytes(void)
                ASCON_HASH_DIGEST_LEN);
 
     // Many 1-byte update calls
-    ascon_hash_init_xof(&xof_ctx);
+    ascon_hash_xof_init(&xof_ctx);
     for (size_t i = 0; i < testcase.message_len; i++)
     {
         ascon_hash_update(&xof_ctx, &testcase.message[i], 1);
@@ -436,7 +436,7 @@ static void test_xof_update_single_byte(void)
         }
         atto_eq(errcode, VECS_OK);
         // Many 1-byte update calls
-        ascon_hash_init_xof(&xof_ctx);
+        ascon_hash_xof_init(&xof_ctx);
         for (size_t i = 0; i < testcase.message_len; i++)
         {
             ascon_hash_update(&xof_ctx, &testcase.message[i], 1);

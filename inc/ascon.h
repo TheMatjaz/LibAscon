@@ -189,7 +189,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
- * `H(key || nonce || msg)`.
+ * `Hash(key || nonce || msg)`.
  *
  * @image html encrypt.png
  *
@@ -240,16 +240,16 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
- * `H(key || nonce || msg)`.
- *
- * @image html encrypt.png
- * @image html decrypt.png
+ * `Hash(key || nonce || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the ascon_aead128_encrypt_final() call. In case the encryption
  * or decryption session is interrupted and never finalised, clear the context
  * with `memset(&ctx, 0, sizeof(ascon_aead_ctx_t));` to erase the key copy.
+ *
+ * @image html encrypt.png
+ * @image html decrypt.png
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -288,7 +288,7 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
- * `H(key || nonce || msg)`.
+ * `Hash(key || nonce || msg)`.
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -322,7 +322,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
- * `H(key || nonce || msg)`.
+ * `Hash(key || nonce || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -369,7 +369,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  * Using the AEAD encryption to just authenticate any associated data with no
  * plaintext at all to be encrypted is not recommended for security reasons.
  * Instead use the Ascon hashing or xof functions in the form
- * `H(key || nonce || msg)`.
+ * `Hash(key || nonce || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
@@ -542,23 +542,180 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    ascon_tag_validity_t* tag_validity,
                                    const uint8_t* tag);
 
-void ascon_hash(uint8_t* digest, const uint8_t* data, size_t data_len);
+/**
+ * Offline Ascon Hash with fixed digest length.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it.
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `Hash(key || msg)` or
+ * `Hash(key || nonce || msg)` in case also a nonce is used. There
+ * is no need to build an HMAC construct around it, as it does not suffer from
+ * length-extension vulnerabilities.
+ *
+ * @warning
+ * For security reasons, a digest length of at least 128 bits (16 bytes) is
+ * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
+ * are recommended. Against quantum computers, the hash size should be double
+ * the amount of wanted security bits. For longer digest sizes, use the xof-hash
+ * functions (ascon_hash_xof() or ascon_hash_xof_init()).
+ *
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ * @param[in] data message fed into the hash function.
+ * @param[in] data_len length of \p data in bytes.
+ */
+void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
+                const uint8_t* data,
+                size_t data_len);
 
+/**
+ * Offline Ascon Hash with fixed digest length, initialisation.
+ *
+ * Prepares to start a new hashing session to get a digest of
+ * #ASCON_HASH_DIGEST_LEN bytes.
+ *
+ * @remark
+ * Ascon Hash can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `Hash(key || msg)` or
+ * `Hash(key || nonce || msg)` in case also a nonce is used. There
+ * is no need to build an HMAC construct around it, as it does not suffer from
+ * length-extension vulnerabilities.
+ *
+ * @warning
+ * For security reasons, a digest length of at least 128 bits (16 bytes) is
+ * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
+ * are recommended. Against quantum computers, the hash size should be double
+ * the amount of wanted security bits. For longer digest sizes, use the xof-hash
+ * functions (ascon_hash_xof() or ascon_hash_xof_init()).
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ */
 void ascon_hash_init(ascon_hash_ctx_t* ctx);
 
-void
-ascon_hash_update(ascon_hash_ctx_t* ctx, const uint8_t* data, size_t data_len);
+/**
+ * Offline Ascon Hash with fixed digest length, feeding data to hash.
+ *
+ * Feeds a chunk of data to the already initialised hashing session.
+ *
+ * In case of no data at all to be hashed, this function can be called (also
+ * many times) with \p data_len set to 0.* Iff that is the case, \p data can be
+ * set to NULL.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
+ * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
+ */
+void ascon_hash_update(ascon_hash_ctx_t* ctx,
+                       const uint8_t* data,
+                       size_t data_len);
 
-void ascon_hash_final(ascon_hash_ctx_t* ctx, uint8_t* digest);
+/**
+ * Offline Ascon Hash with fixed digest length, finalisation and digest
+ * generation.
+ *
+ * Finalises the hashing by returning the digest of the message.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ */
+void ascon_hash_final(ascon_hash_ctx_t* ctx,
+                      uint8_t digest[ASCON_HASH_DIGEST_LEN]);
 
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF).
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it of the desired length.
+ *
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `Hash(key || msg)` or
+ * `Hash(key || nonce || msg)` in case also a nonce is used. There
+ * is no need to build an HMAC construct around it, as it does not suffer from
+ * length-extension vulnerabilities.
+ *
+ * @warning
+ * For security reasons, a digest length of at least 128 bits (16 bytes) is
+ * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
+ * are recommended. Against quantum computers, the hash size should be double
+ * the amount of wanted security bits.
+ *
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of \p digest_len bytes.
+ * @param[in] data message fed into the hash function.
+ * @param[in] digest_len desired length of the \p digest in bytes.
+ * @param[in] data_len length of \p data in bytes.
+ */
 void ascon_hash_xof(uint8_t* digest,
                     const uint8_t* data,
                     size_t digest_len,
                     size_t data_len);
 
-void ascon_hash_init_xof(ascon_hash_ctx_t* ctx);
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF), initialisation.
+ *
+ * Prepares to start a new hashing session to get a digest of custom length.
+ *
+ * @remark
+ * Ascon Hash-Xof can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `Hash(key || msg)` or
+ * `Hash(key || nonce || msg)` in case also a nonce is used. There
+ * is no need to build an HMAC construct around it, as it does not suffer from
+ * length-extension vulnerabilities.
+ *
+ * @warning
+ * For security reasons, a digest length of at least 128 bits (16 bytes) is
+ * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
+ * are recommended. Against quantum computers, the hash size should be double
+ * the amount of wanted security bits.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ */
+void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
 
-void ascon_hash_final_xof(ascon_hash_ctx_t* ctx,
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF), feeding data to hash.
+ *
+ * Feeds a chunk of data to the already initialised hashing session.
+ *
+ * In case of no data at all to be hashed, this function can be called (also
+ * many times) with \p data_len set to 0.* Iff that is the case, \p data can be
+ * set to NULL.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
+ * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
+ */
+void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
+                           const uint8_t* data,
+                           size_t data_len);
+
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF), finalisation and digest generation.
+ *
+ * Finalises the hashing by returning the digest of the message.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of \p digest_size bytes.
+ * @param[in] digest_len desired length of the \p digest in bytes.
+ */
+void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                           uint8_t* digest,
                           size_t digest_len);
 

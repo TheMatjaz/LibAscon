@@ -52,7 +52,7 @@ ascon_tag_validity_t ascon_aead128_decrypt(uint8_t* plaintext,
     return validity;
 }
 
-void ascon_hash(uint8_t* const digest,
+void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
                 const uint8_t* const data,
                 const size_t data_len)
 {
@@ -68,7 +68,7 @@ void ascon_hash_xof(uint8_t* const digest,
                     const size_t data_len)
 {
     ascon_hash_ctx_t ctx;
-    ascon_hash_init_xof(&ctx);
+    ascon_hash_xof_init(&ctx);
     ascon_hash_update(&ctx, data, data_len);
-    ascon_hash_final_xof(&ctx, digest, digest_len);
+    ascon_hash_xof_final(&ctx, digest, digest_len);
 }
