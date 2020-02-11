@@ -1,89 +1,138 @@
 cmake_minimum_required(VERSION 3.6)
-project(ascon LANGUAGES C)
+project(LibAscon
+        VERSION 0.1.0
+        LANGUAGES C
+        DESCRIPTION
+        "Lightweight Authenticated Encryption & Hashing, \
+        also with Init-Update-Final paradigm.")
+
+# Unless specified, by default create Release builds
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif ()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-enable_testing()
-set(TEST_PATH tests)
-set(KAT_PATH KAT)
 
-if(NOT MSVC)
-  # PERF_FLAGS are used for CMAKE_BUILD_TYPE=Release
-  set(PERF_FLAGS -O3 -funroll-loops -fomit-frame-pointer -march=native -mtune=native)
-  # NIST_FLAGS are used for CMAKE_BUILD_TYPE=Debug
-  set(NIST_FLAGS -std=c99 -Wall -Wextra -Wshadow -O2)
-endif()
-if(NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
-  # do not use sanitizer on windows
-  set(NIST_FLAGS ${NIST_FLAGS} -fsanitize=address,undefined -static-libasan)
-endif()
 
-# set the default build type for single-config generators if none was specified
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  set(CMAKE_BUILD_TYPE Release CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
 
-# set the default version, algorithms, implementations and tests to build
-set(DEFAULT_VERSIONS v12)
-set(DEFAULT_ALGS ascon128 ascon128a ascon80pq asconhash asconxof)
-set(DEFAULT_IMPLS ref opt64 bi32 bi32_lowreg bi16 bi8)
-set(DEFAULT_TESTS genkat getcycles)
+# -----------------------------------------------------------------------------
+# Compiler flags
+# -----------------------------------------------------------------------------
+set(CMAKE_C_STANDARD 99)
+# Activate a million warnings to have the cleanest possible code
+set(FLAGS_WARNINGS -Wall -Wextra -pedantic -Wconversion -Wdouble-promotion
+        -Wswitch-default -Wswitch-enum -Wuninitialized -Wno-unused-variable
+        -Wpacked -Wpadded -Wshadow -Wformat-security -Wlogical-not-parentheses
+        -Waggregate-return -Wmissing-declarations -Wmissing-declarations)
+# Debug build: compile with no optimisation, debug info and printing
+set(CMAKE_C_FLAGS_DEBUG "${WARNING_FLAGS} -g -O0 -DDEBUG")
+# Append sanitiser flags on non-Windows systems
+if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} \
+            -fsanitize=address,undefined -static-libsan")
+endif ()
 
-# add platform specific implementations
-message(STATUS "cmake host system name: ${CMAKE_HOST_SYSTEM_NAME}")
-message(STATUS "cmake host system processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
-if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL x86_64 OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL AMD64)
-  set(DEFAULT_IMPLS ${DEFAULT_IMPLS})
-elseif(${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES ARM OR ${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES arm)
-  set(DEFAULT_IMPLS ${DEFAULT_IMPLS} bi32_arm neon)
-endif()
+# Mini-sized release build: compile with optimisation for size
+# convert warnings into errors and some other optimisations
+set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} \
+        ${WARNING_FLAGS} \
+        -Os -Werror -fomit-frame-pointer -march=native -mtune=native")
 
-set(VERSION_LIST ${DEFAULT_VERSIONS} CACHE STRING "Choose the ascon versions to include.")
-set(ALG_LIST ${DEFAULT_ALGS} CACHE STRING "Choose the list of algorithms to include.")
-set(IMPL_LIST ${DEFAULT_IMPLS} CACHE STRING "Choose the list of implementations to include.")
-set(TEST_LIST ${DEFAULT_TESTS} CACHE STRING "Choose the list of tests to include.")
+# Performance-oriented release build: compile with optimisation for speed
+# convert warnings into errors and some other optimisations
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
+        ${WARNING_FLAGS} \
+        -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
+        -funroll-loops")
 
-foreach(CRYPTO aead hash)
-  foreach(VER ${VERSION_LIST})
-    foreach(ALG ${ALG_LIST})
-      foreach(IMPL ${IMPL_LIST})
-        set(IMPL_PATH crypto_${CRYPTO}/${ALG}${VER}/${IMPL})
-        if(NOT EXISTS ${CMAKE_SOURCE_DIR}/${IMPL_PATH})
-          continue()
-        endif()
-        message("Adding implementation ${IMPL_PATH}")
-        string(REGEX REPLACE "/" "_" IMPL_NAME ${IMPL_PATH})
-        file(GLOB IMPL_FILES RELATIVE ${CMAKE_SOURCE_DIR} "${IMPL_PATH}/*.[ch]")
-        add_library(${IMPL_NAME} ${IMPL_FILES})
-        target_include_directories(${IMPL_NAME} PRIVATE ${IMPL_PATH} ${TEST_PATH})
-        target_compile_options(${IMPL_NAME} PRIVATE $<$<CONFIG:RELEASE>:${PERF_FLAGS}>)
-        target_compile_options(${IMPL_NAME} PRIVATE $<$<CONFIG:DEBUG>:${NIST_FLAGS}>)
-        foreach(TEST_NAME ${TEST_LIST})
-          if(${TEST_NAME} STREQUAL genkat)
-            set(TEST_FILES ${TEST_PATH}/crypto_${CRYPTO}.h ${TEST_PATH}/${TEST_NAME}_${CRYPTO}.c)
-          else()
-            set(TEST_FILES ${TEST_PATH}/crypto_${CRYPTO}.h ${TEST_PATH}/${TEST_NAME}.c)
-          endif()
-          string(TOUPPER CRYPTO_${CRYPTO} CRYPTO_DEFINE)
-          set(EXE_NAME ${TEST_NAME}_${IMPL_NAME})
-          add_executable(${EXE_NAME} ${TEST_FILES})
-          target_compile_definitions(${EXE_NAME} PRIVATE ${CRYPTO_DEFINE})
-          target_include_directories(${EXE_NAME} PRIVATE ${IMPL_PATH} ${TEST_PATH})
-          target_compile_options(${EXE_NAME} PRIVATE
-            $<$<CONFIG:RELEASE>:${PERF_FLAGS}> -fno-diagnostics-show-caret)
-          target_compile_options(${EXE_NAME} PRIVATE $<$<CONFIG:DEBUG>:${NIST_FLAGS}>)
-          target_link_libraries(${EXE_NAME} PRIVATE "$<$<CONFIG:DEBUG>:${NIST_FLAGS}>" ${IMPL_NAME})
-          if(${TEST_NAME} STREQUAL genkat)
-            add_test(NAME ${EXE_NAME} COMMAND ${CMAKE_COMMAND}
-              -DEXE_NAME=${EXE_NAME} -DALG=${ALG}${VER}
-              -DSRC_DIR=${CMAKE_SOURCE_DIR} -DBIN_DIR=${CMAKE_BINARY_DIR}
-              -DCONFIG=$<CONFIGURATION> -P ${CMAKE_SOURCE_DIR}/genkat.cmake)
-          else()
-            add_test(${EXE_NAME} ${EXE_NAME})
-          endif()
-        endforeach()
-      endforeach()
-    endforeach()
-  endforeach()
-endforeach()
 
+# -----------------------------------------------------------------------------
+# Source files
+# -----------------------------------------------------------------------------
+set(LIB_SRC_FILES
+        src/internal.h
+        src/offline.c
+        src/hash.c
+        src/aead128.c
+        src/permutations.c
+        src/buffering.c)
+set(TEST_FRAMEWORK
+        tst/atto/atto.c
+        tst/main.c
+        tst/vectors.c)
+set(TEST_SRC_FILES
+        tst/test_xof.c
+        tst/test_hash.c
+        tst/test_aead128_enc.c
+        tst/test_aead128_dec.c
+        tst/test_aead128_inplace.c
+        tst/test_structs.c)
+set(BENCHMARK_SRC_FILES
+        tst/benchmark.c)
+include_directories(AFTER SYSTEM inc/ tst/atto/)
+
+
+
+# -----------------------------------------------------------------------------
+# Build targets
+# ----------------------------------------------------------------------------
+# Build the library first into an object, but keep `objlibascon` as
+# a reference to it, so there is no need to recompile it when building
+# a different target, that uses the same source files.
+# Static library (.a)
+add_library(staticascon STATIC ${LIB_SRC_FILES})
+
+# Shared library (.dylib / .dll)
+# Does not reuse the static library object files, as they may be
+# recompiled in order to have position-independent code
+add_library(ascon SHARED ${LIB_SRC_FILES})
+set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# Test runner executable, reuse the static libary instead of recompiling
+# the source files
+add_executable(testascon
+        $<TARGET_OBJECTS:staticascon>
+        ${TEST_FRAMEWORK}
+        ${TEST_SRC_FILES})
+# Copy test vectors files to build directory after the make-build.
+# They are used by the test runner
+add_custom_command(
+        TARGET testascon POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/tst/vectors
+        ${CMAKE_BINARY_DIR}/vectors)
+# Delete the test vectors file on make-clean
+set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        "${CMAKE_BINARY_DIR}/vectors")
+
+# Benchmark runner executable, reuse the static libary instead of recompiling
+# the source files
+add_executable(benchmark
+        $<TARGET_OBJECTS:staticascon>
+        ${BENCHMARK_SRC_FILES})
+
+# Doxygen documentation builder
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    # Cmake's wrapper of Doxygen, constructing a doxyfile from the
+    # DOXYGEN_* variables, which are mapped to the Doxygen variables.
+    set(DOXYGEN_GENERATE_HTML YES)
+    set(DOXYGEN_GENERATE_MAN YES)
+    set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
+    set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
+    set(DOXYGEN_SORT_MEMBER_DOCS NO)
+    set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/images)
+    set(DOXYGEN_ALIASES license="**License:**")
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    doxygen_add_docs(doxygen
+            ALL # Build doxygen on make-all
+            # List of input files for Doxygen
+            ${PROJECT_SOURCE_DIR}/inc/ascon.h
+            ${PROJECT_SOURCE_DIR}/LICENSE.md
+            ${PROJECT_SOURCE_DIR}/AUTHORS.md
+            ${PROJECT_SOURCE_DIR}/README.md
+            ${PROJECT_SOURCE_DIR}/CHANGELOG.md)
+else (DOXYGEN_FOUND)
+    message(WARNING "Doxygen not found. Cannot generate documentation.")
+endif (DOXYGEN_FOUND)
