@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['ascon_5faead128_5fassoc_5fdata_5fupdate_54',['ascon_aead128_assoc_data_update',['../ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253',1,'ascon.h']]],
+  ['ascon_5faead128_5fdecrypt_55',['ascon_aead128_decrypt',['../ascon_8h.html#a3e32a6ce94d64a9257f543e6db600f97',1,'ascon.h']]],
+  ['ascon_5faead128_5fdecrypt_5ffinal_56',['ascon_aead128_decrypt_final',['../ascon_8h.html#a3369868a66e1419f7b0f4882d3a7ee85',1,'ascon.h']]],
+  ['ascon_5faead128_5fdecrypt_5fupdate_57',['ascon_aead128_decrypt_update',['../ascon_8h.html#a875b78b43a6fa72bd75e3a4bb84b5190',1,'ascon.h']]],
+  ['ascon_5faead128_5fencrypt_58',['ascon_aead128_encrypt',['../ascon_8h.html#aa7585233ec25ca8922c8ccfc93c02e18',1,'ascon.h']]],
+  ['ascon_5faead128_5fencrypt_5ffinal_59',['ascon_aead128_encrypt_final',['../ascon_8h.html#a79edf75c04001e8b567701beac7f334a',1,'ascon.h']]],
+  ['ascon_5faead128_5fencrypt_5fupdate_60',['ascon_aead128_encrypt_update',['../ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2',1,'ascon.h']]],
+  ['ascon_5faead128_5finit_61',['ascon_aead128_init',['../ascon_8h.html#acab9fc131984cc0666a10fc237557845',1,'ascon.h']]],
+  ['ascon_5fhash_62',['ascon_hash',['../ascon_8h.html#a5d8bc380e2deab7695d3ef32fdc53c0a',1,'ascon.h']]],
+  ['ascon_5fhash_5ffinal_63',['ascon_hash_final',['../ascon_8h.html#a1146889f77805b15cc96640621989f35',1,'ascon.h']]],
+  ['ascon_5fhash_5finit_64',['ascon_hash_init',['../ascon_8h.html#aa031d40243972401a89ac73275606f54',1,'ascon.h']]],
+  ['ascon_5fhash_5fupdate_65',['ascon_hash_update',['../ascon_8h.html#a90154e769972fec32434abdb7cadaa72',1,'ascon.h']]],
+  ['ascon_5fhash_5fxof_66',['ascon_hash_xof',['../ascon_8h.html#a37a25af50939b40e9ad6ad48bc2c50c8',1,'ascon.h']]],
+  ['ascon_5fhash_5fxof_5ffinal_67',['ascon_hash_xof_final',['../ascon_8h.html#a48c134235862a6f3e32226d7dd255fac',1,'ascon.h']]],
+  ['ascon_5fhash_5fxof_5finit_68',['ascon_hash_xof_init',['../ascon_8h.html#a98f59729cb68ab2a07e7a6771a1e346a',1,'ascon.h']]],
+  ['ascon_5fhash_5fxof_5fupdate_69',['ascon_hash_xof_update',['../ascon_8h.html#af705e6d12807b17fdaf82753d1d73c76',1,'ascon.h']]]
+];
