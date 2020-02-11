@@ -136,7 +136,3 @@ if (DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message(WARNING "Doxygen not found. Cannot generate documentation.")
 endif (DOXYGEN_FOUND)
-
-# TODO https://stackoverflow.com/questions/10487256/cmake-how-to-properly-copy-static-librarys-header-file-into-usr-include
-# TODO https://stackoverflow.com/questions/12899582/cmake-how-can-i-build-a-shared-and-a-static-library-without-recompiling-the-sou
-# TODO https://stackoverflow.com/questions/17511496/how-to-create-a-shared-library-with-cmake
