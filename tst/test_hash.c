@@ -13,6 +13,13 @@
 
 #define HASH_VECTORS_FILE "vectors/hash.txt"
 
+static void test_hash_cleanup(void)
+{
+    ascon_hash_ctx_t ctx = {.assoc_data_state = 42};
+    ascon_hash_cleanup(&ctx);
+    atto_zeros(&ctx, sizeof(ascon_hash_ctx_t));
+}
+
 static void test_hash_empty(void)
 {
     vecs_hash_t testcase =
@@ -451,6 +458,7 @@ static void test_hash_update_single_byte(void)
 
 void test_hash(void)
 {
+    test_hash_cleanup();
     test_hash_empty();
     test_hash_1_byte();
     test_hash_2_bytes();

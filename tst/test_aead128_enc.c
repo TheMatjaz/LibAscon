@@ -13,6 +13,13 @@
 
 #define AEAD_VECTORS_FILE "vectors/aead128.txt"
 
+static void test_aead_cleanup(void)
+{
+    ascon_aead_ctx_t ctx = {.k0 = 42};
+    ascon_aead128_cleanup(&ctx);
+    atto_zeros(&ctx, sizeof(ascon_aead_ctx_t));
+}
+
 static void test_encrypt_empty(void)
 {
     vecs_aead_t testcase =
