@@ -79,7 +79,7 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
     ascon_permutation_a12(&ctx->sponge);
     u64_to_bytes(digest, ctx->sponge.x0, (uint_fast8_t) digest_len);
     // Final security cleanup of the internal state and buffer.
-    memset(ctx, 0, sizeof(ascon_hash_ctx_t));
+    ascon_hash_cleanup(ctx);
 }
 
 void inline ascon_hash_final(ascon_hash_ctx_t* const ctx,

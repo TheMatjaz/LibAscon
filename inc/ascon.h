@@ -551,6 +551,8 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    ascon_tag_validity_t* tag_validity,
                                    const uint8_t* tag);
 
+void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
+
 /**
  * Offline Ascon Hash with fixed digest length.
  *
@@ -736,6 +738,8 @@ void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
 void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                           uint8_t* digest,
                           size_t digest_len);
+
+void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
 
 #ifdef __cplusplus
 }

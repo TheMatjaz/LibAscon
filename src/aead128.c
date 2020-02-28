@@ -188,7 +188,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                 freshly_generated_ciphertext_len;
     }
     // Final security cleanup of the internal state, key and buffer.
-    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
+    ascon_aead128_cleanup(ctx);
     return freshly_generated_ciphertext_len;
 }
 
@@ -257,6 +257,6 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                                freshly_generated_plaintext_len;
     }
     // Final security cleanup of the internal state, key and buffer.
-    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
+    ascon_aead128_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }
