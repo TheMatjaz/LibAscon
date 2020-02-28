@@ -51,6 +51,7 @@ extern "C"
 #include <stdint.h> /* For uint8_t, uint64_t */
 #include <stddef.h> /* For size_t, NULL */
 #include <string.h> /* For memset() */
+#include <stdbool.h> /* For bool, true, false */
 
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 0
@@ -89,16 +90,14 @@ extern "C"
 #define ASCON_RATE 8U
 
 /**
- * Possible outputs of the final step of the decryption that also validates
- * the tag.
+ * The tag is valid thus the associated data and ciphertext were intact.
  */
-typedef enum
-{
-    /** The tag is valid thus the decryption too. */
-            ASCON_TAG_OK = 0,
-    /** The tag is invalid thus the decrypted data should be ignored. */
-            ASCON_TAG_INVALID = 1,
-} ascon_tag_validity_t;
+#define ASCON_TAG_OK true
+/**
+ * The tag is invalid thus the associated data and decrypted data should be
+ * ignored.
+ */
+#define ASCON_TAG_INVALID false
 
 /**
  * Internal cipher sponge state (320 bits).
@@ -444,19 +443,19 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @returns #ASCON_TAG_OK if the validation of the tag is correct, thus the
- *        associated data and ciphertext are intact and authentic.
- *        #ASCON_TAG_INVALID otherwise.
+ * @returns the answer to the question "is tha tag valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
+ *        thus the associated data and ciphertext are intact and authentic.
+ *        `false` (== #ASCON_TAG_INVALID) otherwise.
  */
-ascon_tag_validity_t
-ascon_aead128_decrypt(uint8_t* plaintext,
-                      const uint8_t key[ASCON_AEAD_KEY_LEN],
-                      const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                      const uint8_t* assoc_data,
-                      const uint8_t* ciphertext,
-                      const uint8_t tag[ASCON_AEAD_TAG_LEN],
-                      size_t assoc_data_len,
-                      size_t ciphertext_len);
+bool ascon_aead128_decrypt(uint8_t* plaintext,
+                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                           const uint8_t* assoc_data,
+                           const uint8_t* ciphertext,
+                           const uint8_t tag[ASCON_AEAD_TAG_LEN],
+                           size_t assoc_data_len,
+                           size_t ciphertext_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -534,9 +533,10 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *       all update calls and this final call of this decryption session.
  *       It's the same as the sum of all ciphertext bytes fed into the
  *       update calls. May be NULL, if the sum is not of interest.
- * @param[out] tag_validity #ASCON_TAG_OK if the validation of the tag is
- *       correct, thus the associated data and ciphertext are intact and
- *       authentic. #ASCON_TAG_INVALID otherwise.
+ * @param[out] is_tag_valid the answer to the question "is tha tag valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
+ *        thus the associated data and ciphertext are intact and authentic.
+ *        `false` (== #ASCON_TAG_INVALID) otherwise.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
@@ -548,7 +548,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* plaintext,
                                    uint64_t* total_decrypted_len,
-                                   ascon_tag_validity_t* tag_validity,
+                                   bool* is_tag_valid,
                                    const uint8_t* tag);
 
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);

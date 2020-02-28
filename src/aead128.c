@@ -210,7 +210,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* const ctx,
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* plaintext,
                                    uint64_t* const total_decrypted_len,
-                                   ascon_tag_validity_t* const tag_validity,
+                                   bool* const is_tag_valid,
                                    const uint8_t* const tag)
 {
     if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
@@ -245,11 +245,11 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
          | (ctx->bufstate.sponge.x4 ^ bytes_to_u64(tag + sizeof(uint64_t),
                                                    sizeof(uint64_t)))) != 0)
     {
-        *tag_validity = ASCON_TAG_INVALID;
+        *is_tag_valid = ASCON_TAG_INVALID;
     }
     else
     {
-        *tag_validity = ASCON_TAG_OK;
+        *is_tag_valid = ASCON_TAG_OK;
     }
     if (total_decrypted_len != NULL)
     {
