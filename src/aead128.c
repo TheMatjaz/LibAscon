@@ -151,7 +151,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
 
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* const ciphertext,
-                                   uint64_t* const total_ecnrypted_bytes,
+                                   uint64_t* const total_encrypted_bytes,
                                    uint8_t* const tag)
 {
     if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
@@ -181,9 +181,9 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     u64_to_bytes(tag, ctx->bufstate.sponge.x3, sizeof(uint64_t));
     u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
                  sizeof(uint64_t));
-    if (total_ecnrypted_bytes != NULL)
+    if (total_encrypted_bytes != NULL)
     {
-        *total_ecnrypted_bytes =
+        *total_encrypted_bytes =
                 ctx->bufstate.total_output_len +
                 freshly_generated_ciphertext_len;
     }
