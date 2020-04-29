@@ -172,8 +172,6 @@ typedef struct
 /** Cipher context for hashing. */
 typedef ascon_bufstate_t ascon_hash_ctx_t;
 
-// TODO difference between AEAD(key, nonce, ad, NO_PT) and HASH
-//  (key||nonce||msg)?
 /**
  * Offline symmetric encryption using Ascon128.
  *

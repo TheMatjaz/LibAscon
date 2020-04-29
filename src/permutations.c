@@ -103,7 +103,7 @@ void inline ascon_permutation_a12(ascon_sponge_t* const sponge)
     }
 }
 
-void inline ascon_permutation_8(ascon_sponge_t* const sponge)
+void inline ascon_permutation_b8(ascon_sponge_t* const sponge)
 {
     log_sponge(" permutation input:", sponge);
     for (uint_fast8_t i = PERMUTATION_8_START; i < ROUND_CONSTANTS_AMOUNT; i++)

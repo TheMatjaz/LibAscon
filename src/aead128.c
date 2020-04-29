@@ -1,6 +1,6 @@
 /**
  * @file
- * Implementation of Ascon128 AEAD cipher.
+ * 64-bit optimised implementation of Ascon128 AEAD cipher.
  *
  * @license Creative Commons Zero (CC0) 1.0
  * @authors see AUTHORS.md file
