@@ -185,17 +185,17 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
  * be set to NULL.
  *
- * In case of no plaintext at all to be encrypted, set
- * \p plaintext_len to 0. Iff that is the case, \p plaintext can
- * be set to NULL (see warning).
- *
  * @image html encrypt.png
  *
  * @warning
- * Using the AEAD encryption to just authenticate any associated data with no
- * plaintext to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or xof functions in the form
- * `Hash(key || nonce || msg)`.
+ * The nonce **must be unique**, as the strenght of the AEAD is based on
+ * its uniqueness.
+ *
+ * @warning
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
  *
  * @param[out] ciphertext encrypted data with the same length as the
  *       plaintext, thus \p plaintext_len will be written in this buffer.
@@ -207,7 +207,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
  *       NULL.
  * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
  *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] plaintext data to be encrypted into \p ciphertext.
@@ -245,10 +245,10 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @image html decrypt.png
  *
  * @warning
- * Using the AEAD encryption to just authenticate any associated data with no
- * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or xof functions in the form
- * `Hash(key || nonce || msg)`.
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
@@ -290,10 +290,10 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * 4. ascon_aead128_encrypt_final() / ascon_aead128_encrypt_final() - once only
  *
  * @warning
- * Using the AEAD encryption to just authenticate any associated data with no
- * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or xof functions in the form
- * `Hash(key || nonce || msg)`.
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -324,10 +324,10 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * 4. ascon_aead128_encrypt_final() - once only
  *
  * @warning
- * Using the AEAD encryption to just authenticate any associated data with no
- * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or XOF functions in the form
- * `Hash(key || nonce || msg)`.
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
@@ -371,10 +371,10 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  * 4. ascon_aead128_encrypt_final() - once only
  *
  * @warning
- * Using the AEAD encryption to just authenticate any associated data with no
- * plaintext at all to be encrypted is not recommended for security reasons.
- * Instead use the Ascon hashing or XOF functions in the form
- * `Hash(key || nonce || msg)`.
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
