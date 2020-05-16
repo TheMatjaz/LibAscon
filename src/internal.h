@@ -24,6 +24,7 @@ extern "C"
 /* Definitions of the initialisation vectors used to initalise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_A_ROUNDS 12
+#define PERMUTATION_Ba_ROUNDS 8
 #define PERMUTATION_B_ROUNDS 6
 #define XOF_IV ( \
     ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
@@ -33,6 +34,11 @@ extern "C"
      ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
      | XOF_IV \
      | ((uint64_t)(PERMUTATION_B_ROUNDS) << 32U) \
+     )
+#define AEAD128a_IV ( \
+     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+     | XOF_IV \
+     | ((uint64_t)(PERMUTATION_Ba_ROUNDS) << 32U) \
      )
 #define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
 
@@ -90,7 +96,7 @@ void ascon_permutation_a12(ascon_sponge_t* sponge);
  * @internal
  * Ascon sponge permutation with 8 rounds.
  */
-void ascon_permutation_8(ascon_sponge_t* sponge);
+void ascon_permutation_b8(ascon_sponge_t* const sponge);
 
 /**
  * @internal
