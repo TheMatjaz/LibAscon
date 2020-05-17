@@ -188,7 +188,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * @image html encrypt.png
  *
  * @warning
- * The nonce **must be unique**, as the strenght of the AEAD is based on
+ * The nonce **must be unique**, as the strength of the AEAD is based on
  * its uniqueness.
  *
  * @warning
@@ -204,8 +204,8 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       of writing into a separate output buffer. Not NULL.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
- *       NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
+ *       bytes. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
  * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
@@ -399,8 +399,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       if the sum is not of interest.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
- *       NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
+ *       bytes. Not NULL.
  * @param[out] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns number of bytes written into \p ciphertext. The value is in the
@@ -442,8 +442,8 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext data to be decrypted into \p plaintext.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
- *       NULL.
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
+ *       bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. Can be 0.
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
@@ -775,7 +775,7 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
  * (because these 2 functions perform the cleanup automatically).
  *
  * This is to prevent any information to leak through the context in case an
- * hasking transaction is rolled back/abruptly terminated.
+ * hashing transaction is rolled back/abruptly terminated.
  *
  * @param[in, out] ctx to erase.
  */

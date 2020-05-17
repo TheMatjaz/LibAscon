@@ -35,14 +35,13 @@ static void test_decrypt_empty(void)
             };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_plaintext[testcase.plaintext_len * 2];
+    uint8_t obtained_plaintext[1];
     uint64_t plaintext_len = 0;
     ascon_aead_ctx_t aead_ctx;
     size_t new_pt_len = 0;
     bool is_valid;
 
     // Offline
-    plaintext_len = 0;
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
     is_valid = ascon_aead128_decrypt(
             obtained_plaintext,
@@ -170,7 +169,7 @@ static void test_decrypt_1_byte_ad_empty_pt(void)
             };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_plaintext[testcase.plaintext_len * 2];
+    uint8_t obtained_plaintext[1];
     uint64_t plaintext_len = 0;
     ascon_aead_ctx_t aead_ctx;
     size_t new_pt_len = 0;

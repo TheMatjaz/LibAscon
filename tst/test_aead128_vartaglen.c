@@ -34,7 +34,7 @@ static void test_encrypt_empty(void)
             };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_ciphertext[testcase.ciphertext_len * 2];
+    uint8_t obtained_ciphertext[1];
     const uint8_t expected_tag[TAG_MAX_LEN] = {
             0xE3, 0x55, 0x15, 0x9F, 0x29, 0x29, 0x11, 0xF7,
             0x94, 0xCB, 0x14, 0x32, 0xA0, 0x10, 0x3A, 0x8A,
@@ -139,7 +139,7 @@ static void test_decrypt_empty(void)
     };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_plaintext[testcase.plaintext_len * 2];
+    uint8_t obtained_plaintext[1];
     bool is_valid;
 
     // Offline

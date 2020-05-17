@@ -21,7 +21,7 @@
         #include <x86intrin.h>
         #define ALIGN(x) __attribute__((aligned(x)))
     #endif
-    #define init_cpucycles()
+    #define init_cpucycles() do{}while(0)
     #define cpucycles(cycles) cycles = __rdtsc()
 #endif
 

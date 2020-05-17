@@ -21,7 +21,7 @@ extern "C"
 #include <stdint.h>
 #include "ascon.h"
 
-/* Definitions of the initialisation vectors used to initalise the sponge
+/* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_A_ROUNDS 12
 #define PERMUTATION_Ba_ROUNDS 8
@@ -125,11 +125,11 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  * bytes, runs the absorb function to process them.
  *
  * This function is used by the AEAD and hash implementations to enable
- * the Init-Udpate-Final paradigm. The update functions pass the absorb_fptr
+ * the Init-Update-Final paradigm. The update functions pass the absorb_fptr
  * function specific to them, while this function is the framework handling the
  * accumulation of data until the proper amount is reached.
  *
- * It is not used during the Final step, as that requires paddings and special
+ * It is not used during the Final step, as that requires padding and special
  * additional operations such as tag/digest generation.
  *
  * @param[in, out] ctx the sponge and the buffer to accumulate data in
