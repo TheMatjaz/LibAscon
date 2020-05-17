@@ -153,14 +153,14 @@ static void generate_tag(ascon_aead_ctx_t* const ctx,
                          uint8_t* tag,
                          uint8_t tag_len)
 {
-    while (tag_len > ASCON_AEAD_TAG_LEN)
+    while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
         u64_to_bytes(tag, ctx->bufstate.sponge.x3, sizeof(uint64_t));
         u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
                      sizeof(uint64_t));
         ascon_permutation_a12(&ctx->bufstate.sponge);
-        tag_len -= ASCON_AEAD_TAG_LEN;
-        tag += ASCON_AEAD_TAG_LEN;
+        tag_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
+        tag += ASCON_AEAD_TAG_MIN_SECURE_LEN;
     }
     uint8_t remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x3, remaining);
@@ -270,7 +270,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     uint8_t expected_tag[tag_len];
     generate_tag(ctx, expected_tag, tag_len);
     const int tags_differ = memcmp(tag, expected_tag, tag_len);
-    memset(expected_tag, 0, ASCON_AEAD_TAG_LEN);
+    memset(expected_tag, 0, ASCON_AEAD_TAG_MIN_SECURE_LEN);
     if (tags_differ)
     {
         *is_tag_valid = ASCON_TAG_INVALID;

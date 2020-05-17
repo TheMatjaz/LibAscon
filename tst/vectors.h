@@ -74,7 +74,7 @@ typedef struct
     uint8_t ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
     uint8_t key[ASCON_AEAD_KEY_LEN];
     uint8_t nonce[ASCON_AEAD_NONCE_LEN];
-    uint8_t tag[ASCON_AEAD_TAG_LEN];
+    uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     size_t plaintext_len;
     size_t assoc_data_len;
     size_t ciphertext_len;

@@ -19,7 +19,7 @@ static void test_inplace_offline(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t transformed[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 
@@ -50,7 +50,7 @@ static void test_inplace_offline(void)
         atto_memeq(transformed,
                    testcase.ciphertext,
                    testcase.ciphertext_len);
-        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
         const bool is_valid = ascon_aead128_decrypt(
@@ -77,7 +77,7 @@ static void test_inplace_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t transformed[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
     ascon_aead_ctx_t aead_ctx;
@@ -137,7 +137,7 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(transformed,
                    testcase.ciphertext,
                    testcase.ciphertext_len);
-        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
         ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);

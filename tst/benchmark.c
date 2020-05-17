@@ -62,7 +62,7 @@ typedef struct
     uint8_t ALIGN(16) key[ASCON_AEAD_KEY_LEN];
     uint8_t ALIGN(16) nonce[ASCON_AEAD_NONCE_LEN];
     uint8_t ALIGN(16) assoc_data[MAX_TEXT_LEN];
-    uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     uint8_t ALIGN(16) obtained_digest[ASCON_HASH_DIGEST_LEN];
     size_t text_len;
 } benchmark_data_t;
