@@ -204,8 +204,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       of writing into a separate output buffer. Not NULL.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
- *       bytes. Not NULL.
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
  * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
@@ -399,9 +398,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       if the sum is not of interest.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
- *       bytes. Not NULL.
- * @param[out] tag_len length of the tag to generate in bytes. At least
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
+ * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
@@ -442,14 +440,13 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext data to be decrypted into \p plaintext.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN
- *       bytes. Not NULL.
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. Can be 0.
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[out] tag_len length of the tag to generate in bytes. At least
+ * @param[in] tag_len length of the \p tag to check in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
@@ -548,9 +545,8 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has \p tag_len bytes. Not
- *       NULL.
- * @param[in] tag_len length of the tag to check in bytes. At least
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
+ * @param[in] tag_len length of the \p tag to check in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
