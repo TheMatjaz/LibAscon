@@ -272,14 +272,14 @@ static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
     {
         return errcode;
     }
-    if (testcase->ciphertext_len < ASCON_AEAD_TAG_LEN)
+    if (testcase->ciphertext_len < ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
         return VECS_FORMAT_TOO_SHORT_CIPHERTEXT;
     }
-    testcase->ciphertext_len -= ASCON_AEAD_TAG_LEN;
+    testcase->ciphertext_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
     memcpy(testcase->tag,
            &testcase->ciphertext[testcase->ciphertext_len],
-           ASCON_AEAD_TAG_LEN);
+           ASCON_AEAD_TAG_MIN_SECURE_LEN);
     return VECS_OK;
 }
 
@@ -314,31 +314,35 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
     }
 }
 
-#ifdef DEBUG
-static void log_hexbytes(const char* const name,
-                         const uint8_t* const array,
-                         const size_t amount)
+void vecs_log_hexbytes(const char* name,
+                       const uint8_t* array,
+                       size_t amount)
 {
+#ifdef DEBUG
     printf("%s (%zu B): ", name, amount);
     for (size_t i = 0; i < amount; i++)
     {
         printf("%02X", array[i]);
     }
     puts("");
-}
+#else
+    (void) name;
+    (void) array;
+    (void) amount;
 #endif
+}
 
 void vecs_hash_log(const vecs_hash_t* const testcase,
                    const uint8_t* const obtained_digest)
 {
 #ifdef DEBUG
-    log_hexbytes("Msg", testcase->message, testcase->message_len);
-    log_hexbytes("Expected digest", testcase->expected_digest,
-                 ASCON_HASH_DIGEST_LEN);
+    vecs_log_hexbytes("Msg", testcase->message, testcase->message_len);
+    vecs_log_hexbytes("Expected digest", testcase->expected_digest,
+                      ASCON_HASH_DIGEST_LEN);
     if (obtained_digest != NULL)
     {
-        log_hexbytes("Obtained digest", obtained_digest,
-                     ASCON_HASH_DIGEST_LEN);
+        vecs_log_hexbytes("Obtained digest", obtained_digest,
+                          ASCON_HASH_DIGEST_LEN);
     }
     fflush(stdout);
 #else
@@ -354,21 +358,23 @@ void vecs_aead_enc_log(const vecs_aead_t* const testcase,
 {
 #ifdef DEBUG
     printf("---\nCount: %zu\n", testcase->count);
-    log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
-    log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
-    log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
-    log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
-    log_hexbytes("Expected CT", testcase->ciphertext,
-                 testcase->ciphertext_len);
+    vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
+    vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
+    vecs_log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
+    vecs_log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
+    vecs_log_hexbytes("Expected CT", testcase->ciphertext,
+                      testcase->ciphertext_len);
     if (obtained_ciphertext != NULL)
     {
-        log_hexbytes("Obtained CT", obtained_ciphertext,
-                     obtained_ciphertext_len);
+        vecs_log_hexbytes("Obtained CT", obtained_ciphertext,
+                          obtained_ciphertext_len);
     }
-    log_hexbytes("Expected tag", testcase->tag, ASCON_AEAD_TAG_LEN);
+    vecs_log_hexbytes("Expected tag", testcase->tag,
+                      ASCON_AEAD_TAG_MIN_SECURE_LEN);
     if (obtained_tag != NULL)
     {
-        log_hexbytes("Obtained tag", obtained_tag, ASCON_AEAD_TAG_LEN);
+        vecs_log_hexbytes("Obtained tag", obtained_tag,
+                          ASCON_AEAD_TAG_MIN_SECURE_LEN);
     }
     fflush(stdout);
 #else
@@ -385,17 +391,19 @@ void vecs_aead_dec_log(const vecs_aead_t* const testcase,
 {
 #ifdef DEBUG
     printf("---\nCount: %zu\n", testcase->count);
-    log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
-    log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
-    log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
-    log_hexbytes("CT", testcase->ciphertext, testcase->ciphertext_len);
-    log_hexbytes("Expected PT", testcase->plaintext, testcase->plaintext_len);
+    vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
+    vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
+    vecs_log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
+    vecs_log_hexbytes("CT", testcase->ciphertext, testcase->ciphertext_len);
+    vecs_log_hexbytes("Expected PT", testcase->plaintext,
+                      testcase->plaintext_len);
     if (obtained_plaintext != NULL)
     {
-        log_hexbytes("Obtained CT", obtained_plaintext,
-                     obtained_plaintext_len);
+        vecs_log_hexbytes("Obtained CT", obtained_plaintext,
+                          obtained_plaintext_len);
     }
-    log_hexbytes("Expected tag", testcase->tag, ASCON_AEAD_TAG_LEN);
+    vecs_log_hexbytes("Expected tag", testcase->tag,
+                      ASCON_AEAD_TAG_MIN_SECURE_LEN);
     fflush(stdout);
 #else
     (void) testcase;

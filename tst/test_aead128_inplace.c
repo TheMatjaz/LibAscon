@@ -19,7 +19,7 @@ static void test_inplace_offline(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t transformed[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
 
@@ -43,16 +43,17 @@ static void test_inplace_offline(void)
                               testcase.assoc_data,
                               transformed,
                               testcase.assoc_data_len,
-                              testcase.plaintext_len);
+                              testcase.plaintext_len,
+                              sizeof(testcase.tag));
         vecs_aead_enc_log(&testcase, transformed, obtained_tag,
                           testcase.ciphertext_len);
         atto_memeq(transformed,
                    testcase.ciphertext,
                    testcase.ciphertext_len);
-        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
-        const ascon_tag_validity_t validity = ascon_aead128_decrypt(
+        const bool is_valid = ascon_aead128_decrypt(
                 transformed,
                 testcase.key,
                 testcase.nonce,
@@ -60,10 +61,11 @@ static void test_inplace_offline(void)
                 transformed,
                 obtained_tag,
                 testcase.assoc_data_len,
-                testcase.ciphertext_len);
+                testcase.ciphertext_len,
+                sizeof(testcase.tag));
         vecs_aead_dec_log(&testcase, transformed,
                           testcase.plaintext_len);
-        atto_eq(validity, ASCON_TAG_OK);
+        atto_eq(is_valid, ASCON_TAG_OK);
         atto_memeq(transformed,
                    testcase.plaintext,
                    testcase.plaintext_len);
@@ -75,12 +77,12 @@ static void test_inplace_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t transformed[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    uint8_t obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
     atto_eq(errcode, VECS_OK);
     ascon_aead_ctx_t aead_ctx;
     size_t new_bytes = 0;
-    ascon_tag_validity_t validity;
+    bool is_valid;
 
     while (1)
     {
@@ -125,7 +127,8 @@ static void test_inplace_update_single_byte(void)
                                                 transformed
                                                 +
                                                 aead_ctx.bufstate.total_output_len,
-                                                &total_ct_len, obtained_tag);
+                                                &total_ct_len, obtained_tag,
+                                                sizeof(testcase.tag));
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_len, testcase.ciphertext_len);
@@ -134,7 +137,7 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(transformed,
                    testcase.ciphertext,
                    testcase.ciphertext_len);
-        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_LEN);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
         ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
@@ -166,12 +169,13 @@ static void test_inplace_update_single_byte(void)
                                                 transformed +
                                                 aead_ctx.bufstate.total_output_len,
                                                 &total_pt_len,
-                                                &validity, testcase.tag);
+                                                &is_valid, testcase.tag,
+                                                sizeof(testcase.tag));
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);
         vecs_aead_dec_log(&testcase, transformed, testcase.plaintext_len);
-        atto_eq(validity, ASCON_TAG_OK);
+        atto_eq(is_valid, ASCON_TAG_OK);
         atto_memeq(transformed,
                    testcase.plaintext,
                    testcase.plaintext_len);

@@ -21,7 +21,7 @@
         #include <x86intrin.h>
         #define ALIGN(x) __attribute__((aligned(x)))
     #endif
-    #define init_cpucycles()
+    #define init_cpucycles() do{}while(0)
     #define cpucycles(cycles) cycles = __rdtsc()
 #endif
 
@@ -62,7 +62,7 @@ typedef struct
     uint8_t ALIGN(16) key[ASCON_AEAD_KEY_LEN];
     uint8_t ALIGN(16) nonce[ASCON_AEAD_NONCE_LEN];
     uint8_t ALIGN(16) assoc_data[MAX_TEXT_LEN];
-    uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_LEN];
+    uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     uint8_t ALIGN(16) obtained_digest[ASCON_HASH_DIGEST_LEN];
     size_t text_len;
 } benchmark_data_t;
@@ -111,7 +111,8 @@ static void benchmark_cycles(
                         data.assoc_data,
                         data.text,
                         data.text_len,
-                        data.text_len);
+                        data.text_len,
+                        ASCON_AEAD_TAG_MIN_SECURE_LEN);
             }
             cpucycles(end);
             elapsed_cycles[len][run] = end - start;

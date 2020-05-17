@@ -470,8 +470,9 @@ extern unsigned long long atto_counter;
 */
 #define atto_zeros(x, len) \
     for (unsigned long long atto_idx = 0; atto_idx < (len); atto_idx ++) { \
-        atto_eq((x)[atto_idx], 0); \
+        atto_eq(((uint8_t*)x)[atto_idx], 0); \
     }
+
 
 /**
  * Forces a failure of the test case, stopping it and reporting on standard

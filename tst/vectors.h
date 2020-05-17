@@ -74,7 +74,7 @@ typedef struct
     uint8_t ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
     uint8_t key[ASCON_AEAD_KEY_LEN];
     uint8_t nonce[ASCON_AEAD_NONCE_LEN];
-    uint8_t tag[ASCON_AEAD_TAG_LEN];
+    uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     size_t plaintext_len;
     size_t assoc_data_len;
     size_t ciphertext_len;
@@ -163,6 +163,18 @@ void vecs_aead_enc_log(const vecs_aead_t* testcase,
 void vecs_aead_dec_log(const vecs_aead_t* testcase,
                        const uint8_t* obtained_plaintext,
                        uint64_t obtained_plaintext_len);
+
+/**
+ * @internal
+ * Log any generic array of bytes in hex format.
+ *
+ * @param name name of the array (e.g. "key", "plaintext", "tag")
+ * @param array the data to log
+ * @param amount number of bytes in the array
+ */
+void vecs_log_hexbytes(const char* name,
+                       const uint8_t*  array,
+                       size_t amount);
 
 #ifdef __cplusplus
 }

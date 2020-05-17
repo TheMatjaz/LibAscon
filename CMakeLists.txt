@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
-        VERSION 0.1.0
+        VERSION 0.2.0
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -18,12 +18,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # -----------------------------------------------------------------------------
 # Compiler flags
 # -----------------------------------------------------------------------------
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 # Activate a million warnings to have the cleanest possible code
 set(FLAGS_WARNINGS -Wall -Wextra -pedantic -Wconversion -Wdouble-promotion
         -Wswitch-default -Wswitch-enum -Wuninitialized -Wno-unused-variable
         -Wpacked -Wpadded -Wshadow -Wformat-security -Wlogical-not-parentheses
-        -Waggregate-return -Wmissing-declarations -Wmissing-declarations)
+        -Waggregate-return -Wmissing-declarations -Wsign-conversion
+        -Wjump-misses-init)
 # Debug build: compile with no optimisation, debug info and printing
 set(CMAKE_C_FLAGS_DEBUG "${WARNING_FLAGS} -g -O0 -DDEBUG")
 # Append sanitiser flags on non-Windows systems
@@ -66,6 +67,7 @@ set(TEST_SRC_FILES
         tst/test_aead128_enc.c
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
+        tst/test_aead128_vartaglen.c
         tst/test_structs.c)
 set(BENCHMARK_SRC_FILES
         tst/benchmark.c)

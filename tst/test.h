@@ -26,6 +26,8 @@ void test_aead128_decryption(void);
 
 void test_aead128_inplace(void);
 
+void test_aead128_vartaglen(void);
+
 #ifdef __cplusplus
 }
 #endif

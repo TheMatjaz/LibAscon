@@ -18,7 +18,8 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                            const uint8_t* assoc_data,
                            const uint8_t* plaintext,
                            size_t assoc_data_len,
-                           size_t plaintext_len)
+                           size_t plaintext_len,
+                           uint8_t tag_len)
 {
     ascon_aead_ctx_t ctx;
     ascon_aead128_init(&ctx, key, nonce);
@@ -27,20 +28,21 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                                                              plaintext,
                                                              plaintext_len);
     ascon_aead128_encrypt_final(&ctx, ciphertext + new_ct_bytes,
-                                NULL, tag);
+                                NULL, tag, tag_len);
 }
 
-ascon_tag_validity_t ascon_aead128_decrypt(uint8_t* plaintext,
-                                           const uint8_t* key,
-                                           const uint8_t* nonce,
-                                           const uint8_t* assoc_data,
-                                           const uint8_t* ciphertext,
-                                           const uint8_t* tag,
-                                           size_t assoc_data_len,
-                                           size_t ciphertext_len)
+bool ascon_aead128_decrypt(uint8_t* plaintext,
+                           const uint8_t* key,
+                           const uint8_t* nonce,
+                           const uint8_t* assoc_data,
+                           const uint8_t* ciphertext,
+                           const uint8_t* tag,
+                           size_t assoc_data_len,
+                           size_t ciphertext_len,
+                           uint8_t tag_len)
 {
     ascon_aead_ctx_t ctx;
-    ascon_tag_validity_t validity;
+    bool is_tag_valid;
     ascon_aead128_init(&ctx, key, nonce);
     ascon_aead128_assoc_data_update(&ctx, assoc_data, assoc_data_len);
     const size_t new_pt_bytes = ascon_aead128_decrypt_update(&ctx,
@@ -48,8 +50,13 @@ ascon_tag_validity_t ascon_aead128_decrypt(uint8_t* plaintext,
                                                              ciphertext,
                                                              ciphertext_len);
     ascon_aead128_decrypt_final(&ctx, plaintext + new_pt_bytes,
-                                NULL, &validity, tag);
-    return validity;
+                                NULL, &is_tag_valid, tag, tag_len);
+    return is_tag_valid;
+}
+
+void inline ascon_aead128_cleanup(ascon_aead_ctx_t* const ctx)
+{
+    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
 }
 
 void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
@@ -71,4 +78,9 @@ void ascon_hash_xof(uint8_t* const digest,
     ascon_hash_xof_init(&ctx);
     ascon_hash_update(&ctx, data, data_len);
     ascon_hash_xof_final(&ctx, digest, digest_len);
+}
+
+void inline ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
+{
+    memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }

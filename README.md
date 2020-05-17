@@ -1,20 +1,40 @@
 LibAscon - Lightweight Authenticated Encryption & Hashing
 ================================================================================
 
-LibAscon is a ISO C99 library wrapping the
+LibAscon is a ISO C11 library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
 of the Ascon family of lightweight authenticated encryption schemes with
 associated data (AEAD) and hashing functions, including an extendible output
 function (XOF).
 
-LibAscon provides a **[documented](https://thematjaz.github.io/LibAscon/)
-developer-friendly interface**, making it
-easier to compile and add to your project, both through static and dynamic
-inclusion. On top it provides additional features, such as **online processing** 
-(**Init-Update-Final** paradigm), i.e. the data being processed one
-chunk at the time; useful if it's still being received, does not
-fit into memory or generally being fragmented. Naturally the 
-offline processing (whole data ready in memory) is also available. 
+
+Features
+----------------------------------------
+
+LibAscon provides:
+
+- **online processing** (**Init-Update-Final** paradigm) for hasing and
+  encryption/decryption. This means that the data can be processed one
+  chunk at the time. Useful when operating on large amounts of data that are
+  not available contiguously in memory, e.g. a too-large file or data in
+  transmission;
+
+- naturally offline processing (whole data contiguous in memory) is also
+  available;
+
+- variable tag length for authenticated encryption: can generate any tag length
+  from 0 to 255 bytes. Of course at least 16 bytes (128 bits) is recommended.
+  
+  Note: the tag bytes above 16 B are an extension of the original Ascon 
+  algorithm using the same sponge squeezing technique as for the XOF;
+
+- encryption/decryption can be performed in-place, without the need of a
+  second output buffer; 
+
+- a **[documented](https://thematjaz.github.io/LibAscon/)
+  developer-friendly API**, making it easier to compile and add to your project,
+  both through static and dynamic inclusion
+
 
 
 FAQ
