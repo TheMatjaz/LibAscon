@@ -18,7 +18,8 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                            const uint8_t* assoc_data,
                            const uint8_t* plaintext,
                            size_t assoc_data_len,
-                           size_t plaintext_len)
+                           size_t plaintext_len,
+                           uint8_t tag_len)
 {
     ascon_aead_ctx_t ctx;
     ascon_aead128_init(&ctx, key, nonce);
@@ -27,7 +28,7 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                                                              plaintext,
                                                              plaintext_len);
     ascon_aead128_encrypt_final(&ctx, ciphertext + new_ct_bytes,
-                                NULL, tag);
+                                NULL, tag, tag_len);
 }
 
 bool ascon_aead128_decrypt(uint8_t* plaintext,
@@ -37,7 +38,8 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
                            const uint8_t* ciphertext,
                            const uint8_t* tag,
                            size_t assoc_data_len,
-                           size_t ciphertext_len)
+                           size_t ciphertext_len,
+                           uint8_t tag_len)
 {
     ascon_aead_ctx_t ctx;
     bool is_tag_valid;
@@ -48,7 +50,7 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
                                                              ciphertext,
                                                              ciphertext_len);
     ascon_aead128_decrypt_final(&ctx, plaintext + new_pt_bytes,
-                                NULL, &is_tag_valid, tag);
+                                NULL, &is_tag_valid, tag, tag_len);
     return is_tag_valid;
 }
 

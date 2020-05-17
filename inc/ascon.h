@@ -60,6 +60,8 @@ extern "C"
 /** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 0
 
+#define ASCON_API_VERSION "0.1.0"
+
 /**
  * Length in bytes of the secret symmetric key used for authenticated
  * encryption and decryption.
@@ -213,15 +215,18 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *        bytes. Can be 0.
  * @param[in] plaintext_len length of the data pointed by \p plaintext in
  *        bytes. Can be 0 (not recommended, see warning).
+ * @param[in] tag_len length of the tag to generate in bytes. At least
+ *       #ASCON_AEAD_TAG_LEN is recommended for security.
  */
 void ascon_aead128_encrypt(uint8_t* ciphertext,
-                           uint8_t tag[ASCON_AEAD_TAG_LEN],
+                           uint8_t* tag,
                            const uint8_t key[ASCON_AEAD_KEY_LEN],
                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                            const uint8_t* assoc_data,
                            const uint8_t* plaintext,
                            size_t assoc_data_len,
-                           size_t plaintext_len);
+                           size_t plaintext_len,
+                           uint8_t tag_len);
 
 /**
  * Online symmetric encryption/decryption using Ascon128, initialisation.
@@ -396,6 +401,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
  *       NULL.
+ * @param[out] tag_len length of the tag to generate in bytes. At least
+ *       #ASCON_AEAD_TAG_LEN is recommended for security.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -403,7 +410,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* ciphertext,
                                    uint64_t* total_encrypted_bytes,
-                                   uint8_t tag[ASCON_AEAD_TAG_LEN]);
+                                   uint8_t* tag,
+                                   uint8_t tag_len);
 
 /**
  * Offline symmetric decryption using Ascon128.
@@ -441,6 +449,8 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
+ * @param[out] tag_len length of the tag to generate in bytes. At least
+ *       #ASCON_AEAD_TAG_LEN is recommended for security.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -451,9 +461,10 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                            const uint8_t* assoc_data,
                            const uint8_t* ciphertext,
-                           const uint8_t tag[ASCON_AEAD_TAG_LEN],
+                           const uint8_t* tag,
                            size_t assoc_data_len,
-                           size_t ciphertext_len);
+                           size_t ciphertext_len,
+                           uint8_t tag_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -537,8 +548,10 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       associated data and ciphertext. Has \p tag_len bytes. Not
  *       NULL.
+ * @param[in] tag_len length of the tag to check in bytes. At least
+ *       #ASCON_AEAD_TAG_LEN is recommended for security.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -547,7 +560,8 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* plaintext,
                                    uint64_t* total_decrypted_len,
                                    bool* is_tag_valid,
-                                   const uint8_t* tag);
+                                   const uint8_t* tag,
+                                   uint8_t tag_len);
 
 /**
  * Security cleanup function of the context, in case the offline processing

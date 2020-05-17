@@ -43,7 +43,8 @@ static void test_inplace_offline(void)
                               testcase.assoc_data,
                               transformed,
                               testcase.assoc_data_len,
-                              testcase.plaintext_len);
+                              testcase.plaintext_len,
+                              sizeof(testcase.tag));
         vecs_aead_enc_log(&testcase, transformed, obtained_tag,
                           testcase.ciphertext_len);
         atto_memeq(transformed,
@@ -60,7 +61,8 @@ static void test_inplace_offline(void)
                 transformed,
                 obtained_tag,
                 testcase.assoc_data_len,
-                testcase.ciphertext_len);
+                testcase.ciphertext_len,
+                sizeof(testcase.tag));
         vecs_aead_dec_log(&testcase, transformed,
                           testcase.plaintext_len);
         atto_eq(is_valid, ASCON_TAG_OK);
@@ -125,7 +127,8 @@ static void test_inplace_update_single_byte(void)
                                                 transformed
                                                 +
                                                 aead_ctx.bufstate.total_output_len,
-                                                &total_ct_len, obtained_tag);
+                                                &total_ct_len, obtained_tag,
+                                                sizeof(testcase.tag));
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_len, testcase.ciphertext_len);
@@ -166,7 +169,8 @@ static void test_inplace_update_single_byte(void)
                                                 transformed +
                                                 aead_ctx.bufstate.total_output_len,
                                                 &total_pt_len,
-                                                &is_valid, testcase.tag);
+                                                &is_valid, testcase.tag,
+                                                sizeof(testcase.tag));
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);
