@@ -531,7 +531,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *       all update calls and this final call of this decryption session.
  *       It's the same as the sum of all ciphertext bytes fed into the
  *       update calls. May be NULL, if the sum is not of interest.
- * @param[out] is_tag_valid the answer to the question "is tha tag valid?", thus
+ * @param[out] is_tag_valid the answer to the question "is the tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
@@ -549,6 +549,20 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    bool* is_tag_valid,
                                    const uint8_t* tag);
 
+/**
+ * Security cleanup function of the context, in case the offline processing
+ * is not completed to the end.
+ *
+ * Use this function only when something goes wrong between the calls of
+ * offline encryption or decryption and you never call the
+ * ascon_aead128_encrypt_final() or ascon_aead128_decrypt_final() functions
+ * (because these 2 functions perform the cleanup automatically).
+ *
+ * This is to prevent any information to leak through the context in case an
+ * encryption/decryption transaction is rolled back/abruptly terminated.
+ *
+ * @param[in, out] ctx to erases.
+ */
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
 
 /**
