@@ -26,7 +26,7 @@ LibAscon provides:
   from 0 to 255 bytes. Of course at least 16 bytes (128 bits) is recommended.
   
   Note: the tag bytes above 16 B are an extension of the original Ascon 
-  algorithm;
+  algorithm using the same sponge squeezing technique as for the XOF;
 
 - encryption/decryption can be performed in-place, without the need of a
   second output buffer; 
