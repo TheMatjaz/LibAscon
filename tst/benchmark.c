@@ -111,7 +111,8 @@ static void benchmark_cycles(
                         data.assoc_data,
                         data.text,
                         data.text_len,
-                        data.text_len);
+                        data.text_len,
+                        ASCON_AEAD_TAG_MIN_SECURE_LEN);
             }
             cpucycles(end);
             elapsed_cycles[len][run] = end - start;

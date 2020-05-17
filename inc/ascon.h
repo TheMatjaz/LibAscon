@@ -59,7 +59,7 @@ extern "C"
 #define ASCON_API_VERSION_MINOR 1
 /** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 0
-
+/** Version of this API conforming to semantic versioning as a string. */
 #define ASCON_API_VERSION "0.1.0"
 
 /**
@@ -204,7 +204,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  *       of writing into a separate output buffer. Not NULL.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
  *       NULL.
  * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
  * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
@@ -216,7 +216,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * @param[in] plaintext_len length of the data pointed by \p plaintext in
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
- *       #ASCON_AEAD_TAG_LEN is recommended for security.
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  */
 void ascon_aead128_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,
@@ -399,10 +399,10 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       if the sum is not of interest.
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
  *       NULL.
  * @param[out] tag_len length of the tag to generate in bytes. At least
- *       #ASCON_AEAD_TAG_LEN is recommended for security.
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -442,7 +442,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext data to be decrypted into \p plaintext.
  * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
- *       associated data and ciphertext. Has #ASCON_AEAD_TAG_LEN bytes. Not
+ *       associated data and ciphertext. Has #ASCON_AEAD_TAG_MIN_SECURE_LEN bytes. Not
  *       NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. Can be 0.
@@ -450,7 +450,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
  * @param[out] tag_len length of the tag to generate in bytes. At least
- *       #ASCON_AEAD_TAG_LEN is recommended for security.
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -551,7 +551,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not
  *       NULL.
  * @param[in] tag_len length of the tag to check in bytes. At least
- *       #ASCON_AEAD_TAG_LEN is recommended for security.
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -564,18 +564,18 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t tag_len);
 
 /**
- * Security cleanup function of the context, in case the offline processing
+ * Security cleanup function of the context, in case the online processing
  * is not completed to the end.
  *
  * Use this function only when something goes wrong between the calls of
- * offline encryption or decryption and you never call the
+ * online encryption or decryption and you never call the
  * ascon_aead128_encrypt_final() or ascon_aead128_decrypt_final() functions
  * (because these 2 functions perform the cleanup automatically).
  *
  * This is to prevent any information to leak through the context in case an
  * encryption/decryption transaction is rolled back/abruptly terminated.
  *
- * @param[in, out] ctx to erases.
+ * @param[in, out] ctx to erase.
  */
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
 
@@ -765,6 +765,20 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                           uint8_t* digest,
                           size_t digest_len);
 
+/**
+ * Security cleanup function of the context, in case the online processing
+ * is not completed to the end.
+ *
+ * Use this function only when something goes wrong between the calls of
+ * online hashing and you never call the ascon_hash_final()
+ * or ascon_hash_xof_final(), functions
+ * (because these 2 functions perform the cleanup automatically).
+ *
+ * This is to prevent any information to leak through the context in case an
+ * hasking transaction is rolled back/abruptly terminated.
+ *
+ * @param[in, out] ctx to erase.
+ */
 void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
 
 #ifdef __cplusplus
