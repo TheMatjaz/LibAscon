@@ -1,6 +1,7 @@
 <map id="inc/ascon.h" name="inc/ascon.h">
-<area shape="rect" id="node1" title=" " alt="" coords="84,5,173,31"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,79,70,104"/>
-<area shape="rect" id="node3" title=" " alt="" coords="94,79,163,104"/>
-<area shape="rect" id="node4" title=" " alt="" coords="186,79,251,104"/>
+<area shape="rect" id="node1" title=" " alt="" coords="131,5,220,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,71,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="95,80,165,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="189,80,255,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="279,80,354,107"/>
 </map>
