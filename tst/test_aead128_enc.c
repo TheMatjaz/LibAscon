@@ -452,10 +452,6 @@ static void test_encrypt_update_single_byte(void)
             }
         }
         uint64_t total_ct_len = 0;
-        // TODO should the user keep track of the current obtained CT/PT
-        // position or the cipher internally?
-        // I guess the user, because each update call could write into
-        // a separate buffer.
         new_ct_bytes = ascon_aead128_encrypt_final(
                 &aead_ctx,
                 obtained_ciphertext + aead_ctx.bufstate.total_output_len,
@@ -474,6 +470,7 @@ static void test_encrypt_update_single_byte(void)
 
 void test_aead128_encryption(void)
 {
+    test_aead_cleanup();
     test_encrypt_empty();
     test_encrypt_1_byte_ad_empty_pt();
     test_encrypt_1_byte_pt_empty_ad();

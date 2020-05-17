@@ -67,6 +67,7 @@ set(TEST_SRC_FILES
         tst/test_aead128_enc.c
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
+        tst/test_aead128_vartaglen.c
         tst/test_structs.c)
 set(BENCHMARK_SRC_FILES
         tst/benchmark.c)

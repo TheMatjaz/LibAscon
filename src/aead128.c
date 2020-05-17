@@ -270,7 +270,6 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     uint8_t expected_tag[tag_len];
     generate_tag(ctx, expected_tag, tag_len);
     const int tags_differ = memcmp(tag, expected_tag, tag_len);
-    memset(expected_tag, 0, ASCON_AEAD_TAG_MIN_SECURE_LEN);
     if (tags_differ)
     {
         *is_tag_valid = ASCON_TAG_INVALID;
@@ -280,6 +279,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
         *is_tag_valid = ASCON_TAG_OK;
     }
     // Final security cleanup of the internal state, key and buffer.
+    memset(expected_tag, 0, tag_len);
     ascon_aead128_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }

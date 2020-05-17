@@ -22,5 +22,6 @@ int main(void)
     test_aead128_encryption();
     test_aead128_decryption();
     test_aead128_inplace();
+    test_aead128_vartaglen();
     return atto_at_least_one_fail;
 }

@@ -164,6 +164,18 @@ void vecs_aead_dec_log(const vecs_aead_t* testcase,
                        const uint8_t* obtained_plaintext,
                        uint64_t obtained_plaintext_len);
 
+/**
+ * @internal
+ * Log any generic array of bytes in hex format.
+ *
+ * @param name name of the array (e.g. "key", "plaintext", "tag")
+ * @param array the data to log
+ * @param amount number of bytes in the array
+ */
+void vecs_log_hexbytes(const char* name,
+                       const uint8_t*  array,
+                       size_t amount);
+
 #ifdef __cplusplus
 }
 #endif
