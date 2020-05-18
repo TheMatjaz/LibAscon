@@ -54,7 +54,7 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
     return is_tag_valid;
 }
 
-void inline ascon_aead128_cleanup(ascon_aead_ctx_t* const ctx)
+inline void ascon_aead128_cleanup(ascon_aead_ctx_t* const ctx)
 {
     memset(ctx, 0, sizeof(ascon_aead_ctx_t));
 }
@@ -80,7 +80,7 @@ void ascon_hash_xof(uint8_t* const digest,
     ascon_hash_xof_final(&ctx, digest, digest_len);
 }
 
-void inline ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
+inline void ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
 {
     memset(ctx, 0, sizeof(ascon_hash_ctx_t));
 }
