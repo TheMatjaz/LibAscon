@@ -9,19 +9,15 @@
 #include "ascon.h"
 #include "internal.h"
 
-/* States used to understand when to finalise the associated data. */
-#define FLOW_NO_ASSOC_DATA 0
-#define FLOW_SOME_ASSOC_DATA 1
-#define FLOW_ASSOC_DATA_FINALISED 2
-
-void ascon_aead128_init(ascon_aead_ctx_t* const ctx,
-                        const uint8_t* const key,
-                        const uint8_t* const nonce)
+void ascon_aead_init(ascon_aead_ctx_t* const ctx,
+                     const uint8_t* const key,
+                     const uint8_t* const nonce,
+                     const uint64_t iv)
 {
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bytes_to_u64(key, sizeof(uint64_t));
     ctx->k1 = bytes_to_u64(key + sizeof(uint64_t), sizeof(uint64_t));
-    ctx->bufstate.sponge.x0 = AEAD128_IV;
+    ctx->bufstate.sponge.x0 = iv;
     ctx->bufstate.sponge.x1 = ctx->k0;
     ctx->bufstate.sponge.x2 = ctx->k1;
     ctx->bufstate.sponge.x3 = bytes_to_u64(nonce, sizeof(uint64_t));
@@ -33,8 +29,15 @@ void ascon_aead128_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
     ctx->bufstate.total_output_len = 0;
-    ctx->bufstate.assoc_data_state = FLOW_NO_ASSOC_DATA;
+    ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
     log_sponge("initialization:", &ctx->bufstate.sponge);
+}
+
+inline void ascon_aead128_init(ascon_aead_ctx_t* const ctx,
+                               const uint8_t* const key,
+                               const uint8_t* const nonce)
+{
+    ascon_aead_init(ctx, key, nonce, AEAD128_IV);
 }
 
 /**
@@ -53,10 +56,10 @@ static void absorb_assoc_data(ascon_sponge_t* sponge,
 
 /**
  * @internal
- * Function passed to buffered_accumulation() to absorb the plaintext
- * and squeeze out ciphertext during encryption.
+ * Function passed to buffered_accumulation() to absorb the ciphertext
+ * and squeeze out plaintext during decryption.
  */
-static void absorb_plaintext(ascon_sponge_t* const sponge,
+static void absorb_ciphertext(ascon_sponge_t* const sponge,
                              uint8_t* const plaintext,
                              const uint8_t* const ciphertext)
 {
@@ -71,10 +74,10 @@ static void absorb_plaintext(ascon_sponge_t* const sponge,
 
 /**
  * @internal
- * Function passed to buffered_accumulation() to absorb the ciphertext
- * and squeeze out plaintext during decryption.
+ * Function passed to buffered_accumulation() to absorb the plaintext
+ * and squeeze out ciphertext during encryption.
  */
-static void absorb_ciphertext(ascon_sponge_t* const sponge,
+static void absorb_plaintext(ascon_sponge_t* const sponge,
                               uint8_t* const ciphertext,
                               const uint8_t* const plaintext)
 {
@@ -93,7 +96,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
 {
     if (assoc_data_len > 0)
     {
-        ctx->bufstate.assoc_data_state = FLOW_SOME_ASSOC_DATA;
+        ctx->bufstate.assoc_data_state = ASCON_FLOW_SOME_ASSOC_DATA;
         buffered_accumulation(&ctx->bufstate, NULL, assoc_data,
                               absorb_assoc_data, assoc_data_len);
     }
@@ -105,7 +108,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
  * ciphertext is being processed.
  *
  * MUST be called ONLY once! In other words, when
- * ctx->bufstate.assoc_data_state == FLOW_ASSOC_DATA_FINALISED
+ * ctx->bufstate.assoc_data_state == ASCON_FLOW_ASSOC_DATA_FINALISED
  * then it MUST NOT be called anymore.
  *
  * It handles both the case when some or none associated data was given.
@@ -117,7 +120,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // Note: this step is performed even if the buffer is now empty because
     // a state permutation is required if there was at least some associated
     // data absorbed beforehand.
-    if (ctx->bufstate.assoc_data_state == FLOW_SOME_ASSOC_DATA)
+    if (ctx->bufstate.assoc_data_state == ASCON_FLOW_SOME_ASSOC_DATA)
     {
         ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
                                                 ctx->bufstate.buffer_len);
@@ -130,7 +133,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1U;
     ctx->bufstate.total_output_len = 0;
-    ctx->bufstate.assoc_data_state = FLOW_ASSOC_DATA_FINALISED;
+    ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
     log_sponge("process associated data:", &ctx->bufstate.sponge);
 }
 
@@ -139,14 +142,14 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
                                     const uint8_t* plaintext,
                                     size_t plaintext_len)
 {
-    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
     }
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
     return buffered_accumulation(&ctx->bufstate, ciphertext, plaintext,
-                                 absorb_ciphertext, plaintext_len);
+                                 absorb_plaintext, plaintext_len);
 }
 
 static void generate_tag(ascon_aead_ctx_t* const ctx,
@@ -176,7 +179,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* tag,
                                    uint8_t tag_len)
 {
-    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
@@ -217,14 +220,14 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* const ctx,
                                     const uint8_t* ciphertext,
                                     size_t ciphertext_len)
 {
-    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);
     }
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     return buffered_accumulation(&ctx->bufstate, plaintext, ciphertext,
-                                 absorb_plaintext, ciphertext_len);
+                                 absorb_ciphertext, ciphertext_len);
 }
 
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
@@ -234,7 +237,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                                    const uint8_t* const tag,
                                    const uint8_t tag_len)
 {
-    if (ctx->bufstate.assoc_data_state != FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         finalise_assoc_data(ctx);

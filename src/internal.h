@@ -27,20 +27,26 @@ extern "C"
 #define PERMUTATION_Ba_ROUNDS 8
 #define PERMUTATION_B_ROUNDS 6
 #define XOF_IV ( \
-    ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
+      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
     )
 #define AEAD128_IV ( \
-     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | XOF_IV \
-     | ((uint64_t)(PERMUTATION_B_ROUNDS) << 32U) \
+       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
+     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_B_ROUNDS)     << 32U) \
      )
 #define AEAD128a_IV ( \
-     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | XOF_IV \
-     | ((uint64_t)(PERMUTATION_Ba_ROUNDS) << 32U) \
+       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
+     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_Ba_ROUNDS)    << 32U) \
      )
-#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
+#define HASH_IV ( \
+      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+    | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
+    | ((uint64_t)(8 * ASCON_HASH_DIGEST_LEN)) \
+    )
 
 /**
  * @internal
@@ -49,7 +55,22 @@ extern "C"
  */
 #define PADDING(bytes) (0x80ULL << (56 - 8 * ((unsigned int) (bytes))))
 
+/**
+ * @internal
+ * Simple minimum out of 2 arguments.
+ */
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+/**
+ * @internal
+ * States used to understand when to finalise the associated data.
+ */
+typedef enum
+{
+    ASCON_FLOW_NO_ASSOC_DATA = 0,
+    ASCON_FLOW_SOME_ASSOC_DATA = 1,
+    ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
+} ascon_flow_t;
 
 /**
  * @internal
@@ -103,6 +124,15 @@ void ascon_permutation_b8(ascon_sponge_t* const sponge);
  * Ascon sponge permutation with 6 rounds, known as permutation-b.
  */
 void ascon_permutation_b6(ascon_sponge_t* sponge);
+
+/**
+ * @internal
+ * Initialises the AEAD128 or AEAD128a or AEAD80pq online processing.
+ */
+void ascon_aead_init(ascon_aead_ctx_t* ctx,
+                     const uint8_t* key,
+                     const uint8_t* nonce,
+                     uint64_t iv);
 
 /**
  * @internal
