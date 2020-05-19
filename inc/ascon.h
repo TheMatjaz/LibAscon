@@ -88,6 +88,9 @@ extern "C"
 
 /**
  * Number of bytes the cipher can process at the time.
+ *
+ * The AEAD128a cipher absorbs blocks twice this size but internally the values
+ * are still assigned in chunkcs of this data rate.
  */
 #define ASCON_RATE 8U
 
@@ -131,7 +134,7 @@ typedef struct
     uint64_t total_output_len;
 
     /** Buffer caching the less-than-rate long input between update calls. */
-    uint8_t buffer[ASCON_RATE];
+    uint8_t buffer[ASCON_RATE * 2];
 
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;

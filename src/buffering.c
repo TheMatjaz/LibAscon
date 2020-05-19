@@ -68,26 +68,27 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
                              uint8_t* data_out,
                              const uint8_t* data_in,
                              absorb_fptr absorb,
-                             size_t data_in_len)
+                             size_t data_in_len,
+                             const uint8_t rate)
 {
     size_t fresh_out_bytes = 0;
     if (ctx->buffer_len > 0)
     {
         // There is associated data in the buffer already.
         // Place as much as possible of the new associated data into the buffer.
-        const uint8_t space_in_buf = (uint8_t) (ASCON_RATE - ctx->buffer_len);
+        const uint8_t space_in_buf = (uint8_t) (rate - ctx->buffer_len);
         const uint8_t into_buffer = (uint8_t) MIN(space_in_buf, data_in_len);
         smallcpy(&ctx->buffer[ctx->buffer_len], data_in, into_buffer);
         ctx->buffer_len = (uint8_t) (ctx->buffer_len + into_buffer);
         data_in += into_buffer;
         data_in_len -= into_buffer;
-        if (ctx->buffer_len == ASCON_RATE)
+        if (ctx->buffer_len == rate)
         {
             // The buffer was filled completely, thus absorb it.
             absorb(&ctx->sponge, data_out, ctx->buffer);
             ctx->buffer_len = 0;
-            data_out += ASCON_RATE;
-            fresh_out_bytes += ASCON_RATE;
+            data_out += rate;
+            fresh_out_bytes += rate;
         }
         else
         {
@@ -104,13 +105,13 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
         // or because the last update had no less-than-a-block trailing data.
     }
     // Absorb remaining data (if any) one block at the time.
-    while (data_in_len >= ASCON_RATE)
+    while (data_in_len >= rate)
     {
         absorb(&ctx->sponge, data_out, data_in);
-        data_out += ASCON_RATE;
-        data_in += ASCON_RATE;
-        data_in_len -= ASCON_RATE;
-        fresh_out_bytes += ASCON_RATE;
+        data_out += rate;
+        data_in += rate;
+        data_in_len -= rate;
+        fresh_out_bytes += rate;
     }
     // If there is any remaining less-than-a-block data to be absorbed,
     // cache it into the buffer for the next update call or digest call.

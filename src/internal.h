@@ -168,13 +168,16 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  * @param[in] absorb function that handles the absorption and optional squeezing
  *        of the sponge
  * @param[in] data_in_len length of the \p data_in in bytes
+ * @param[in] rate buffer size, i.e. number of accumulated bytes after which
+ *        an absrobtion is required
  * @return number of bytes written into \p data_out
  */
 size_t buffered_accumulation(ascon_bufstate_t* ctx,
                              uint8_t* data_out,
                              const uint8_t* data_in,
                              absorb_fptr absorb,
-                             size_t data_in_len);
+                             size_t data_in_len,
+                             uint8_t rate);
 
 #ifdef __cplusplus
 }
