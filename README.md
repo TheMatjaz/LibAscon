@@ -103,8 +103,8 @@ Known limitations
   processing, Ascon-Hash and Ascon-XOF.
 - There is no architecture-specific optimisation yet, only a generic portable
   C implementation using mostly `uint64_t` data types.
-- The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and 
-  Ascon80pq are still to be done.
+- The only AEAD algorithms implemented are the Ascon128 and Ascon128a.
+  Ascon80pq is still to be done.
 - There is no NULL pointer check for the mandatory function parameters, thus
   it will crash on improper usage.
 
@@ -130,7 +130,10 @@ cmake --build .
 This will build all targets:
 
 - a `libascon.dylib`/`libascon.dll` shared library
-- a `libstaticascon.a` static library
+- static libraries `libsconfull.a`, `libscon128.a`, `libscon128a.a`,
+  `libscon80pq.a`, `libsconhash.a` with the full feature set and respectively
+  only one functionalities, for a smaller build result when not all features
+  are needed
 - a test runner executable `testascon`
 - the Doxygen documentation (if Doxygen is installed)
 - a benchmarking tool `benchmark` to get the number of CPU cycles per

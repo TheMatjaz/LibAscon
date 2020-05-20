@@ -28,6 +28,14 @@ void test_aead128_inplace(void);
 
 void test_aead128_vartaglen(void);
 
+void test_aead128a_encryption(void);
+
+void test_aead128a_decryption(void);
+
+void test_aead128a_inplace(void);
+
+void test_aead128a_vartaglen(void);
+
 #ifdef __cplusplus
 }
 #endif
