@@ -9,6 +9,34 @@
 #include "ascon.h"
 #include "internal.h"
 
+#if ASCON_COMPILE_HASH
+
+void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
+                const uint8_t* const data,
+                const size_t data_len)
+{
+    ascon_hash_ctx_t ctx;
+    ascon_hash_init(&ctx);
+    ascon_hash_update(&ctx, data, data_len);
+    ascon_hash_final(&ctx, digest);
+}
+
+void ascon_hash_xof(uint8_t* const digest,
+                    const uint8_t* const data,
+                    const size_t digest_len,
+                    const size_t data_len)
+{
+    ascon_hash_ctx_t ctx;
+    ascon_hash_xof_init(&ctx);
+    ascon_hash_update(&ctx, data, data_len);
+    ascon_hash_xof_final(&ctx, digest, digest_len);
+}
+
+inline void ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
+{
+    memset(ctx, 0, sizeof(ascon_hash_ctx_t));
+}
+
 static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
 {
     ctx->sponge.x0 = iv;
@@ -37,8 +65,8 @@ inline void ascon_hash_xof_init(ascon_hash_ctx_t* const ctx)
  * Function passed to buffered_accumulation() to absorb data to be hashed.
  */
 static void absorb_hash_data(ascon_sponge_t* const sponge,
-                      uint8_t* const data_out,
-                      const uint8_t* const data)
+                             uint8_t* const data_out,
+                             const uint8_t* const data)
 {
     (void) data_out;
     sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
@@ -49,7 +77,8 @@ inline void ascon_hash_update(ascon_hash_ctx_t* const ctx,
                               const uint8_t* data,
                               size_t data_len)
 {
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len);
+    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
+                          ASCON_RATE);
 }
 
 
@@ -57,7 +86,8 @@ inline void ascon_hash_xof_update(ascon_hash_ctx_t* const ctx,
                                   const uint8_t* data,
                                   size_t data_len)
 {
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len);
+    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
+                          ASCON_RATE);
 }
 
 void ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
@@ -87,3 +117,5 @@ inline void ascon_hash_final(ascon_hash_ctx_t* const ctx,
 {
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
+
+#endif /* ASCON_COMPILE_HASH */

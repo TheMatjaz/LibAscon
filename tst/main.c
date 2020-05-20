@@ -14,7 +14,7 @@
 
 int main(void)
 {
-    printf("Testing Ascon M:%d m:%d bf:%d = v%s\n",
+    printf("Testing LibAscon M:%d m:%d bf:%d = v%s\n",
             ASCON_API_VERSION_MAJOR,
             ASCON_API_VERSION_MINOR,
             ASCON_API_VERSION_BUGFIX,
@@ -26,5 +26,9 @@ int main(void)
     test_aead128_decryption();
     test_aead128_inplace();
     test_aead128_vartaglen();
+    test_aead128a_encryption();
+    test_aead128a_decryption();
+    test_aead128a_inplace();
+    test_aead128a_vartaglen();
     return atto_at_least_one_fail;
 }

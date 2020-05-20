@@ -27,20 +27,26 @@ extern "C"
 #define PERMUTATION_Ba_ROUNDS 8
 #define PERMUTATION_B_ROUNDS 6
 #define XOF_IV ( \
-    ((uint64_t)(8 * (ASCON_RATE)) << 48U) \
+      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
     )
 #define AEAD128_IV ( \
-     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | XOF_IV \
-     | ((uint64_t)(PERMUTATION_B_ROUNDS) << 32U) \
+       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
+     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_B_ROUNDS)     << 32U) \
      )
 #define AEAD128a_IV ( \
-     ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | XOF_IV \
-     | ((uint64_t)(PERMUTATION_Ba_ROUNDS) << 32U) \
+       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8 * ASCON_DOUBLE_RATE)    << 48U) \
+     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_Ba_ROUNDS)    << 32U) \
      )
-#define HASH_IV (XOF_IV | (uint64_t)(8 * ASCON_HASH_DIGEST_LEN))
+#define HASH_IV ( \
+      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+    | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
+    | ((uint64_t)(8 * ASCON_HASH_DIGEST_LEN)) \
+    )
 
 /**
  * @internal
@@ -49,7 +55,22 @@ extern "C"
  */
 #define PADDING(bytes) (0x80ULL << (56 - 8 * ((unsigned int) (bytes))))
 
+/**
+ * @internal
+ * Simple minimum out of 2 arguments.
+ */
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+/**
+ * @internal
+ * States used to understand when to finalise the associated data.
+ */
+typedef enum
+{
+    ASCON_FLOW_NO_ASSOC_DATA = 0,
+    ASCON_FLOW_SOME_ASSOC_DATA = 1,
+    ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
+} ascon_flow_t;
 
 /**
  * @internal
@@ -106,6 +127,15 @@ void ascon_permutation_b6(ascon_sponge_t* sponge);
 
 /**
  * @internal
+ * Initialises the AEAD128 or AEAD128a or AEAD80pq online processing.
+ */
+void ascon_aead_init(ascon_aead_ctx_t* ctx,
+                     const uint8_t* key,
+                     const uint8_t* nonce,
+                     uint64_t iv);
+
+/**
+ * @internal
  * Function pointer representing the operation run by the
  * buffered_accumulation() when ASCON_RATE bytes ara available in the buffer to
  * be absorbed.
@@ -138,13 +168,16 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  * @param[in] absorb function that handles the absorption and optional squeezing
  *        of the sponge
  * @param[in] data_in_len length of the \p data_in in bytes
+ * @param[in] rate buffer size, i.e. number of accumulated bytes after which
+ *        an absrobtion is required
  * @return number of bytes written into \p data_out
  */
 size_t buffered_accumulation(ascon_bufstate_t* ctx,
                              uint8_t* data_out,
                              const uint8_t* data_in,
                              absorb_fptr absorb,
-                             size_t data_in_len);
+                             size_t data_in_len,
+                             uint8_t rate);
 
 #ifdef __cplusplus
 }
