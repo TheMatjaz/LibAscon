@@ -318,7 +318,7 @@ void vecs_log_hexbytes(const char* name,
                        const uint8_t* array,
                        size_t amount)
 {
-#ifdef DEBUG
+#ifdef DEBUG_TEST_PRINT
     printf("%s (%zu B): ", name, amount);
     for (size_t i = 0; i < amount; i++)
     {
@@ -335,7 +335,7 @@ void vecs_log_hexbytes(const char* name,
 void vecs_hash_log(const vecs_hash_t* const testcase,
                    const uint8_t* const obtained_digest)
 {
-#ifdef DEBUG
+#ifdef DEBUG_TEST_PRINT
     vecs_log_hexbytes("Msg", testcase->message, testcase->message_len);
     vecs_log_hexbytes("Expected digest", testcase->expected_digest,
                       ASCON_HASH_DIGEST_LEN);
@@ -356,7 +356,7 @@ void vecs_aead_enc_log(const vecs_aead_t* const testcase,
                        const uint8_t* const obtained_tag,
                        const uint64_t obtained_ciphertext_len)
 {
-#ifdef DEBUG
+#ifdef DEBUG_TEST_PRINT
     printf("---\nCount: %zu\n", testcase->count);
     vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
     vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
@@ -389,7 +389,7 @@ void vecs_aead_dec_log(const vecs_aead_t* const testcase,
                        const uint8_t* const obtained_plaintext,
                        const uint64_t obtained_plaintext_len)
 {
-#ifdef DEBUG
+#ifdef DEBUG_TEST_PRINT
     printf("---\nCount: %zu\n", testcase->count);
     vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
     vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);

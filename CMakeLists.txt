@@ -37,14 +37,14 @@ endif ()
 # convert warnings into errors and some other optimisations
 set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} \
         ${WARNING_FLAGS} \
-        -Os -Werror -fomit-frame-pointer -march=native -mtune=native")
+        -Os -Werror -fomit-frame-pointer -march=native -mtune=native -flto")
 
 # Performance-oriented release build: compile with optimisation for speed
 # convert warnings into errors and some other optimisations
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
         ${WARNING_FLAGS} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
-        -funroll-loops")
+        -funroll-loops -flto")
 
 
 # -----------------------------------------------------------------------------
