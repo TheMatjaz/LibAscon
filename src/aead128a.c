@@ -27,7 +27,7 @@ static void absorb_assoc_data(ascon_sponge_t* sponge,
 {
     (void) data_out;
     sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
-    sponge->x1 ^= bytes_to_u64(data, ASCON_RATE);
+    sponge->x1 ^= bytes_to_u64(data + ASCON_RATE, ASCON_RATE);
     ascon_permutation_b8(sponge);
 }
 
@@ -122,12 +122,12 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
             ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
         }
         ascon_permutation_b8(&ctx->bufstate.sponge);
-        ctx->bufstate.buffer_len = 0;
     }
     // Application of a constant at end of associated data for domain
     // separation. Done always, regardless if there was some associated
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1U;
+    ctx->bufstate.buffer_len = 0;
     ctx->bufstate.total_output_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
     log_sponge("process associated data:", &ctx->bufstate.sponge);
@@ -146,7 +146,7 @@ size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* const ctx,
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
     return buffered_accumulation(&ctx->bufstate, ciphertext, plaintext,
                                  absorb_plaintext, plaintext_len,
-                                 2 * ASCON_RATE);
+                                 ASCON_DOUBLE_RATE);
 }
 
 static void generate_tag(ascon_aead_ctx_t* const ctx,
@@ -245,7 +245,7 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* const ctx,
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     return buffered_accumulation(&ctx->bufstate, plaintext, ciphertext,
                                  absorb_ciphertext, ciphertext_len,
-                                 2 * ASCON_RATE);
+                                 ASCON_DOUBLE_RATE);
 }
 
 size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,

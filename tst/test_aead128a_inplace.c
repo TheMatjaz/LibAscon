@@ -102,7 +102,7 @@ static void test_inplace_update_single_byte(void)
         {
             ascon_aead128a_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
                                             1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
         }
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
@@ -112,10 +112,10 @@ static void test_inplace_update_single_byte(void)
                     aead_ctx.bufstate.total_output_len,
                     &transformed[i],
                     1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
-                atto_eq(new_bytes, ASCON_RATE);
+                atto_eq(new_bytes, ASCON_DOUBLE_RATE);
             }
             else
             {
@@ -129,8 +129,8 @@ static void test_inplace_update_single_byte(void)
                                                 aead_ctx.bufstate.total_output_len,
                                                 &total_ct_len, obtained_tag,
                                                 sizeof(testcase.tag));
-        atto_lt(new_bytes, ASCON_RATE);
-        atto_eq(new_bytes, testcase.ciphertext_len % ASCON_RATE);
+        atto_lt(new_bytes, ASCON_DOUBLE_RATE);
+        atto_eq(new_bytes, testcase.ciphertext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_ct_len, testcase.ciphertext_len);
         vecs_aead_enc_log(&testcase, transformed, obtained_tag,
                           testcase.ciphertext_len);
@@ -145,7 +145,7 @@ static void test_inplace_update_single_byte(void)
         {
             ascon_aead128a_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
                                             1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
@@ -154,10 +154,10 @@ static void test_inplace_update_single_byte(void)
                                                      aead_ctx.bufstate.total_output_len,
                                                      &transformed[i],
                                                      1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
-                atto_eq(new_bytes, ASCON_RATE);
+                atto_eq(new_bytes, ASCON_DOUBLE_RATE);
             }
             else
             {
@@ -171,8 +171,8 @@ static void test_inplace_update_single_byte(void)
                                                 &total_pt_len,
                                                 &is_valid, testcase.tag,
                                                 sizeof(testcase.tag));
-        atto_lt(new_bytes, ASCON_RATE);
-        atto_eq(new_bytes, testcase.plaintext_len % ASCON_RATE);
+        atto_lt(new_bytes, ASCON_DOUBLE_RATE);
+        atto_eq(new_bytes, testcase.plaintext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);
         vecs_aead_dec_log(&testcase, transformed, testcase.plaintext_len);
         atto_eq(is_valid, ASCON_TAG_OK);

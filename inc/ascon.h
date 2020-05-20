@@ -93,6 +93,7 @@ extern "C"
  * are still assigned in chunkcs of this data rate.
  */
 #define ASCON_RATE 8U
+#define ASCON_DOUBLE_RATE (2U * ASCON_RATE)
 
 /**
  * The tag is valid thus the associated data and ciphertext were intact.
@@ -134,7 +135,7 @@ typedef struct
     uint64_t total_output_len;
 
     /** Buffer caching the less-than-rate long input between update calls. */
-    uint8_t buffer[ASCON_RATE * 2];
+    uint8_t buffer[ASCON_DOUBLE_RATE];
 
     /** Currently used bytes of the buffer. */
     uint8_t buffer_len;

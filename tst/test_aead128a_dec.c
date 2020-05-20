@@ -227,7 +227,7 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
                     .plaintext = {0x00},
                     .plaintext_len = 1,
                     .assoc_data_len = 0,
-                    .ciphertext = {0xBC},
+                    .ciphertext = {0x6E},
                     .tag = {
                             0x65, 0x2B, 0x55, 0xBF, 0xDC, 0x8C, 0xAD, 0x2E,
                             0xC4, 0x38, 0x15, 0xB1, 0x66, 0x6B, 0x1A, 0x3A
@@ -297,7 +297,7 @@ static void test_decrypt_1_byte_pt_1_byte_ad(void)
                     .plaintext_len = 1,
                     .assoc_data = {0x00},
                     .assoc_data_len = 1,
-                    .ciphertext = {0xBD},
+                    .ciphertext = {0xE9},
                     .ciphertext_len = 1,
                     .tag = {
                             0xC2, 0x81, 0x3C, 0xC8, 0xC6, 0xDD, 0x2F, 0x24,
@@ -397,7 +397,7 @@ static void test_decrypt_update_single_byte(void)
         {
             ascon_aead128a_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
                                             1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
@@ -407,10 +407,10 @@ static void test_decrypt_update_single_byte(void)
                     aead_ctx.bufstate.total_output_len,
                     &testcase.ciphertext[i],
                     1);
-            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
-                atto_eq(new_pt_bytes, ASCON_RATE);
+                atto_eq(new_pt_bytes, ASCON_DOUBLE_RATE);
             }
             else
             {
@@ -424,8 +424,8 @@ static void test_decrypt_update_single_byte(void)
                                                    &total_pt_len,
                                                    &is_valid, testcase.tag,
                                                    sizeof(testcase.tag));
-        atto_lt(new_pt_bytes, ASCON_RATE);
-        atto_eq(new_pt_bytes, testcase.plaintext_len % ASCON_RATE);
+        atto_lt(new_pt_bytes, ASCON_DOUBLE_RATE);
+        atto_eq(new_pt_bytes, testcase.plaintext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_pt_len, testcase.plaintext_len);
         vecs_aead_dec_log(&testcase, obtained_plaintext,
                           testcase.plaintext_len);
