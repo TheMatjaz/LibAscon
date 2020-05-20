@@ -56,11 +56,11 @@ extern "C"
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 0
 /** Minor version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_MINOR 2
+#define ASCON_API_VERSION_MINOR 3
 /** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 0
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "0.2.0"
+#define ASCON_API_VERSION "0.3.0"
 
 /* Macros electors what part of LibAscon is compiled. */
 #ifndef ASCON_COMPILE_AEAD128

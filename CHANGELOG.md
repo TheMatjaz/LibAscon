@@ -11,6 +11,25 @@ and this project adheres to
 *******************************************************************************
 
 
+[0.3.0] - 2020-05-20
+----------------------------------------
+
+Added Ascon128a cipher and macros to exclude some parts of the library.
+
+
+### Added
+
+- `ascon_aead128a_*` functions, working exactly as the `aead128` versions.
+  Internally they absorb the data with a double rate.
+- Added macros to exclude some parts of the library if they are not needed
+  for a smaller build
+  - `ASCON_COMPILE_AEAD128`
+  - `ASCON_COMPILE_AEAD128a`
+  - `ASCON_COMPILE_AEAD80pq` (which is not included in the lib yet) 
+  -` ASCON_COMPILE_HASH`
+
+
+
 [0.2.0] - 2020-05-17
 ----------------------------------------
 
