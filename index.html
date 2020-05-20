@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.3.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -112,7 +112,7 @@ Known limitations</h1>
 <ul>
 <li>At the moment the library is <b>optimised for size</b>, making the cipher about 4x slower than the <a href="https://github.com/ascon/ascon-c">reference implementation</a>. On the other hand the size of the whole library is about 2x smaller than the AEAD-Ascon128 implementation alone, while the library includes online processing, Ascon-Hash and Ascon-XOF.</li>
 <li>There is no architecture-specific optimisation yet, only a generic portable C implementation using mostly <code>uint64_t</code> data types.</li>
-<li>The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and Ascon80pq are still to be done.</li>
+<li>The only AEAD algorithms implemented are the Ascon128 and Ascon128a. Ascon80pq is still to be done.</li>
 <li>There is no NULL pointer check for the mandatory function parameters, thus it will crash on improper usage.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md4"></a>
@@ -128,7 +128,7 @@ Compiling Ascon into all possible targets</h2>
 </div><!-- fragment --><p>This will build all targets:</p>
 <ul>
 <li>a <code>libascon.dylib</code>/<code>libascon.dll</code> shared library</li>
-<li>a <code>libstaticascon.a</code> static library</li>
+<li>static libraries <code>libsconfull.a</code>, <code>libscon128.a</code>, <code>libscon128a.a</code>, <code>libscon80pq.a</code>, <code>libsconhash.a</code> with the full feature set and respectively only one functionalities, for a smaller build result when not all features are needed</li>
 <li>a test runner executable <code>testascon</code></li>
 <li>the Doxygen documentation (if Doxygen is installed)</li>
 <li>a benchmarking tool <code>benchmark</code> to get the number of CPU cycles per processed byte</li>

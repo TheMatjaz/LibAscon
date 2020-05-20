@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.3.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -94,10 +94,10 @@ Data Fields</h2></td></tr>
 uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#a07d972f82a31d4659e2f77609a64985e">total_output_len</a></td></tr>
 <tr class="memdesc:a07d972f82a31d4659e2f77609a64985e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counter of all encrypted/decrypted bytes, excluding associated data. <br /></td></tr>
 <tr class="separator:a07d972f82a31d4659e2f77609a64985e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70cf3618f5d060f9059423827f3b7cf3"><td class="memItemLeft" align="right" valign="top"><a id="a70cf3618f5d060f9059423827f3b7cf3"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#a70cf3618f5d060f9059423827f3b7cf3">buffer</a> [<a class="el" href="ascon_8h.html#ae8b9d549b97e46f61cf586693a276629">ASCON_RATE</a>]</td></tr>
-<tr class="memdesc:a70cf3618f5d060f9059423827f3b7cf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer caching the less-than-rate long input between update calls. <br /></td></tr>
-<tr class="separator:a70cf3618f5d060f9059423827f3b7cf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7cb6aac59c4496488299d1ac10b3914"><td class="memItemLeft" align="right" valign="top"><a id="ae7cb6aac59c4496488299d1ac10b3914"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#ae7cb6aac59c4496488299d1ac10b3914">buffer</a> [<a class="el" href="ascon_8h.html#a46b065520f316170a86a56bed780bcd3">ASCON_DOUBLE_RATE</a>]</td></tr>
+<tr class="memdesc:ae7cb6aac59c4496488299d1ac10b3914"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer caching the less-than-rate long input between update calls. <br /></td></tr>
+<tr class="separator:ae7cb6aac59c4496488299d1ac10b3914"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a208b93279ac3d1c5753c52933414aea3"><td class="memItemLeft" align="right" valign="top"><a id="a208b93279ac3d1c5753c52933414aea3"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#a208b93279ac3d1c5753c52933414aea3">buffer_len</a></td></tr>
 <tr class="memdesc:a208b93279ac3d1c5753c52933414aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Currently used bytes of the buffer. <br /></td></tr>
