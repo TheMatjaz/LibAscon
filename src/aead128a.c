@@ -9,8 +9,6 @@
 #include "ascon.h"
 #include "internal.h"
 
-#if ASCON_COMPILE_AEAD128a
-
 void ascon_aead128a_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,
                            const uint8_t* key,
@@ -146,7 +144,7 @@ void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* const ctx,
  *
  * It handles both the case when some or none associated data was given.
  */
-static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
+static void ascon_128a_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
 {
     // If there was at least some associated data obtained so far,
     // pad it and absorb any content of the buffer.
@@ -191,33 +189,12 @@ size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
     return buffered_accumulation(&ctx->bufstate, ciphertext, plaintext,
                                  absorb_plaintext, plaintext_len,
                                  ASCON_DOUBLE_RATE);
-}
-
-static void generate_tag(ascon_aead_ctx_t* const ctx,
-                         uint8_t* tag,
-                         uint8_t tag_len)
-{
-    while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
-    {
-        u64_to_bytes(tag, ctx->bufstate.sponge.x3, sizeof(uint64_t));
-        u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
-                     sizeof(uint64_t));
-        ascon_permutation_a12(&ctx->bufstate.sponge);
-        tag_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
-        tag += ASCON_AEAD_TAG_MIN_SECURE_LEN;
-    }
-    uint8_t remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
-    u64_to_bytes(tag, ctx->bufstate.sponge.x3, remaining);
-    tag += sizeof(uint64_t);
-    tag_len -= remaining;
-    remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
-    u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
 }
 
 size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
@@ -229,7 +206,7 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     size_t freshly_generated_ciphertext_len = 0;
     // If there is any remaining less-than-a-block plaintext to be absorbed
@@ -270,7 +247,7 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     log_sponge("finalization:", &ctx->bufstate.sponge);
     // Squeeze out tag into its buffer.
-    generate_tag(ctx, tag, tag_len);
+    ascon_aead_generate_tag(ctx, tag, tag_len);
     if (total_encrypted_bytes != NULL)
     {
         *total_encrypted_bytes =
@@ -290,7 +267,7 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     return buffered_accumulation(&ctx->bufstate, plaintext, ciphertext,
@@ -308,7 +285,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     size_t freshly_generated_plaintext_len = 0;
     // If there is any remaining less-than-a-block ciphertext to be absorbed
@@ -362,7 +339,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
     }
     // Validate tag with variable len
     uint8_t expected_tag[tag_len];
-    generate_tag(ctx, expected_tag, tag_len);
+    ascon_aead_generate_tag(ctx, expected_tag, tag_len);
     const int tags_differ = memcmp(tag, expected_tag, tag_len);
     if (tags_differ)
     {
@@ -377,5 +354,3 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_aead128a_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }
-
-#endif /* ASCON_COMPILE_AEAD128a */

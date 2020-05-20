@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
-        VERSION 0.3.0
+        VERSION 0.4.0
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -12,7 +12,6 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 
 
 # -----------------------------------------------------------------------------
@@ -60,12 +59,17 @@ set(LIB_SRC_FILES_COMMON
         src/buffering.c)
 set(LIB_SRC_FILES_128
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
         src/aead128.c)
 set(LIB_SRC_FILES_128a
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
         src/aead128a.c)
 set(LIB_SRC_FILES_80pq
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
+        src/aead128.c
+        src/aead80pq.c
         )
 set(LIB_SRC_FILES_HASH
         ${LIB_SRC_FILES_COMMON}
@@ -88,15 +92,20 @@ set(TEST_SRC_FILES
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
         tst/test_aead128_vartaglen.c
+        tst/test_aead80pq_enc.c
+        tst/test_aead80pq_dec.c
+        tst/test_aead80pq_inplace.c
+        tst/test_aead80pq_vartaglen.c
         tst/test_aead128a_enc.c
         tst/test_aead128a_dec.c
         tst/test_aead128a_inplace.c
         tst/test_aead128a_vartaglen.c
-        tst/test_structs.c)
+        tst/test_structs.c
+        tst/test_readme_example.c
+        )
 set(BENCHMARK_SRC_FILES
         tst/benchmark.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
-
 
 
 # -----------------------------------------------------------------------------
@@ -111,31 +120,6 @@ add_library(ascon128 STATIC ${LIB_SRC_FILES_128})
 add_library(ascon128a STATIC ${LIB_SRC_FILES_128a})
 add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
-target_compile_definitions(asconfull PUBLIC
-        ASCON_COMPILE_AEAD128=1
-        ASCON_COMPILE_AEAD128a=1
-        ASCON_COMPILE_AEAD80pq=1
-        ASCON_COMPILE_HASH=1)
-target_compile_definitions(ascon128 PUBLIC
-        ASCON_COMPILE_AEAD128=1
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(ascon128a PUBLIC
-        ASCON_COMPILE_AEAD128=0
-        ASCON_COMPILE_AEAD128a=1
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(ascon80pq PUBLIC
-        ASCON_COMPILE_AEAD128=0
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=1
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(asconhash PUBLIC
-        ASCON_COMPILE_AEAD128=0
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=1)
 
 # Shared library (.dylib / .dll)
 # Does not reuse the static library object files, as they may be

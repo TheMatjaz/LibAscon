@@ -11,6 +11,30 @@ and this project adheres to
 *******************************************************************************
 
 
+[0.4.0] - 2020-05-20
+----------------------------------------
+
+Added Ascon80pq cipher, example in Readme.
+
+### Added
+
+- `ascon_aead128a_*` functions, working exactly as the `aead128` versions.
+  Internally they absorb the data with a double rate.
+- Example encryption and decrpytion code into Readme.
+
+
+### Removed
+
+- Macros to exclude some parts of the library from the previous version,
+  as they only complicate the building process. It's easier to exclude some
+  source files from the build, now that they are better organised.
+  - `ASCON_COMPILE_AEAD128`
+  - `ASCON_COMPILE_AEAD128a`
+  - `ASCON_COMPILE_AEAD80pq`
+  -` ASCON_COMPILE_HASH`
+
+
+
 [0.3.0] - 2020-05-20
 ----------------------------------------
 

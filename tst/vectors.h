@@ -72,18 +72,20 @@ typedef struct
     uint8_t plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
     uint8_t assoc_data[VECS_MAX_AEAD_ASSOC_DATA_LEN];
     uint8_t ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
-    uint8_t key[ASCON_AEAD_KEY_LEN];
+    uint8_t key[ASCON_AEAD80pq_KEY_LEN]; // Max key len
     uint8_t nonce[ASCON_AEAD_NONCE_LEN];
     uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     size_t plaintext_len;
     size_t assoc_data_len;
     size_t ciphertext_len;
     size_t count;
+    size_t key_len;
 } vecs_aead_t;
 
 typedef struct
 {
     FILE* handle;
+    size_t key_len;
 } vecs_ctx_t;
 
 /**
@@ -94,7 +96,7 @@ typedef struct
  * @param[in] file_name file where to read the test vectors from
  * @return any error during file opening
  */
-vecs_err_t vecs_init(vecs_ctx_t* ctx, const char* file_name);
+vecs_err_t vecs_init(vecs_ctx_t* ctx, const char* file_name, size_t key_len);
 
 /**
  * @internal

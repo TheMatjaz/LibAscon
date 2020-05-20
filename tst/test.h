@@ -36,6 +36,16 @@ void test_aead128a_inplace(void);
 
 void test_aead128a_vartaglen(void);
 
+void test_aead80pq_encryption(void);
+
+void test_aead80pq_decryption(void);
+
+void test_aead80pq_inplace(void);
+
+void test_aead80pq_vartaglen(void);
+
+void test_readme_example(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,6 @@
 /**
  * @file
- * Tests of the AEAD128 encryption and decryption in-place, that is
+ * Tests of the AEAD80pq encryption and decryption in-place, that is
  * writing the output data into the input buffer itself.
  *
  * @license Creative Commons Zero (CC0) 1.0
@@ -12,8 +12,8 @@
 #include "ascon.h"
 #include "vectors.h"
 
-#define AEAD_VECTORS_FILE "vectors/aead128.txt"
-#define KEY_LEN ASCON_AEAD128_KEY_LEN
+#define AEAD_VECTORS_FILE "vectors/aead80pq.txt"
+#define KEY_LEN ASCON_AEAD80pq_KEY_LEN
 
 static void test_inplace_offline(void)
 {
@@ -37,7 +37,7 @@ static void test_inplace_offline(void)
 
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
-        ascon_aead128_encrypt(transformed,
+        ascon_aead80pq_encrypt(transformed,
                               obtained_tag,
                               testcase.key,
                               testcase.nonce,
@@ -54,7 +54,7 @@ static void test_inplace_offline(void)
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
-        const bool is_valid = ascon_aead128_decrypt(
+        const bool is_valid = ascon_aead80pq_decrypt(
                 transformed,
                 testcase.key,
                 testcase.nonce,
@@ -98,16 +98,16 @@ static void test_inplace_update_single_byte(void)
 
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
-        ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
+        ascon_aead80pq_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
-            ascon_aead128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+            ascon_aead80pq_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
                                             1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
-            new_bytes = ascon_aead128_encrypt_update(
+            new_bytes = ascon_aead80pq_encrypt_update(
                     &aead_ctx,
                     transformed +
                     aead_ctx.bufstate.total_output_len,
@@ -124,7 +124,7 @@ static void test_inplace_update_single_byte(void)
             }
         }
         uint64_t total_ct_len = 0;
-        new_bytes = ascon_aead128_encrypt_final(&aead_ctx,
+        new_bytes = ascon_aead80pq_encrypt_final(&aead_ctx,
                                                 transformed
                                                 +
                                                 aead_ctx.bufstate.total_output_len,
@@ -141,16 +141,16 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
-        ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
+        ascon_aead80pq_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
-            ascon_aead128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+            ascon_aead80pq_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
                                             1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
-            new_bytes = ascon_aead128_decrypt_update(&aead_ctx,
+            new_bytes = ascon_aead80pq_decrypt_update(&aead_ctx,
                                                      transformed +
                                                      aead_ctx.bufstate.total_output_len,
                                                      &transformed[i],
@@ -166,7 +166,7 @@ static void test_inplace_update_single_byte(void)
             }
         }
         uint64_t total_pt_len = 0;
-        new_bytes = ascon_aead128_decrypt_final(&aead_ctx,
+        new_bytes = ascon_aead80pq_decrypt_final(&aead_ctx,
                                                 transformed +
                                                 aead_ctx.bufstate.total_output_len,
                                                 &total_pt_len,
@@ -183,7 +183,7 @@ static void test_inplace_update_single_byte(void)
     }
 }
 
-void test_aead128_inplace(void)
+void test_aead80pq_inplace(void)
 {
     test_inplace_offline();
     test_inplace_update_single_byte();
