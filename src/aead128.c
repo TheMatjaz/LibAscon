@@ -9,8 +9,6 @@
 #include "ascon.h"
 #include "internal.h"
 
-#if ASCON_COMPILE_AEAD128
-
 void ascon_aead128_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,
                            const uint8_t* key,
@@ -280,5 +278,3 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_aead128_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }
-
-#endif /* ASCON_COMPILE_AEAD128 */

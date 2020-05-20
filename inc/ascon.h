@@ -62,27 +62,6 @@ extern "C"
 /** Version of this API conforming to semantic versioning as a string. */
 #define ASCON_API_VERSION "0.3.0"
 
-/* Macros electors what part of LibAscon is compiled. */
-#ifndef ASCON_COMPILE_AEAD128
-/**
- * When true, includes the Ascon128 AEAD cipher into the library build.
- */
-#define ASCON_COMPILE_AEAD128 1
-#endif
-#ifndef ASCON_COMPILE_AEAD128a
-/**
- * When true, includes the Ascon128a AEAD cipher into the library build.
- */
-#define ASCON_COMPILE_AEAD128a 1
-#endif
-#ifndef ASCON_COMPILE_AEAD80pq
-/**
-* When true, includes the Ascon80pq AEAD cipher into the library build.
-*/
-#define ASCON_COMPILE_AEAD80pq 1
-#endif
-
-
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
  */
@@ -215,8 +194,6 @@ typedef struct
      * used only in the Ascon80pq cipher. */
     uint64_t k2;
 } ascon_aead_ctx_t;
-
-#if ASCON_COMPILE_AEAD128
 
 /**
  * Offline symmetric encryption using Ascon128.
@@ -620,10 +597,6 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  */
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
 
-#endif /* ASCON_COMPILE_AEAD128 */
-
-#if ASCON_COMPILE_AEAD128a
-
 /**
  * Offline symmetric encryption using Ascon128a, which uses a double data rate.
  *
@@ -746,10 +719,6 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
  */
 void ascon_aead128a_cleanup(ascon_aead_ctx_t* ctx);
 
-#endif /* ASCON_COMPILE_AEAD128a */
-
-#if ASCON_COMPILE_AEAD80pq
-
 /**
  * Offline symmetric encryption using Ascon80pq, which uses a double data rate.
  *
@@ -871,10 +840,6 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
  * @copydetails ascon_aead128_cleanup()
  */
 void ascon_aead80pq_cleanup(ascon_aead_ctx_t* ctx);
-
-#endif /* ASCON_COMPILE_AEAD80pq */
-
-#if ASCON_COMPILE_HASH
 
 /**
  * Offline Ascon Hash with fixed digest length.
@@ -1077,8 +1042,6 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
  * @param[in, out] ctx to erase.
  */
 void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
-
-#endif /* ASCON_COMPILE_HASH */
 
 #ifdef __cplusplus
 }

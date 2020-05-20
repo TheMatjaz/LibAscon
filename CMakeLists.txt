@@ -114,31 +114,6 @@ add_library(ascon128 STATIC ${LIB_SRC_FILES_128})
 add_library(ascon128a STATIC ${LIB_SRC_FILES_128a})
 add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
-target_compile_definitions(asconfull PUBLIC
-        ASCON_COMPILE_AEAD128=1
-        ASCON_COMPILE_AEAD128a=1
-        ASCON_COMPILE_AEAD80pq=1
-        ASCON_COMPILE_HASH=1)
-target_compile_definitions(ascon128 PUBLIC
-        ASCON_COMPILE_AEAD128=1
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(ascon128a PUBLIC
-        ASCON_COMPILE_AEAD128=0
-        ASCON_COMPILE_AEAD128a=1
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(ascon80pq PUBLIC
-        ASCON_COMPILE_AEAD128=1
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=1
-        ASCON_COMPILE_HASH=0)
-target_compile_definitions(asconhash PUBLIC
-        ASCON_COMPILE_AEAD128=0
-        ASCON_COMPILE_AEAD128a=0
-        ASCON_COMPILE_AEAD80pq=0
-        ASCON_COMPILE_HASH=1)
 
 # Shared library (.dylib / .dll)
 # Does not reuse the static library object files, as they may be
