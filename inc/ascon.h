@@ -81,18 +81,22 @@ extern "C"
 */
 #define ASCON_COMPILE_AEAD80pq 1
 #endif
-#ifndef ASCON_COMPILE_HASH
-/**
-* When true, includes the Ascon-Hash and Ascon-XOF into the library build.
-*/
-    #define ASCON_COMPILE_HASH 1
-#endif
+
 
 /**
- * Length in bytes of the secret symmetric key used for authenticated
- * encryption and decryption.
+ * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
  */
-#define ASCON_AEAD_KEY_LEN 16U
+#define ASCON_AEAD128_KEY_LEN 16U
+
+/**
+ * Length in bytes of the secret symmetric key used for the Ascon128a cipher.
+ */
+#define ASCON_AEAD128a_KEY_LEN 16U
+
+/**
+ * Length in bytes of the secret symmetric key used for the Ascon80pq cipher.
+ */
+#define ASCON_AEAD80pq_KEY_LEN 20U
 
 /**
  * Length in bytes of the public nonce used for authenticated
@@ -201,11 +205,15 @@ typedef struct
     /** Cipher buffered sponge state. */
     ascon_bufstate_t bufstate;
 
-    /** Copy of the secret key, to be used in the final step, first half. */
+    /** Copy of the secret key, to be used in the final step, first part. */
     uint64_t k0;
 
-    /** Copy of the secret key, to be used in the final step, second half. */
+    /** Copy of the secret key, to be used in the final step, second part. */
     uint64_t k1;
+
+    /** Copy of the secret key, to be used in the final step, third part,
+     * used only in the Ascon80pq cipher. */
+    uint64_t k2;
 } ascon_aead_ctx_t;
 
 #if ASCON_COMPILE_AEAD128
@@ -255,7 +263,7 @@ typedef struct
  */
 void ascon_aead128_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,
-                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t key[ASCON_AEAD128_KEY_LEN],
                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                            const uint8_t* assoc_data,
                            const uint8_t* plaintext,
@@ -296,11 +304,11 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
- * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes. Not NULL.
+ * @param[in] key secret key of ASCON_AEAD128_KEY_LEN bytes. Not NULL.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
-                        const uint8_t key[ASCON_AEAD_KEY_LEN],
+                        const uint8_t key[ASCON_AEAD128_KEY_LEN],
                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
@@ -469,7 +477,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *       This pointer may also point to the same location as \p ciphertext
  *       to decrypt the ciphertext in-place, sparing on memory instead
  *       of writing into a separate output buffer. Not NULL.
- * @param[in] key secret key of ASCON_AEAD_KEY_LEN bytes.
+ * @param[in] key secret key of ASCON_AEAD128_KEY_LEN bytes.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
@@ -490,7 +498,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  */
 bool ascon_aead128_decrypt(uint8_t* plaintext,
-                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t key[ASCON_AEAD128_KEY_LEN],
                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                            const uint8_t* assoc_data,
                            const uint8_t* ciphertext,
@@ -613,6 +621,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
 
 #endif /* ASCON_COMPILE_AEAD128 */
+
 #if ASCON_COMPILE_AEAD128a
 
 /**
@@ -624,7 +633,7 @@ void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
  */
 void ascon_aead128a_encrypt(uint8_t* ciphertext,
                             uint8_t* tag,
-                            const uint8_t key[ASCON_AEAD_KEY_LEN],
+                            const uint8_t key[ASCON_AEAD128_KEY_LEN],
                             const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                             const uint8_t* assoc_data,
                             const uint8_t* plaintext,
@@ -641,7 +650,7 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @copydetails ascon_aead128_init()
  */
 void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
-                         const uint8_t key[ASCON_AEAD_KEY_LEN],
+                         const uint8_t key[ASCON_AEAD128a_KEY_LEN],
                          const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
@@ -691,7 +700,7 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @copydetails ascon_aead128_decrypt()
  */
 bool ascon_aead128a_decrypt(uint8_t* plaintext,
-                            const uint8_t key[ASCON_AEAD_KEY_LEN],
+                            const uint8_t key[ASCON_AEAD128a_KEY_LEN],
                             const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                             const uint8_t* assoc_data,
                             const uint8_t* ciphertext,
@@ -738,6 +747,132 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
 void ascon_aead128a_cleanup(ascon_aead_ctx_t* ctx);
 
 #endif /* ASCON_COMPILE_AEAD128a */
+
+#if ASCON_COMPILE_AEAD80pq
+
+/**
+ * Offline symmetric encryption using Ascon80pq, which uses a double data rate.
+ *
+ * Works exactly the same way as ascon_aead128_encrypt().
+ *
+ * @copydetails ascon_aead128_encrypt()
+ */
+void ascon_aead80pq_encrypt(uint8_t* ciphertext,
+                            uint8_t* tag,
+                            const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                            const uint8_t* assoc_data,
+                            const uint8_t* plaintext,
+                            size_t assoc_data_len,
+                            size_t plaintext_len,
+                            uint8_t tag_len);
+
+
+/**
+ * Online symmetric encryption/decryption using Ascon80pq, initialisation.
+ *
+ * Works exactly the same way as ascon_aead128_init().
+ *
+ * @copydetails ascon_aead128_init()
+ */
+void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
+                         const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+
+/**
+ * Online symmetric encryption/decryption using Ascon80pq, feeding associated
+ * data.
+ *
+ * Works exactly the same way as ascon_aead128_assoc_data_update().
+ *
+ * @copydetails ascon_aead128_assoc_data_update()
+ */
+void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                      const uint8_t* assoc_data,
+                                      size_t assoc_data_len);
+
+/**
+ * Online symmetric encryption/decryption using Ascon80pq, feeding plaintext
+ * and getting ciphertext.
+ *
+ * Works exactly the same way as ascon_aead128_encrypt_update().
+ *
+ * @copydetails ascon_aead128_encrypt_update()
+ */
+size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
+                                     uint8_t* ciphertext,
+                                     const uint8_t* plaintext,
+                                     size_t plaintext_len);
+
+/**
+ * Online symmetric encryption/decryption using Ascon80pq, finalisation and tag
+ * generation.
+ *
+ * Works exactly the same way as ascon_aead128_encrypt_final().
+ *
+ * @copydetails ascon_aead128_encrypt_final()
+ */
+size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
+                                    uint8_t* ciphertext,
+                                    uint64_t* total_encrypted_bytes,
+                                    uint8_t* tag,
+                                    uint8_t tag_len);
+
+/**
+ * Offline symmetric decryption using Ascon80pq.
+ *
+ * Works exactly the same way as ascon_aead128_decrypt().
+ *
+ * @copydetails ascon_aead128_decrypt()
+ */
+bool ascon_aead80pq_decrypt(uint8_t* plaintext,
+                            const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                            const uint8_t* assoc_data,
+                            const uint8_t* ciphertext,
+                            const uint8_t* tag,
+                            size_t assoc_data_len,
+                            size_t ciphertext_len,
+                            uint8_t tag_len);
+
+/**
+ * Online symmetric decryption using Ascon80pq, feeding ciphertext and getting
+ * plaintext.
+ *
+ * Works exactly the same way as ascon_aead128_decrypt_update().
+ *
+ * @copydetails ascon_aead128_decrypt_update()
+ */
+size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
+                                     uint8_t* plaintext,
+                                     const uint8_t* ciphertext,
+                                     size_t ciphertext_len);
+
+/**
+ * Online symmetric decryption using Ascon80pq, finalisation and tag validation.
+ *
+ * Works exactly the same way as ascon_aead128_decrypt_final().
+ *
+ * @copydetails ascon_aead128_decrypt_final()
+ */
+size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
+                                    uint8_t* plaintext,
+                                    uint64_t* total_decrypted_len,
+                                    bool* is_tag_valid,
+                                    const uint8_t* tag,
+                                    uint8_t tag_len);
+
+/**
+ * Security cleanup function of the context, in case the online processing
+ * is not completed to the end.
+ *
+ * Works exactly the same way as ascon_aead128_cleanup().
+ *
+ * @copydetails ascon_aead128_cleanup()
+ */
+void ascon_aead80pq_cleanup(ascon_aead_ctx_t* ctx);
+
+#endif /* ASCON_COMPILE_AEAD80pq */
 
 #if ASCON_COMPILE_HASH
 

@@ -14,7 +14,6 @@ endif ()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-
 # -----------------------------------------------------------------------------
 # Compiler flags
 # -----------------------------------------------------------------------------
@@ -60,12 +59,17 @@ set(LIB_SRC_FILES_COMMON
         src/buffering.c)
 set(LIB_SRC_FILES_128
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
         src/aead128.c)
 set(LIB_SRC_FILES_128a
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
         src/aead128a.c)
 set(LIB_SRC_FILES_80pq
         ${LIB_SRC_FILES_COMMON}
+        src/aead_common.c
+        src/aead128.c
+        src/aead80pq.c
         )
 set(LIB_SRC_FILES_HASH
         ${LIB_SRC_FILES_COMMON}
@@ -98,7 +102,6 @@ set(BENCHMARK_SRC_FILES
 include_directories(AFTER SYSTEM inc/ tst/atto/)
 
 
-
 # -----------------------------------------------------------------------------
 # Build targets
 # ----------------------------------------------------------------------------
@@ -127,7 +130,7 @@ target_compile_definitions(ascon128a PUBLIC
         ASCON_COMPILE_AEAD80pq=0
         ASCON_COMPILE_HASH=0)
 target_compile_definitions(ascon80pq PUBLIC
-        ASCON_COMPILE_AEAD128=0
+        ASCON_COMPILE_AEAD128=1
         ASCON_COMPILE_AEAD128a=0
         ASCON_COMPILE_AEAD80pq=1
         ASCON_COMPILE_HASH=0)
