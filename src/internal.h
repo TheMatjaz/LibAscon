@@ -23,28 +23,34 @@ extern "C"
 
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
-#define PERMUTATION_A_ROUNDS 12
-#define PERMUTATION_Ba_ROUNDS 8
-#define PERMUTATION_B_ROUNDS 6
+#define PERMUTATION_12_ROUNDS 12
+#define PERMUTATION_8_ROUNDS 8
+#define PERMUTATION_6_ROUNDS 6
 #define XOF_IV ( \
       ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
-    | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
+    | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
     )
 #define AEAD128_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+       ((uint64_t)(8 * (ASCON_AEAD128_KEY_LEN)) << 56U) \
      | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
-     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_B_ROUNDS)     << 32U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_6_ROUNDS)     << 32U) \
      )
 #define AEAD128a_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
+       ((uint64_t)(8 * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
      | ((uint64_t)(8 * ASCON_DOUBLE_RATE)    << 48U) \
-     | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_Ba_ROUNDS)    << 32U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
+     | ((uint64_t)(PERMUTATION_8_ROUNDS)    << 32U) \
+     )
+#define AEAD80pq_IV ( \
+       ((uint64_t)(8 * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8 * ASCON_RATE)               << 48U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)        << 40U) \
+     | ((uint64_t)(PERMUTATION_6_ROUNDS)         << 32U) \
      )
 #define HASH_IV ( \
       ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
-    | ((uint64_t)(PERMUTATION_A_ROUNDS) << 40U) \
+    | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
     | ((uint64_t)(8 * ASCON_HASH_DIGEST_LEN)) \
     )
 
@@ -127,12 +133,37 @@ void ascon_permutation_b6(ascon_sponge_t* sponge);
 
 /**
  * @internal
- * Initialises the AEAD128 or AEAD128a or AEAD80pq online processing.
+ * Initialises the AEAD128 or AEAD128a online processing.
  */
 void ascon_aead_init(ascon_aead_ctx_t* ctx,
                      const uint8_t* key,
                      const uint8_t* nonce,
                      uint64_t iv);
+
+/**
+ * @internal
+ * Handles the finalisation of the associated data before any plaintext or
+ * ciphertext is being processed for Ascon128 and Ascon80pq
+ *
+ * MUST be called ONLY once! In other words, when
+ * ctx->bufstate.assoc_data_state == ASCON_FLOW_ASSOC_DATA_FINALISED
+ * then it MUST NOT be called anymore.
+ *
+ * It handles both the case when some or none associated data was given.
+ */
+void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
+
+/**
+ * @internal
+ * Generates an arbitrary-length tag from a finalised state for all AEAD
+ * ciphers.
+ *
+ * MUST be called ONLY when all AD and PT/CT is absorbed and state is
+ * prepared for tag generation.
+ */
+void ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
+                             uint8_t* tag,
+                             uint8_t tag_len);
 
 /**
  * @internal

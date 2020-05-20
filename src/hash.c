@@ -9,8 +9,6 @@
 #include "ascon.h"
 #include "internal.h"
 
-#if ASCON_COMPILE_HASH
-
 void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
                 const uint8_t* const data,
                 const size_t data_len)
@@ -117,5 +115,3 @@ inline void ascon_hash_final(ascon_hash_ctx_t* const ctx,
 {
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
-
-#endif /* ASCON_COMPILE_HASH */
