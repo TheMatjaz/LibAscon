@@ -127,7 +127,7 @@ add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
 add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# Test runner executable, reuse the static libary instead of recompiling
+# Test runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(testascon
         $<TARGET_OBJECTS:asconfull>
@@ -145,7 +145,7 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
         "${CMAKE_BINARY_DIR}/vectors")
 
-# Benchmark runner executable, reuse the static libary instead of recompiling
+# Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(benchmark
         $<TARGET_OBJECTS:asconfull>

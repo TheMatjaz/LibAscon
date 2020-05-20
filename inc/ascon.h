@@ -98,7 +98,7 @@ extern "C"
 /**
  * Number of bytes the cipher can process at the time in AEAD128a mode.
  *
- * The AEAD128a cipher absorbs blocks twice the stardard rate size.
+ * The AEAD128a cipher absorbs blocks twice the standard rate size.
  */
 #define ASCON_DOUBLE_RATE (2U * ASCON_RATE)
 
