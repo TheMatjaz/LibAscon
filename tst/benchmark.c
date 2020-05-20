@@ -59,7 +59,7 @@ const uint16_t TEXT_LENGTHS[] = {1, 8, 16, 32, 64, 1536, MAX_TEXT_LEN};
 typedef struct
 {
     uint8_t ALIGN(16) text[MAX_TEXT_LEN];
-    uint8_t ALIGN(16) key[ASCON_AEAD_KEY_LEN];
+    uint8_t ALIGN(16) key[ASCON_AEAD128_KEY_LEN];
     uint8_t ALIGN(16) nonce[ASCON_AEAD_NONCE_LEN];
     uint8_t ALIGN(16) assoc_data[MAX_TEXT_LEN];
     uint8_t ALIGN(16) obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
@@ -79,7 +79,7 @@ static void init_benchmark_data(benchmark_data_t* const data,
                                 const size_t text_len)
 {
     init_random_array(data->text, text_len);
-    init_random_array(data->key, ASCON_AEAD_KEY_LEN);
+    init_random_array(data->key, ASCON_AEAD128_KEY_LEN);
     init_random_array(data->nonce, ASCON_AEAD_NONCE_LEN);
     init_random_array(data->assoc_data, text_len);
     data->text_len = text_len;

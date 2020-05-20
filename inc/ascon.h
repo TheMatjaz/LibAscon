@@ -226,7 +226,9 @@ typedef struct
  * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] key secret key of #ASCON_AEAD_KEY_LEN bytes.
+ * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN,
+ *       #ASCON_AEAD128a_KEY_LEN or #ASCON_AEAD80pq_KEY_LEN bytes respectively
+ *       for the Ascon128, Ascon128a, Ascon80pq ciphers. Not NULL.
  * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
  *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
@@ -281,7 +283,9 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
- * @param[in] key secret key of ASCON_AEAD128_KEY_LEN bytes. Not NULL.
+ * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN,
+ *       #ASCON_AEAD128a_KEY_LEN or #ASCON_AEAD80pq_KEY_LEN bytes respectively
+ *       for the Ascon128, Ascon128a, Ascon80pq ciphers. Not NULL
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
@@ -454,7 +458,9 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *       This pointer may also point to the same location as \p ciphertext
  *       to decrypt the ciphertext in-place, sparing on memory instead
  *       of writing into a separate output buffer. Not NULL.
- * @param[in] key secret key of ASCON_AEAD128_KEY_LEN bytes.
+ * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN,
+ *       #ASCON_AEAD128a_KEY_LEN or #ASCON_AEAD80pq_KEY_LEN bytes respectively
+ *       for the Ascon128, Ascon128a, Ascon80pq ciphers. Not NULL.
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
@@ -722,7 +728,8 @@ void ascon_aead128a_cleanup(ascon_aead_ctx_t* ctx);
 /**
  * Offline symmetric encryption using Ascon80pq, which uses a double data rate.
  *
- * Works exactly the same way as ascon_aead128_encrypt().
+ * Works exactly the same way as ascon_aead128_encrypt(), except for the
+ * key being longer: #ASCON_AEAD80pq_KEY_LEN bytes.
  *
  * @copydetails ascon_aead128_encrypt()
  */
@@ -740,7 +747,8 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
 /**
  * Online symmetric encryption/decryption using Ascon80pq, initialisation.
  *
- * Works exactly the same way as ascon_aead128_init().
+ * Works exactly the same way as ascon_aead128_init(), except for the
+ * key being longer: #ASCON_AEAD80pq_KEY_LEN bytes.
  *
  * @copydetails ascon_aead128_init()
  */
