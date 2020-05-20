@@ -473,6 +473,86 @@ static void test_encrypt_update_single_byte(void)
     }
 }
 
+static void test_encrypt_update_three_bytes(void)
+{
+    vecs_ctx_t ctx;
+    vecs_aead_t testcase;
+    uint8_t obtained_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
+    atto_eq(errcode, VECS_OK);
+    ascon_aead_ctx_t aead_ctx;
+    size_t new_ct_bytes = 0;
+
+    while (1)
+    {
+        errcode = vecs_aead_next(&ctx, &testcase);
+        if (errcode == VECS_EOF)
+        {
+            break;
+        }
+        atto_ctr(testcase.count);
+        atto_eq(errcode, VECS_OK);
+        atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
+        memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
+        memset(obtained_tag, 0, sizeof(obtained_tag));
+        // Many 3-byte update calls
+        ascon_aead80pq_init(&aead_ctx, testcase.key, testcase.nonce);
+        size_t remaining;
+        size_t step;
+        size_t i = 0;
+        remaining = testcase.assoc_data_len;
+        while (remaining)
+        {
+            step = MIN(remaining, 3);
+            ascon_aead80pq_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+                                            step);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
+            remaining -= step;
+            i += step;
+        }
+        i = 0;
+        size_t previous_buffer_len = 0;
+        remaining = testcase.plaintext_len;
+        while (remaining)
+        {
+            step = MIN(remaining, 3);
+            new_ct_bytes = ascon_aead80pq_encrypt_update(
+                    &aead_ctx,
+                    obtained_ciphertext +
+                    aead_ctx.bufstate.total_output_len,
+                    &testcase.plaintext[i],
+                    step);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
+            if (aead_ctx.bufstate.buffer_len < previous_buffer_len)
+            {
+                atto_eq(new_ct_bytes, ASCON_RATE);
+            }
+            else
+            {
+                atto_eq(new_ct_bytes, 0);
+            }
+            previous_buffer_len = aead_ctx.bufstate.buffer_len;
+            remaining -= step;
+            i += step;
+        }
+        uint64_t total_ct_len = 0;
+        new_ct_bytes = ascon_aead80pq_encrypt_final(
+                &aead_ctx,
+                obtained_ciphertext + aead_ctx.bufstate.total_output_len,
+                &total_ct_len, obtained_tag, sizeof(obtained_tag));
+        atto_lt(new_ct_bytes, ASCON_RATE);
+        atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
+        atto_eq(total_ct_len, testcase.ciphertext_len);
+        vecs_aead_enc_log(&testcase, obtained_ciphertext, obtained_tag,
+                          testcase.ciphertext_len);
+        atto_memeq(obtained_ciphertext,
+                   testcase.ciphertext,
+                   testcase.ciphertext_len);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    }
+}
+
 void test_aead80pq_encryption(void)
 {
     test_aead_cleanup();
@@ -482,4 +562,5 @@ void test_aead80pq_encryption(void)
     test_encrypt_1_byte_pt_1_byte_ad();
     test_encrypt_offline();
     test_encrypt_update_single_byte();
+    test_encrypt_update_three_bytes();
 }

@@ -14,6 +14,8 @@ extern "C"
 {
 #endif
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 void test_structs(void);
 
 void test_xof(void);

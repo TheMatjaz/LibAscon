@@ -31,14 +31,9 @@
  */
 
 // TODO test all branches in the algorithm
-// TODO test all NULLable parameters
 // TODO static analyser
 // TODO valgrind
 // TODO fuzzer
-// TODO tests with updates of different length (contd.)
-// 1B, 2B, ... 16B
-// Same but with initial offset
-// Same with pseudorandom sequences like 3, 17, 9, 1, 0, 22
 // TODO filenames starting with ascon_
 
 #ifndef ASCON_H
