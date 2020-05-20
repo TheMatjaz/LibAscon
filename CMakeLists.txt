@@ -56,7 +56,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
 # -----------------------------------------------------------------------------
 set(LIB_SRC_FILES_COMMON
         src/internal.h
-        src/offline.c
         src/permutations.c
         src/buffering.c)
 set(LIB_SRC_FILES_128
