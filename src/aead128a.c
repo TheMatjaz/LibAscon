@@ -81,7 +81,7 @@ void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* const ctx,
         ctx->bufstate.assoc_data_state = ASCON_FLOW_SOME_ASSOC_DATA;
         buffered_accumulation(&ctx->bufstate, NULL, assoc_data,
                               absorb_assoc_data, assoc_data_len,
-                              2 * ASCON_RATE);
+                              ASCON_DOUBLE_RATE);
     }
 }
 
@@ -279,8 +279,8 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
         // Final state changes at decryption's end
         ctx->bufstate.sponge.x0 = c_0;
         ctx->bufstate.sponge.x1 &= ~byte_mask(second_half);
-        ctx->bufstate.sponge.x0 |= c_1;
-        ctx->bufstate.sponge.x0 ^= PADDING(second_half);
+        ctx->bufstate.sponge.x1 |= c_1;
+        ctx->bufstate.sponge.x1 ^= PADDING(second_half);
     }
     else
     {
