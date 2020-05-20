@@ -175,7 +175,7 @@ static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
 }
 
 static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
-                            vecs_aead_t* const testcase);
+                            vecs_aead_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);

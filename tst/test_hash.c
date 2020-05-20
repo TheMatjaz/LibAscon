@@ -12,6 +12,7 @@
 #include "vectors.h"
 
 #define HASH_VECTORS_FILE "vectors/hash.txt"
+#define KEY_LEN 0 /* Key not used in this file. */
 
 static void test_hash_cleanup(void)
 {
@@ -405,7 +406,7 @@ static void test_hash_batch(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -429,7 +430,7 @@ static void test_hash_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASH_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
     ascon_hash_ctx_t hash_ctx;
 
