@@ -86,8 +86,16 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # Build the library first into an object, but keep `objlibascon` as
 # a reference to it, so there is no need to recompile it when building
 # a different target, that uses the same source files.
-# Static library (.a)
-add_library(staticascon STATIC ${LIB_SRC_FILES})
+# Static libraries (.a), compiled with all features or only some features
+add_library(asconfull STATIC ${LIB_SRC_FILES})
+add_library(ascon128 STATIC ${LIB_SRC_FILES})
+add_library(ascon128a STATIC ${LIB_SRC_FILES})
+add_library(ascon80pq STATIC ${LIB_SRC_FILES})
+add_library(asconhash STATIC ${LIB_SRC_FILES})
+target_compile_definitions(ascon128 PRIVATE ASCON_COMPILE_AEAD128)
+target_compile_definitions(ascon128a PRIVATE ASCON_COMPILE_AEAD128a)
+target_compile_definitions(ascon80pq PRIVATE ASCON_COMPILE_AEAD80pq)
+target_compile_definitions(asconhash PRIVATE ASCON_COMPILE_HASH)
 
 # Shared library (.dylib / .dll)
 # Does not reuse the static library object files, as they may be
@@ -98,7 +106,7 @@ set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 # Test runner executable, reuse the static libary instead of recompiling
 # the source files
 add_executable(testascon
-        $<TARGET_OBJECTS:staticascon>
+        $<TARGET_OBJECTS:asconfull>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
 # Copy test vectors files to build directory after the make-build.
@@ -116,7 +124,7 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 # Benchmark runner executable, reuse the static libary instead of recompiling
 # the source files
 add_executable(benchmark
-        $<TARGET_OBJECTS:staticascon>
+        $<TARGET_OBJECTS:asconfull>
         ${BENCHMARK_SRC_FILES})
 
 # Doxygen documentation builder

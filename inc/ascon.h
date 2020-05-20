@@ -63,6 +63,22 @@ extern "C"
 #define ASCON_API_VERSION "0.2.0"
 
 /* Macros electors what part of LibAscon is compiled. */
+/**
+ * @def ASCON_COMPILE_AEAD128
+ * When true, includes the Ascon128 AEAD cipher into the library build.
+ */
+/**
+* @def ASCON_COMPILE_AEAD128a
+* When true, includes the Ascon128a AEAD cipher into the library build.
+*/
+/**
+* @def ASCON_COMPILE_AEAD80pq
+* When true, includes the Ascon80pq AEAD cipher into the library build.
+*/
+/**
+* @def ASCON_COMPILE_HASH
+* When true, includes the Ascon-Hash and Ascon-XOF into the library build.
+*/
 #ifndef ASCON_COMPILE_AEAD128
     #define ASCON_COMPILE_AEAD128 1
 #endif
