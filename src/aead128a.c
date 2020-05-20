@@ -209,7 +209,6 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
         u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0,
                      ctx->bufstate.buffer_len);
     }
-    ascon_permutation_b8(&ctx->bufstate.sponge);
     freshly_generated_ciphertext_len += ctx->bufstate.buffer_len;
     log_sponge("process plaintext:", &ctx->bufstate.sponge);
     // End of encryption, start of tag generation.
