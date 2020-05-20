@@ -549,6 +549,82 @@ static void test_encrypt_update_three_bytes(void)
     }
 }
 
+static void test_encrypt_update_var_bytes(void)
+{
+    vecs_ctx_t ctx;
+    vecs_aead_t testcase;
+    uint8_t obtained_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
+    uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
+    atto_eq(errcode, VECS_OK);
+    ascon_aead_ctx_t aead_ctx;
+    size_t new_ct_bytes = 0;
+    uint64_t total_ct_len = 0;
+
+    while (1)
+    {
+        errcode = vecs_aead_next(&ctx, &testcase);
+        if (errcode == VECS_EOF)
+        {
+            break;
+        }
+        atto_ctr(testcase.count);
+        atto_eq(errcode, VECS_OK);
+        atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
+        memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
+        memset(obtained_tag, 0, sizeof(obtained_tag));
+        // Many increasingly-larger update calls
+        ascon_aead128_init(&aead_ctx, testcase.key, testcase.nonce);
+        size_t remaining;
+        size_t step = 1;
+        size_t i = 0;
+        remaining = testcase.assoc_data_len;
+        while (remaining)
+        {
+            step = MIN(remaining, step + 1);
+            ascon_aead128_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
+                                            step);
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
+            remaining -= step;
+            i += step;
+        }
+        i = 0;
+        total_ct_len = 0;
+        remaining = testcase.plaintext_len;
+        while (remaining)
+        {
+            step = MIN(remaining, step + 1);
+            new_ct_bytes = ascon_aead128_encrypt_update(
+                    &aead_ctx,
+                    obtained_ciphertext + total_ct_len,
+                    &testcase.plaintext[i],
+                    step);
+            total_ct_len += new_ct_bytes;
+            atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
+            if (step > ASCON_RATE)
+            {
+                atto_ge(new_ct_bytes, ASCON_RATE);
+            }
+            remaining -= step;
+            i += step;
+        }
+        new_ct_bytes = ascon_aead128_encrypt_final(
+                &aead_ctx,
+                obtained_ciphertext + total_ct_len,
+                NULL, obtained_tag, sizeof(obtained_tag));
+        total_ct_len += new_ct_bytes;
+        atto_lt(new_ct_bytes, ASCON_RATE);
+        atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
+        atto_eq(total_ct_len, testcase.ciphertext_len);
+        vecs_aead_enc_log(&testcase, obtained_ciphertext, obtained_tag,
+                          testcase.ciphertext_len);
+        atto_memeq(obtained_ciphertext,
+                   testcase.ciphertext,
+                   testcase.ciphertext_len);
+        atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    }
+}
+
 void test_aead128_encryption(void)
 {
     test_aead_cleanup();
@@ -559,4 +635,5 @@ void test_aead128_encryption(void)
     test_encrypt_offline();
     test_encrypt_update_single_byte();
     test_encrypt_update_three_bytes();
+    test_encrypt_update_var_bytes();
 }
