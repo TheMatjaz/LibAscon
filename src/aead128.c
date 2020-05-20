@@ -126,12 +126,12 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
                                                 ctx->bufstate.buffer_len);
         ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
         ascon_permutation_b6(&ctx->bufstate.sponge);
-        ctx->bufstate.buffer_len = 0;
     }
     // Application of a constant at end of associated data for domain
     // separation. Done always, regardless if there was some associated
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1U;
+    ctx->bufstate.buffer_len = 0;
     ctx->bufstate.total_output_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
     log_sponge("process associated data:", &ctx->bufstate.sponge);
