@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -70,10 +70,10 @@ $(function() {
 <div class="textblock"><p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 [0.3.0] - 2020-05-20</h1>
 <p>Added Ascon128a cipher and macros to exclude some parts of the library.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Added</h2>
 <ul>
 <li><code>ascon_aead128a_*</code> functions, working exactly as the <code>aead128</code> versions. Internally they absorb the data with a double rate.</li>
@@ -84,25 +84,25 @@ Added</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 [0.2.0] - 2020-05-17</h1>
 <p>Variable tags length, secure context cleanup, minor QOL improvements.</p>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Added</h2>
 <ul>
 <li><code><a class="el" href="ascon_8h.html#a125532e3885107d7a4216e971c34eef1" title="Security cleanup function of the context, in case the online processing is not completed to the end.">ascon_aead128_cleanup()</a></code> and <code><a class="el" href="ascon_8h.html#aa97e18fda28c6705927281d7b986c21a" title="Security cleanup function of the context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a></code> to securely cleanup the context in case the online processing is not terminated with the final function.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Changed</h2>
 <ul>
-<li><p class="startli"><code><a class="el" href="ascon_8h.html#a89428aaa5d44cc0ad64dd255a44eec01" title="Offline symmetric encryption using Ascon128.">ascon_aead128_encrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a11e452fd7944fe05900edffb392386c7" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a></code>, <code><a class="el" href="ascon_8h.html#aee189bbbb72caf44bddb9c89ae5a5842" title="Offline symmetric decryption using Ascon128.">ascon_aead128_decrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a8fb38efa9304195bd22740add909ffd6" title="Online symmetric decryption using Ascon128, finalisation and tag validation.">ascon_aead128_decrypt_final()</a></code> have a <b>new parameter</b>: <code>tag_len</code>. The user can specify the length of the tag to generate and verify respectively. The value can be any value in [0, 255] bytes. At least 16 is of course recommended.</p>
+<li><p class="startli"><code><a class="el" href="ascon_8h.html#a5d2dfce9bf654f1710a777a82c772760" title="Offline symmetric encryption using Ascon128.">ascon_aead128_encrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a11e452fd7944fe05900edffb392386c7" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a></code>, <code><a class="el" href="ascon_8h.html#ada9df5eef513a2007a2b6c57d1710b34" title="Offline symmetric decryption using Ascon128.">ascon_aead128_decrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a8fb38efa9304195bd22740add909ffd6" title="Online symmetric decryption using Ascon128, finalisation and tag validation.">ascon_aead128_decrypt_final()</a></code> have a <b>new parameter</b>: <code>tag_len</code>. The user can specify the length of the tag to generate and verify respectively. The value can be any value in [0, 255] bytes. At least 16 is of course recommended.</p>
 <p class="startli">Note: the tag bytes above 16 B are an extension of the original Ascon algorithm using the same sponge squeezing technique as for the XOF.</p>
 </li>
 <li>Replace <code>ascon_tag_validity_t</code> enum with simpler <code>bool</code> from <code>stdbool.h</code> indicating "is tag valid?": <code>true</code> for valid, <code>false</code> otherwise. It's one less datatype to handle. Macros <code>ASCON_TAG_OK</code> and <code>ASCON_TAG_INVALID</code> are still available.</li>
 <li>Because of the previous point: <code>srtbool.h</code> as now a dependency.</li>
 <li>Changed ISO C standard for compilation from C99 to C11, as there are no noticeable differences for this codebase.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Fixed</h2>
 <ul>
 <li>Improvements in the Doxygen documentation, especially the security warnings.</li>
@@ -110,15 +110,15 @@ Fixed</h2>
 <li>Variety of typos and linter warnings.</li>
 <li>Minor readme improvements.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Known limitations</h2>
 <ul>
 <li>Same as in v0.1.0</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 [0.1.0] - 2020-02-11</h1>
 <p>Initial version.</p>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Added</h2>
 <ul>
 <li>AEAD encryption and decryption with Ascon128, both offline and online</li>
@@ -126,7 +126,7 @@ Added</h2>
 <li>Test suite checking against test vectors</li>
 <li>Wrapping everything with single extensively documented header file</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 Known limitations</h2>
 <ul>
 <li>At the moment the library is <b>optimised for size</b>, making the cipher about 4x slower than the <a href="https://github.com/ascon/ascon-c">reference implementation</a>. On the other hand the size of the whole library is about 2x smaller than the AEAD-Ascon128 implementation alone, while the library includes online processing, Ascon-Hash and Ascon-XOF.</li>

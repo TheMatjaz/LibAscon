@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -93,12 +93,16 @@ Data Fields</h2></td></tr>
 <tr class="separator:aa198ae732df66b83e88bf7fd82d75db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef605192f06df1725cc7586157a1c53c"><td class="memItemLeft" align="right" valign="top"><a id="aef605192f06df1725cc7586157a1c53c"></a>
 uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx__t.html#aef605192f06df1725cc7586157a1c53c">k0</a></td></tr>
-<tr class="memdesc:aef605192f06df1725cc7586157a1c53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, first half. <br /></td></tr>
+<tr class="memdesc:aef605192f06df1725cc7586157a1c53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, first part. <br /></td></tr>
 <tr class="separator:aef605192f06df1725cc7586157a1c53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc45bbb720eb5d764c5a4950063970ef"><td class="memItemLeft" align="right" valign="top"><a id="afc45bbb720eb5d764c5a4950063970ef"></a>
 uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx__t.html#afc45bbb720eb5d764c5a4950063970ef">k1</a></td></tr>
-<tr class="memdesc:afc45bbb720eb5d764c5a4950063970ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, second half. <br /></td></tr>
+<tr class="memdesc:afc45bbb720eb5d764c5a4950063970ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, second part. <br /></td></tr>
 <tr class="separator:afc45bbb720eb5d764c5a4950063970ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22f794d147debd747449dca8be1a7db5"><td class="memItemLeft" align="right" valign="top"><a id="a22f794d147debd747449dca8be1a7db5"></a>
+uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx__t.html#a22f794d147debd747449dca8be1a7db5">k2</a></td></tr>
+<tr class="memdesc:a22f794d147debd747449dca8be1a7db5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, third part, used only in the Ascon80pq cipher. <br /></td></tr>
+<tr class="separator:a22f794d147debd747449dca8be1a7db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Cipher context for authenticated encryption and validated decryption. </p>
