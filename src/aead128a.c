@@ -9,6 +9,7 @@
 #include "ascon.h"
 #include "internal.h"
 #if ASCON_COMPILE_AEAD128a
+
 inline void ascon_aead128a_init(ascon_aead_ctx_t* const ctx,
                                 const uint8_t* const key,
                                 const uint8_t* const nonce)

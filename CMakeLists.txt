@@ -46,18 +46,38 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops -flto")
 
+# In any case remove unused functions from the linking process
+# -fdata-sections -ffunction-sections required as build params
+#add_link_options(-Wl,--gc-sections) # TODO this does not work on clang
+
 
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
-set(LIB_SRC_FILES
+set(LIB_SRC_FILES_COMMON
         src/internal.h
         src/offline.c
-        src/hash.c
-        src/aead128.c
-        src/aead128a.c
         src/permutations.c
         src/buffering.c)
+set(LIB_SRC_FILES_128
+        ${LIB_SRC_FILES_COMMON}
+        src/aead128.c)
+set(LIB_SRC_FILES_128a
+        ${LIB_SRC_FILES_COMMON}
+        src/aead128a.c)
+set(LIB_SRC_FILES_80pq
+        ${LIB_SRC_FILES_COMMON}
+        )
+set(LIB_SRC_FILES_HASH
+        ${LIB_SRC_FILES_COMMON}
+        src/hash.c)
+set(LIB_SRC_FILES_FULL
+        ${LIB_SRC_FILES_COMMON}
+        ${LIB_SRC_FILES_128}
+        ${LIB_SRC_FILES_128a}
+        ${LIB_SRC_FILES_80pq}
+        ${LIB_SRC_FILES_HASH}
+        )
 set(TEST_FRAMEWORK
         tst/atto/atto.c
         tst/main.c
@@ -87,20 +107,41 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # a reference to it, so there is no need to recompile it when building
 # a different target, that uses the same source files.
 # Static libraries (.a), compiled with all features or only some features
-add_library(asconfull STATIC ${LIB_SRC_FILES})
-add_library(ascon128 STATIC ${LIB_SRC_FILES})
-add_library(ascon128a STATIC ${LIB_SRC_FILES})
-add_library(ascon80pq STATIC ${LIB_SRC_FILES})
-add_library(asconhash STATIC ${LIB_SRC_FILES})
-target_compile_definitions(ascon128 PRIVATE ASCON_COMPILE_AEAD128)
-target_compile_definitions(ascon128a PRIVATE ASCON_COMPILE_AEAD128a)
-target_compile_definitions(ascon80pq PRIVATE ASCON_COMPILE_AEAD80pq)
-target_compile_definitions(asconhash PRIVATE ASCON_COMPILE_HASH)
+add_library(asconfull STATIC ${LIB_SRC_FILES_FULL})
+add_library(ascon128 STATIC ${LIB_SRC_FILES_128})
+add_library(ascon128a STATIC ${LIB_SRC_FILES_128a})
+add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
+add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
+target_compile_definitions(asconfull PUBLIC
+        ASCON_COMPILE_AEAD128=1
+        ASCON_COMPILE_AEAD128a=1
+        ASCON_COMPILE_AEAD80pq=1
+        ASCON_COMPILE_HASH=1)
+target_compile_definitions(ascon128 PUBLIC
+        ASCON_COMPILE_AEAD128=1
+        ASCON_COMPILE_AEAD128a=0
+        ASCON_COMPILE_AEAD80pq=0
+        ASCON_COMPILE_HASH=0)
+target_compile_definitions(ascon128a PUBLIC
+        ASCON_COMPILE_AEAD128=0
+        ASCON_COMPILE_AEAD128a=1
+        ASCON_COMPILE_AEAD80pq=0
+        ASCON_COMPILE_HASH=0)
+target_compile_definitions(ascon80pq PUBLIC
+        ASCON_COMPILE_AEAD128=0
+        ASCON_COMPILE_AEAD128a=0
+        ASCON_COMPILE_AEAD80pq=1
+        ASCON_COMPILE_HASH=0)
+target_compile_definitions(asconhash PUBLIC
+        ASCON_COMPILE_AEAD128=0
+        ASCON_COMPILE_AEAD128a=0
+        ASCON_COMPILE_AEAD80pq=0
+        ASCON_COMPILE_HASH=1)
 
 # Shared library (.dylib / .dll)
 # Does not reuse the static library object files, as they may be
 # recompiled in order to have position-independent code
-add_library(ascon SHARED ${LIB_SRC_FILES})
+add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # Test runner executable, reuse the static libary instead of recompiling

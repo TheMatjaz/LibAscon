@@ -63,32 +63,28 @@ extern "C"
 #define ASCON_API_VERSION "0.2.0"
 
 /* Macros electors what part of LibAscon is compiled. */
+#ifndef ASCON_COMPILE_AEAD128
 /**
- * @def ASCON_COMPILE_AEAD128
  * When true, includes the Ascon128 AEAD cipher into the library build.
  */
-/**
-* @def ASCON_COMPILE_AEAD128a
-* When true, includes the Ascon128a AEAD cipher into the library build.
-*/
-/**
-* @def ASCON_COMPILE_AEAD80pq
-* When true, includes the Ascon80pq AEAD cipher into the library build.
-*/
-/**
-* @def ASCON_COMPILE_HASH
-* When true, includes the Ascon-Hash and Ascon-XOF into the library build.
-*/
-#ifndef ASCON_COMPILE_AEAD128
-    #define ASCON_COMPILE_AEAD128 1
+#define ASCON_COMPILE_AEAD128 1
 #endif
 #ifndef ASCON_COMPILE_AEAD128a
-    #define ASCON_COMPILE_AEAD128a 1
+/**
+ * When true, includes the Ascon128a AEAD cipher into the library build.
+ */
+#define ASCON_COMPILE_AEAD128a 1
 #endif
 #ifndef ASCON_COMPILE_AEAD80pq
-    #define ASCON_COMPILE_AEAD80pq 1
+/**
+* When true, includes the Ascon80pq AEAD cipher into the library build.
+*/
+#define ASCON_COMPILE_AEAD80pq 1
 #endif
 #ifndef ASCON_COMPILE_HASH
+/**
+* When true, includes the Ascon-Hash and Ascon-XOF into the library build.
+*/
     #define ASCON_COMPILE_HASH 1
 #endif
 
@@ -194,8 +190,6 @@ typedef struct
 /** Cipher context for hashing. */
 typedef ascon_bufstate_t ascon_hash_ctx_t;
 
-#if ASCON_COMPILE_AEAD128
-
 /**
  * Cipher context for authenticated encryption and validated decryption.
  *
@@ -213,6 +207,8 @@ typedef struct
     /** Copy of the secret key, to be used in the final step, second half. */
     uint64_t k1;
 } ascon_aead_ctx_t;
+
+#if ASCON_COMPILE_AEAD128
 
 /**
  * Offline symmetric encryption using Ascon128.
@@ -347,18 +343,6 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len);
-
-/**
- * Online symmetric encryption/decryption using Ascon128a, feeding associated
- * data.
- *
- * Works exactly the same way as ascon_aead128_assoc_data_update().
- *
- * @copydetails ascon_aead128_assoc_data_update()
- */
-void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                      const uint8_t* assoc_data,
-                                      size_t assoc_data_len);
 
 /**
  * Online symmetric encryption using Ascon128, feeding plaintext and getting
@@ -628,7 +612,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  */
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
 
-#endif /* ASCON_AEAD128 */
+#endif /* ASCON_COMPILE_AEAD128 */
 #if ASCON_COMPILE_AEAD128a
 
 /**
@@ -659,6 +643,18 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
 void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD_KEY_LEN],
                          const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+
+/**
+ * Online symmetric encryption/decryption using Ascon128a, feeding associated
+ * data.
+ *
+ * Works exactly the same way as ascon_aead128_assoc_data_update().
+ *
+ * @copydetails ascon_aead128_assoc_data_update()
+ */
+void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                      const uint8_t* assoc_data,
+                                      size_t assoc_data_len);
 
 /**
  * Online symmetric encryption/decryption using Ascon128a, feeding plaintext
@@ -741,7 +737,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
  */
 void ascon_aead128a_cleanup(ascon_aead_ctx_t* ctx);
 
-#endif /* ASCON_AEAD128a */
+#endif /* ASCON_COMPILE_AEAD128a */
 
 #if ASCON_COMPILE_HASH
 
@@ -947,7 +943,7 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
  */
 void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
 
-#endif /* ASCON_HASH */
+#endif /* ASCON_COMPILE_HASH */
 
 #ifdef __cplusplus
 }

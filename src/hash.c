@@ -9,6 +9,7 @@
 #include "ascon.h"
 #include "internal.h"
 
+#if ASCON_COMPILE_HASH
 static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
 {
     ctx->sponge.x0 = iv;
@@ -89,3 +90,4 @@ inline void ascon_hash_final(ascon_hash_ctx_t* const ctx,
 {
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
+#endif /* ASCON_COMPILE_HASH */
