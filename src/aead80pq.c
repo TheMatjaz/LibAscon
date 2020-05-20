@@ -64,7 +64,7 @@ inline void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bytes_to_u64(key, sizeof(uint64_t)) >> 32U;
     ctx->k1 = bytes_to_u64(key + 4, sizeof(uint64_t));
-    ctx->k2 = bytes_to_u64(key + 12, sizeof(uint64_t));
+    ctx->k2 = bytes_to_u64(key + 4 + sizeof(uint64_t), sizeof(uint64_t));
     ctx->bufstate.sponge.x0 = AEAD80pq_IV | ctx->k0;
     ctx->bufstate.sponge.x1 = ctx->k1;
     ctx->bufstate.sponge.x2 = ctx->k2;
@@ -146,7 +146,7 @@ inline size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
                                             const uint8_t* ciphertext,
                                             size_t ciphertext_len)
 {
-    return ascon_aead128_encrypt_update(ctx, plaintext, ciphertext,
+    return ascon_aead128_decrypt_update(ctx, plaintext, ciphertext,
                                         ciphertext_len);
 }
 
