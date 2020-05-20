@@ -267,7 +267,7 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        ascon_aead128_80pq_finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     return buffered_accumulation(&ctx->bufstate, plaintext, ciphertext,
@@ -285,7 +285,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
-        ascon_aead128_80pq_finalise_assoc_data(ctx);
+        ascon_128a_finalise_assoc_data(ctx);
     }
     size_t freshly_generated_plaintext_len = 0;
     // If there is any remaining less-than-a-block ciphertext to be absorbed

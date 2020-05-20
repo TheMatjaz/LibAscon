@@ -19,5 +19,5 @@ void test_structs(void)
                                       + 8 + ASCON_RATE * 2 + 8);
     printf("Sizeof aead ctx: %lu\n", sizeof(ascon_aead_ctx_t));
     atto_eq(sizeof(ascon_aead_ctx_t), sizeof(ascon_bufstate_t)
-                                      + 8 + 8);
+                                      + 8 + 8 + 8);
 }

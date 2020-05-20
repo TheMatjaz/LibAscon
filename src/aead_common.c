@@ -9,6 +9,30 @@
 #include "ascon.h"
 #include "internal.h"
 
+void ascon_aead_init(ascon_aead_ctx_t* const ctx,
+                     const uint8_t* const key,
+                     const uint8_t* const nonce,
+                     const uint64_t iv)
+{
+    // Store the key in the context as it's required in the final step.
+    ctx->k0 = bytes_to_u64(key, sizeof(uint64_t));
+    ctx->k1 = bytes_to_u64(key + sizeof(uint64_t), sizeof(uint64_t));
+    ctx->bufstate.sponge.x0 = iv;
+    ctx->bufstate.sponge.x1 = ctx->k0;
+    ctx->bufstate.sponge.x2 = ctx->k1;
+    ctx->bufstate.sponge.x3 = bytes_to_u64(nonce, sizeof(uint64_t));
+    ctx->bufstate.sponge.x4 = bytes_to_u64(nonce + sizeof(uint64_t),
+                                           sizeof(uint64_t));
+    log_sponge("initial value:", &ctx->bufstate.sponge);
+    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ctx->bufstate.sponge.x3 ^= ctx->k0;
+    ctx->bufstate.sponge.x4 ^= ctx->k1;
+    ctx->bufstate.buffer_len = 0;
+    ctx->bufstate.total_output_len = 0;
+    ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
+    log_sponge("initialization:", &ctx->bufstate.sponge);
+}
+
 void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
 {
     // If there was at least some associated data obtained so far,
