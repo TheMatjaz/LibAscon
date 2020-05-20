@@ -46,7 +46,7 @@ inline void log_sponge(const char* const text,
 #endif
 }
 
-static inline uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
+inline static uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
 {
     // Cast to uint8_t to remove warning about <<-operator with signed value
     return (x << (uint8_t) (64 - n)) | (x >> n);
