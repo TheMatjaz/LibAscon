@@ -30,11 +30,9 @@
  * @authors See AUTHORS.md file
  */
 
-// TODO test all branches in the algorithm
 // TODO static analyser
 // TODO valgrind
 // TODO fuzzer
-// TODO filenames starting with ascon_
 
 #ifndef ASCON_H
 #define ASCON_H

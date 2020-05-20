@@ -7,7 +7,7 @@
  */
 
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 void ascon_aead_init(ascon_aead_ctx_t* const ctx,
                      const uint8_t* const key,

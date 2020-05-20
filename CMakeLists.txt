@@ -54,26 +54,26 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
 # Source files
 # -----------------------------------------------------------------------------
 set(LIB_SRC_FILES_COMMON
-        src/internal.h
-        src/permutations.c
-        src/buffering.c)
+        src/ascon_internal.h
+        src/ascon_permutations.c
+        src/ascon_buffering.c)
 set(LIB_SRC_FILES_128
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128.c)
+        src/ascon_aead_common.c
+        src/ascon_aead128.c)
 set(LIB_SRC_FILES_128a
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128a.c)
+        src/ascon_aead_common.c
+        src/ascon_aead128a.c)
 set(LIB_SRC_FILES_80pq
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128.c
-        src/aead80pq.c
+        src/ascon_aead_common.c
+        src/ascon_aead128.c
+        src/ascon_aead80pq.c
         )
 set(LIB_SRC_FILES_HASH
         ${LIB_SRC_FILES_COMMON}
-        src/hash.c)
+        src/ascon_hash.c)
 set(LIB_SRC_FILES_FULL
         ${LIB_SRC_FILES_COMMON}
         ${LIB_SRC_FILES_128}

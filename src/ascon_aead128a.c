@@ -7,7 +7,7 @@
  */
 
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 void ascon_aead128a_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,

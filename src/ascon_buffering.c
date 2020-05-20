@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 /**
  * @internal
