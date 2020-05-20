@@ -26,7 +26,7 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                                                              plaintext,
                                                              plaintext_len);
     ascon_aead128_encrypt_final(&ctx, ciphertext + new_ct_bytes,
-                                NULL, tag, tag_len);
+                                tag, tag_len);
 }
 
 bool ascon_aead128_decrypt(uint8_t* plaintext,
@@ -48,7 +48,7 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
                                                              ciphertext,
                                                              ciphertext_len);
     ascon_aead128_decrypt_final(&ctx, plaintext + new_pt_bytes,
-                                NULL, &is_tag_valid, tag, tag_len);
+                                &is_tag_valid, tag, tag_len);
     return is_tag_valid;
 }
 
@@ -141,10 +141,8 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
                                  absorb_plaintext, plaintext_len, ASCON_RATE);
 }
 
-// TODO remove total encrypted bytes, the user can sum up all retvalues
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* const ciphertext,
-                                   uint64_t* const total_encrypted_bytes,
                                    uint8_t* tag,
                                    uint8_t tag_len)
 {
@@ -173,12 +171,6 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     log_sponge("finalization:", &ctx->bufstate.sponge);
     // Squeeze out tag into its buffer.
     ascon_aead_generate_tag(ctx, tag, tag_len);
-    if (total_encrypted_bytes != NULL)
-    {
-        *total_encrypted_bytes =
-                ctx->bufstate.total_output_len +
-                freshly_generated_ciphertext_len;
-    }
     // Final security cleanup of the internal state, key and buffer.
     ascon_aead128_cleanup(ctx);
     return freshly_generated_ciphertext_len;
@@ -201,7 +193,6 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* const ctx,
 
 size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* plaintext,
-                                   uint64_t* const total_decrypted_len,
                                    bool* const is_tag_valid,
                                    const uint8_t* const tag,
                                    const uint8_t tag_len)
@@ -233,11 +224,6 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     log_sponge("finalization:", &ctx->bufstate.sponge);
-    if (total_decrypted_len != NULL)
-    {
-        *total_decrypted_len = ctx->bufstate.total_output_len +
-                               freshly_generated_plaintext_len;
-    }
     // Validate tag with variable len
     uint8_t expected_tag[tag_len];
     ascon_aead_generate_tag(ctx, expected_tag, tag_len);

@@ -45,9 +45,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops -flto")
 
-# In any case remove unused functions from the linking process
-# -fdata-sections -ffunction-sections required as build params
-#add_link_options(-Wl,--gc-sections) # TODO this does not work on clang
 
 
 # -----------------------------------------------------------------------------

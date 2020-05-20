@@ -78,7 +78,6 @@ static void ascon_round(ascon_sponge_t* sponge, const uint_fast8_t round_const)
     sponge->x2 ^= temp.x3;
     sponge->x3 ^= temp.x4;
     sponge->x4 ^= temp.x0;
-    // TODO erase temp to avoid leaving traces?
     // end of keccak s-box
     sponge->x1 ^= sponge->x0;
     sponge->x0 ^= sponge->x4;
