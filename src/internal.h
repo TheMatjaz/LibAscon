@@ -38,7 +38,7 @@ extern "C"
      )
 #define AEAD128a_IV ( \
        ((uint64_t)(8 * (ASCON_AEAD_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
+     | ((uint64_t)(8 * (2 * ASCON_RATE))     << 48U) \
      | ((uint64_t)(PERMUTATION_A_ROUNDS)     << 40U) \
      | ((uint64_t)(PERMUTATION_Ba_ROUNDS)    << 32U) \
      )

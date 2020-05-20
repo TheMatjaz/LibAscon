@@ -14,7 +14,7 @@
 
 int main(void)
 {
-    printf("Testing Ascon M:%d m:%d bf:%d = v%s\n",
+    printf("Testing LibAscon M:%d m:%d bf:%d = v%s\n",
             ASCON_API_VERSION_MAJOR,
             ASCON_API_VERSION_MINOR,
             ASCON_API_VERSION_BUGFIX,
