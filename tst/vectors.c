@@ -12,13 +12,16 @@
 #include <stddef.h>
 #include "ascon.h"
 
-vecs_err_t vecs_init(vecs_ctx_t* const ctx, const char* const file_name)
+vecs_err_t vecs_init(vecs_ctx_t* const ctx,
+        const char* const file_name,
+                     const size_t key_len)
 {
     ctx->handle = fopen(file_name, "r");
     if (ctx->handle == NULL)
     {
         return VECS_IO_CANNOT_OPEN_FILE;
     }
+    ctx->key_len = key_len;
     return VECS_OK;
 }
 
@@ -172,7 +175,7 @@ static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
 }
 
 static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
-                            vecs_aead_t* const testcase)
+                            vecs_aead_t* const testcase);
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
@@ -186,7 +189,7 @@ static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
     }
     const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
                                                     testcase->key,
-                                                    ASCON_AEAD_KEY_LEN);
+                                                    testcase->key_len);
     if (errcode != VECS_OK)
     {
         return VECS_FORMAT_TOO_SHORT_KEY;
@@ -291,6 +294,7 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
         errcode = VECS_EOF;
         goto termination;
     }
+    testcase->key_len = ctx->key_len;
     errcode = fscan_count_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
     errcode = fscan_key(ctx, testcase);

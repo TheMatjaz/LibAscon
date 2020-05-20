@@ -12,6 +12,7 @@
 #include "vectors.h"
 
 #define AEAD_VECTORS_FILE "vectors/aead128a.txt"
+#define KEY_LEN ASCON_AEAD128a_KEY_LEN
 
 #define TAG_MAX_LEN 64U
 
@@ -74,7 +75,7 @@ static void test_encrypt_offline(void)
     vecs_aead_t testcase;
     uint8_t obtained_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
     uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -169,7 +170,7 @@ static void test_decrypt_offline(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)

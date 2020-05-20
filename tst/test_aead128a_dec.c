@@ -12,6 +12,7 @@
 #include "vectors.h"
 
 #define AEAD_VECTORS_FILE "vectors/aead128a.txt"
+#define KEY_LEN ASCON_AEAD128a_KEY_LEN
 
 static void test_decrypt_empty(void)
 {
@@ -336,7 +337,7 @@ static void test_decrypt_offline(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -374,7 +375,7 @@ static void test_decrypt_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
     ascon_aead_ctx_t aead_ctx;
     size_t new_pt_bytes = 0;
@@ -442,7 +443,7 @@ static void test_decrypt_offline_with_corrupted_data(void)
     vecs_ctx_t ctx;
     vecs_aead_t testcase;
     uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE);
+    vecs_err_t errcode = vecs_init(&ctx, AEAD_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
