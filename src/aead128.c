@@ -113,7 +113,7 @@ static void absorb_plaintext(ascon_sponge_t* const sponge,
     ascon_permutation_b6(sponge);
 }
 
-
+// TODO consider replacing uint8_t* with void* everywhere
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len)
@@ -141,6 +141,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
                                  absorb_plaintext, plaintext_len, ASCON_RATE);
 }
 
+// TODO remove total encrypted bytes, the user can sum up all retvalues
 size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
                                    uint8_t* const ciphertext,
                                    uint64_t* const total_encrypted_bytes,

@@ -100,7 +100,9 @@ set(TEST_SRC_FILES
         tst/test_aead128a_dec.c
         tst/test_aead128a_inplace.c
         tst/test_aead128a_vartaglen.c
-        tst/test_structs.c)
+        tst/test_structs.c
+        tst/test_readme_example.c
+        )
 set(BENCHMARK_SRC_FILES
         tst/benchmark.c)
 include_directories(AFTER SYSTEM inc/ tst/atto/)
