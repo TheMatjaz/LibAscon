@@ -30,5 +30,9 @@ int main(void)
     test_aead128a_decryption();
     test_aead128a_inplace();
     test_aead128a_vartaglen();
+    test_aead80pq_encryption();
+    test_aead80pq_decryption();
+    test_aead80pq_inplace();
+    test_aead80pq_vartaglen();
     return atto_at_least_one_fail;
 }

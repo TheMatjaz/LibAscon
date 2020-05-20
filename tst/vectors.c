@@ -362,7 +362,7 @@ void vecs_aead_enc_log(const vecs_aead_t* const testcase,
 {
 #ifdef DEBUG_TEST_PRINT
     printf("---\nCount: %zu\n", testcase->count);
-    vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
+    vecs_log_hexbytes("Key", testcase->key, testcase->key_len);
     vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
     vecs_log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
     vecs_log_hexbytes("PT", testcase->plaintext, testcase->plaintext_len);
@@ -395,7 +395,7 @@ void vecs_aead_dec_log(const vecs_aead_t* const testcase,
 {
 #ifdef DEBUG_TEST_PRINT
     printf("---\nCount: %zu\n", testcase->count);
-    vecs_log_hexbytes("Key", testcase->key, ASCON_AEAD_KEY_LEN);
+    vecs_log_hexbytes("Key", testcase->key, testcase->key_len);
     vecs_log_hexbytes("Nonce", testcase->nonce, ASCON_AEAD_NONCE_LEN);
     vecs_log_hexbytes("AD", testcase->assoc_data, testcase->assoc_data_len);
     vecs_log_hexbytes("CT", testcase->ciphertext, testcase->ciphertext_len);

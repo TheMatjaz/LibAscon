@@ -92,6 +92,10 @@ set(TEST_SRC_FILES
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
         tst/test_aead128_vartaglen.c
+        tst/test_aead80pq_enc.c
+        tst/test_aead80pq_dec.c
+        tst/test_aead80pq_inplace.c
+        tst/test_aead80pq_vartaglen.c
         tst/test_aead128a_enc.c
         tst/test_aead128a_dec.c
         tst/test_aead128a_inplace.c
