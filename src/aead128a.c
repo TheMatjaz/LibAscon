@@ -110,7 +110,7 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
             ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
                                                     ASCON_RATE);
             ctx->bufstate.sponge.x1 ^= bytes_to_u64(
-                    ctx->bufstate.buffer,
+                    ctx->bufstate.buffer + ASCON_RATE,
                     ctx->bufstate.buffer_len - ASCON_RATE);
             ctx->bufstate.sponge.x1 ^= PADDING(
                     ctx->bufstate.buffer_len - ASCON_RATE);
@@ -191,8 +191,8 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
                                                 ASCON_RATE);
         const uint8_t second_half =
                 (uint8_t) (ctx->bufstate.buffer_len - ASCON_RATE);
-        ctx->bufstate.sponge.x1 ^= bytes_to_u64(ctx->bufstate.buffer,
-                                                second_half);
+        ctx->bufstate.sponge.x1 ^= bytes_to_u64(
+                ctx->bufstate.buffer + ASCON_RATE, second_half);
         ctx->bufstate.sponge.x1 ^= PADDING(second_half);
         // Squeeze out the ciphertext
         u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0, ASCON_RATE);
@@ -270,10 +270,12 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
         const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer, ASCON_RATE);
         const uint8_t second_half =
                 (uint8_t) (ctx->bufstate.buffer_len - ASCON_RATE);
-        const uint64_t c_1 = bytes_to_u64(ctx->bufstate.buffer, second_half);
+        const uint64_t c_1 = bytes_to_u64(
+                ctx->bufstate.buffer + ASCON_RATE, second_half);
         // Squeeze out last plaintext bytes
         u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0, ASCON_RATE);
-        u64_to_bytes(plaintext + ASCON_RATE, ctx->bufstate.sponge.x1 ^ c_1,
+        u64_to_bytes(plaintext + ASCON_RATE,
+                ctx->bufstate.sponge.x1 ^ c_1,
                      second_half);
         // Final state changes at decryption's end
         ctx->bufstate.sponge.x0 = c_0;
