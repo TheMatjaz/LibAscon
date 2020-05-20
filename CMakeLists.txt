@@ -55,6 +55,7 @@ set(LIB_SRC_FILES
         src/offline.c
         src/hash.c
         src/aead128.c
+        src/aead128a.c
         src/permutations.c
         src/buffering.c)
 set(TEST_FRAMEWORK
@@ -68,6 +69,10 @@ set(TEST_SRC_FILES
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c
         tst/test_aead128_vartaglen.c
+        tst/test_aead128a_enc.c
+        tst/test_aead128a_dec.c
+        tst/test_aead128a_inplace.c
+        tst/test_aead128a_vartaglen.c
         tst/test_structs.c)
 set(BENCHMARK_SRC_FILES
         tst/benchmark.c)

@@ -229,6 +229,15 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
                            size_t assoc_data_len,
                            size_t plaintext_len,
                            uint8_t tag_len);
+void ascon_aead128a_encrypt(uint8_t* ciphertext,
+                           uint8_t* tag,
+                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                           const uint8_t* assoc_data,
+                           const uint8_t* plaintext,
+                           size_t assoc_data_len,
+                           size_t plaintext_len,
+                           uint8_t tag_len);
 
 /**
  * Online symmetric encryption/decryption using Ascon128, initialisation.
@@ -267,6 +276,9 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
+                        const uint8_t key[ASCON_AEAD_KEY_LEN],
+                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
                         const uint8_t key[ASCON_AEAD_KEY_LEN],
                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
@@ -308,6 +320,9 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  *        bytes. May be 0.
  */
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                     const uint8_t* assoc_data,
+                                     size_t assoc_data_len);
+void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len);
 
@@ -352,6 +367,10 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
 size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
+                                    uint8_t* ciphertext,
+                                    const uint8_t* plaintext,
+                                    size_t plaintext_len);
+size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* ciphertext,
                                     const uint8_t* plaintext,
                                     size_t plaintext_len);
@@ -413,6 +432,11 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint64_t* total_encrypted_bytes,
                                    uint8_t* tag,
                                    uint8_t tag_len);
+size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
+                                   uint8_t* ciphertext,
+                                   uint64_t* total_encrypted_bytes,
+                                   uint8_t* tag,
+                                   uint8_t tag_len);
 
 /**
  * Offline symmetric decryption using Ascon128.
@@ -465,6 +489,15 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
                            size_t assoc_data_len,
                            size_t ciphertext_len,
                            uint8_t tag_len);
+bool ascon_aead128a_decrypt(uint8_t* plaintext,
+                           const uint8_t key[ASCON_AEAD_KEY_LEN],
+                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                           const uint8_t* assoc_data,
+                           const uint8_t* ciphertext,
+                           const uint8_t* tag,
+                           size_t assoc_data_len,
+                           size_t ciphertext_len,
+                           uint8_t tag_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -501,6 +534,10 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
  *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
  */
 size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
+                                    uint8_t* plaintext,
+                                    const uint8_t* ciphertext,
+                                    size_t ciphertext_len);
+size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* plaintext,
                                     const uint8_t* ciphertext,
                                     size_t ciphertext_len);
@@ -561,6 +598,12 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    bool* is_tag_valid,
                                    const uint8_t* tag,
                                    uint8_t tag_len);
+size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
+                                   uint8_t* plaintext,
+                                   uint64_t* total_decrypted_len,
+                                   bool* is_tag_valid,
+                                   const uint8_t* tag,
+                                   uint8_t tag_len);
 
 /**
  * Security cleanup function of the context, in case the online processing
@@ -577,6 +620,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in, out] ctx to erase.
  */
 void ascon_aead128_cleanup(ascon_aead_ctx_t* ctx);
+void ascon_aead128a_cleanup(ascon_aead_ctx_t* ctx);
 
 /**
  * Offline Ascon Hash with fixed digest length.

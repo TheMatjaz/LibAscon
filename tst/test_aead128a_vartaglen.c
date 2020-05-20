@@ -11,7 +11,7 @@
 #include "ascon.h"
 #include "vectors.h"
 
-#define AEAD_VECTORS_FILE "vectors/aead128.txt"
+#define AEAD_VECTORS_FILE "vectors/aead128a.txt"
 
 #define TAG_MAX_LEN 64U
 
@@ -52,7 +52,7 @@ static void test_encrypt_empty(void)
     for (size_t tag_len = 0; tag_len <= TAG_MAX_LEN; tag_len++)
     {
         memset(obtained_tag, 0, sizeof(obtained_tag));
-        ascon_aead128_encrypt(obtained_ciphertext,
+        ascon_aead128a_encrypt(obtained_ciphertext,
                               obtained_tag,
                               testcase.key,
                               testcase.nonce,
@@ -91,7 +91,7 @@ static void test_encrypt_offline(void)
         {
             memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
             memset(obtained_tag, 0, sizeof(obtained_tag));
-            ascon_aead128_encrypt(obtained_ciphertext,
+            ascon_aead128a_encrypt(obtained_ciphertext,
                                   obtained_tag,
                                   testcase.key,
                                   testcase.nonce,
@@ -146,7 +146,7 @@ static void test_decrypt_empty(void)
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
     for (size_t tag_len = 0; tag_len <= TAG_MAX_LEN; tag_len++)
     {
-        is_valid = ascon_aead128_decrypt(
+        is_valid = ascon_aead128a_decrypt(
                 obtained_plaintext,
                 testcase.key,
                 testcase.nonce,
@@ -185,7 +185,7 @@ static void test_decrypt_offline(void)
         for (size_t tag_len = 0; tag_len < sizeof(testcase.tag); tag_len++)
         {
             memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
-            const bool is_valid = ascon_aead128_decrypt(
+            const bool is_valid = ascon_aead128a_decrypt(
                     obtained_plaintext,
                     testcase.key,
                     testcase.nonce,
@@ -205,7 +205,7 @@ static void test_decrypt_offline(void)
     }
 }
 
-void test_aead128_vartaglen(void)
+void test_aead128a_vartaglen(void)
 {
     test_encrypt_empty();
     test_encrypt_offline();

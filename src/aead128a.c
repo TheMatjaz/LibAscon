@@ -105,7 +105,6 @@ static void finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data absorbed beforehand.
     if (ctx->bufstate.assoc_data_state == ASCON_FLOW_SOME_ASSOC_DATA)
     {
-        // TODO here rate means 8 B
         if (ctx->bufstate.buffer_len >= ASCON_RATE)
         {
             ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
@@ -196,8 +195,8 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
                                                 second_half);
         ctx->bufstate.sponge.x1 ^= PADDING(second_half);
         // Squeeze out the ciphertext
-        u64_to_bytes(ciphertext, ctx->bufstate.sponge->x0, ASCON_RATE);
-        u64_to_bytes(ciphertext + ASCON_RATE, ctx->bufstate.sponge->x1,
+        u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0, ASCON_RATE);
+        u64_to_bytes(ciphertext + ASCON_RATE, ctx->bufstate.sponge.x1,
                      second_half);
     }
     else
@@ -273,8 +272,9 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
                 (uint8_t) (ctx->bufstate.buffer_len - ASCON_RATE);
         const uint64_t c_1 = bytes_to_u64(ctx->bufstate.buffer, second_half);
         // Squeeze out last plaintext bytes
-        u64_to_bytes(plaintext, sponge->x0 ^ c_0, ASCON_RATE);
-        u64_to_bytes(plaintext + ASCON_RATE, sponge->x1 ^ c_1, second_half);
+        u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0, ASCON_RATE);
+        u64_to_bytes(plaintext + ASCON_RATE, ctx->bufstate.sponge.x1 ^ c_1,
+                     second_half);
         // Final state changes at decryption's end
         ctx->bufstate.sponge.x0 = c_0;
         ctx->bufstate.sponge.x1 &= ~byte_mask(second_half);
@@ -287,7 +287,8 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
         const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer,
                                           ctx->bufstate.buffer_len);
         // Squeeze out last plaintext bytes
-        u64_to_bytes(plaintext, sponge->x0 ^ c_0, ctx->bufstate.buffer_len);
+        u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
+                     ctx->bufstate.buffer_len);
         // Final state changes at decryption's end
         ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
         ctx->bufstate.sponge.x0 |= c_0;
