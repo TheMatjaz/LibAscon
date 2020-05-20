@@ -39,6 +39,7 @@
 // 1B, 2B, ... 16B
 // Same but with initial offset
 // Same with pseudorandom sequences like 3, 17, 9, 1, 0, 22
+// TODO filenames starting with ascon_
 
 #ifndef ASCON_H
 #define ASCON_H
@@ -56,11 +57,11 @@ extern "C"
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 0
 /** Minor version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_MINOR 3
+#define ASCON_API_VERSION_MINOR 4
 /** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 0
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "0.3.0"
+#define ASCON_API_VERSION "0.4.0"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
