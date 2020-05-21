@@ -11,10 +11,60 @@ and this project adheres to
 *******************************************************************************
 
 
+[1.0.0] - 2020-05-21
+----------------------------------------
+
+First stable version with all ciphers.
+
+
+### Modified
+
+- **Breaking** change from previous versions: removed `total_output_len`
+  parameters from the functions
+  - `ascon_aead*_encrypt()`
+  - `ascon_aead*_decrypt()`
+  - `ascon_aead*_encrypt_final()`
+  - `ascon_aead*_decrypt_final()`
+  and from the `ascon_bufstate_t` struct, making it 8 B smaller.
+  Why? TL;DR it's redundant.
+  
+  The reasoning is that the user of the first two (offline processing)
+  already knows the length of the plaintext/ciphertext; the user of the second
+  two obtains the length of the processed chunks as return values so they
+  can simply sum the up - and anyhow the user known the length of all the
+  chunks provided to the cipher; those could be summed up to. In most of the
+  cases the argument was `NULL` in the function usage. For details on how to
+  obtain the total length, the example in the Readme should suffice.
+- Renamed all files in `src` so they start with `ascon_`.
+
+
+### Fixed
+
+- Added more tests to cover more branching cases of the online-buffering
+  algorithm.
+- Removal of some minor warnings after inspection with static analyser
+  (`scan-build`) and CLion code inspection tool.
+- Typos
+- Added missing _Known limitations_ paragraphs to the previous releases
+  in this Changelog.
+
+
+### Known limitations
+
+- Because LibAscon is implemented with reuse of existing functions in mind,
+  in order to spare on code size and with the Init-Update-Digest paradigm,
+  which has some internal buffering, the cipher is about **4x slower** than the
+  [reference implementation (`ref`)](https://github.com/ascon/ascon-c).
+- There is no architecture-specific optimisation, only a generic portable
+  implementation using mostly `uint64_t` data types.
+
+
+
 [0.4.0] - 2020-05-20
 ----------------------------------------
 
 Added Ascon80pq cipher, example in Readme.
+
 
 ### Added
 
@@ -34,6 +84,16 @@ Added Ascon80pq cipher, example in Readme.
   -` ASCON_COMPILE_HASH`
 
 
+### Known limitations
+
+- Because LibAscon is implemented with reuse of existing functions in mind,
+  in order to spare on code size and with the Init-Update-Digest paradigm,
+  which has some internal buffering, the cipher is about **4x slower** than the
+  [reference implementation (`ref`)](https://github.com/ascon/ascon-c).
+- There is no architecture-specific optimisation, only a generic portable
+  implementation using mostly `uint64_t` data types.
+
+
 
 [0.3.0] - 2020-05-20
 ----------------------------------------
@@ -51,6 +111,18 @@ Added Ascon128a cipher and macros to exclude some parts of the library.
   - `ASCON_COMPILE_AEAD128a`
   - `ASCON_COMPILE_AEAD80pq` (which is not included in the lib yet) 
   -` ASCON_COMPILE_HASH`
+
+
+### Known limitations
+
+- Because LibAscon is implemented with reuse of existing functions in mind,
+  in order to spare on code size and with the Init-Update-Digest paradigm,
+  which has some internal buffering, the cipher is about **4x slower** than the
+  [reference implementation (`ref`)](https://github.com/ascon/ascon-c).
+- There is no architecture-specific optimisation, only a generic portable
+  implementation using mostly `uint64_t` data types.
+- The only AEAD algorithms implemented are Ascon128 and Ascon128a. Ascon80pq is
+  still to be done.
 
 
 
@@ -130,6 +202,4 @@ Initial version.
   C implementation using mostly `uint64_t` data types.
 - The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and 
   Ascon80pq are still to be done.
-- There is no NULL pointer check for the mandatory function parameters, thus
-  it will crash on improper usage.
 
