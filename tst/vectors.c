@@ -13,7 +13,7 @@
 #include "ascon.h"
 
 vecs_err_t vecs_init(vecs_ctx_t* const ctx,
-        const char* const file_name,
+                     const char* const file_name,
                      const size_t key_len)
 {
     ctx->handle = fopen(file_name, "r");

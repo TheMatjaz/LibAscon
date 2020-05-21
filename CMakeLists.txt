@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
-        VERSION 0.4.0
+        VERSION 1.0.0
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -45,35 +45,31 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops -flto")
 
-# In any case remove unused functions from the linking process
-# -fdata-sections -ffunction-sections required as build params
-#add_link_options(-Wl,--gc-sections) # TODO this does not work on clang
-
 
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
 set(LIB_SRC_FILES_COMMON
-        src/internal.h
-        src/permutations.c
-        src/buffering.c)
+        src/ascon_internal.h
+        src/ascon_permutations.c
+        src/ascon_buffering.c)
 set(LIB_SRC_FILES_128
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128.c)
+        src/ascon_aead_common.c
+        src/ascon_aead128.c)
 set(LIB_SRC_FILES_128a
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128a.c)
+        src/ascon_aead_common.c
+        src/ascon_aead128a.c)
 set(LIB_SRC_FILES_80pq
         ${LIB_SRC_FILES_COMMON}
-        src/aead_common.c
-        src/aead128.c
-        src/aead80pq.c
+        src/ascon_aead_common.c
+        src/ascon_aead128.c
+        src/ascon_aead80pq.c
         )
 set(LIB_SRC_FILES_HASH
         ${LIB_SRC_FILES_COMMON}
-        src/hash.c)
+        src/ascon_hash.c)
 set(LIB_SRC_FILES_FULL
         ${LIB_SRC_FILES_COMMON}
         ${LIB_SRC_FILES_128}
@@ -127,7 +123,7 @@ add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
 add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# Test runner executable, reuse the static libary instead of recompiling
+# Test runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(testascon
         $<TARGET_OBJECTS:asconfull>
@@ -145,7 +141,7 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
         "${CMAKE_BINARY_DIR}/vectors")
 
-# Benchmark runner executable, reuse the static libary instead of recompiling
+# Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(benchmark
         $<TARGET_OBJECTS:asconfull>

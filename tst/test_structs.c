@@ -16,7 +16,7 @@ void test_structs(void)
     atto_eq(sizeof(ascon_sponge_t), 5 * 8);
     printf("Sizeof bufstate: %lu\n", sizeof(ascon_bufstate_t));
     atto_eq(sizeof(ascon_bufstate_t), sizeof(ascon_sponge_t)
-                                      + 8 + ASCON_RATE * 2 + 8);
+                                      + ASCON_DOUBLE_RATE + 8);
     printf("Sizeof aead ctx: %lu\n", sizeof(ascon_aead_ctx_t));
     atto_eq(sizeof(ascon_aead_ctx_t), sizeof(ascon_bufstate_t)
                                       + 8 + 8 + 8);

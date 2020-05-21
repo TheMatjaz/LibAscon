@@ -175,7 +175,7 @@ void vecs_aead_dec_log(const vecs_aead_t* testcase,
  * @param amount number of bytes in the array
  */
 void vecs_log_hexbytes(const char* name,
-                       const uint8_t*  array,
+                       const uint8_t* array,
                        size_t amount);
 
 #ifdef __cplusplus

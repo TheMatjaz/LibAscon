@@ -54,14 +54,14 @@ static void test_encrypt_empty(void)
     {
         memset(obtained_tag, 0, sizeof(obtained_tag));
         ascon_aead128a_encrypt(obtained_ciphertext,
-                              obtained_tag,
-                              testcase.key,
-                              testcase.nonce,
-                              testcase.assoc_data,
-                              testcase.plaintext,
-                              testcase.assoc_data_len,
-                              testcase.plaintext_len,
-                              tag_len);
+                               obtained_tag,
+                               testcase.key,
+                               testcase.nonce,
+                               testcase.assoc_data,
+                               testcase.plaintext,
+                               testcase.assoc_data_len,
+                               testcase.plaintext_len,
+                               tag_len);
         vecs_log_hexbytes("Tag", obtained_tag, tag_len);
         atto_memeq(obtained_ciphertext, testcase.ciphertext,
                    testcase.ciphertext_len);
@@ -93,14 +93,14 @@ static void test_encrypt_offline(void)
             memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
             memset(obtained_tag, 0, sizeof(obtained_tag));
             ascon_aead128a_encrypt(obtained_ciphertext,
-                                  obtained_tag,
-                                  testcase.key,
-                                  testcase.nonce,
-                                  testcase.assoc_data,
-                                  testcase.plaintext,
-                                  testcase.assoc_data_len,
-                                  testcase.plaintext_len,
-                                  tag_len);
+                                   obtained_tag,
+                                   testcase.key,
+                                   testcase.nonce,
+                                   testcase.assoc_data,
+                                   testcase.plaintext,
+                                   testcase.assoc_data_len,
+                                   testcase.plaintext_len,
+                                   tag_len);
             vecs_aead_enc_log(&testcase, obtained_ciphertext, obtained_tag,
                               testcase.ciphertext_len);
             atto_memeq(obtained_ciphertext,

@@ -7,7 +7,7 @@
  */
 
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 void ascon_aead_init(ascon_aead_ctx_t* const ctx,
                      const uint8_t* const key,
@@ -28,7 +28,6 @@ void ascon_aead_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
-    ctx->bufstate.total_output_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
     log_sponge("initialization:", &ctx->bufstate.sponge);
 }
@@ -52,7 +51,6 @@ void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1U;
     ctx->bufstate.buffer_len = 0;
-    ctx->bufstate.total_output_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
     log_sponge("process associated data:", &ctx->bufstate.sponge);
 }
@@ -76,4 +74,9 @@ void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
     tag_len -= remaining;
     remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
+}
+
+inline void ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
+{
+    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
 }

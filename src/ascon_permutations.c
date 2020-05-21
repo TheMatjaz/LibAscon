@@ -8,9 +8,9 @@
 
 #include <stdint.h>
 #include "ascon.h"
-/* Linter warnings about #include "internal.h" being unused are WRONG.
+/* Linter warnings about #include "ascon_internal.h" being unused are WRONG.
  * If you do not include the header, the linker cannot find the references. */
-#include "internal.h"
+#include "ascon_internal.h"
 
 #ifdef DEBUG_PERMUTATIONS
 #include <stdio.h>
@@ -78,7 +78,6 @@ static void ascon_round(ascon_sponge_t* sponge, const uint_fast8_t round_const)
     sponge->x2 ^= temp.x3;
     sponge->x3 ^= temp.x4;
     sponge->x4 ^= temp.x0;
-    // TODO erase temp to avoid leaving traces?
     // end of keccak s-box
     sponge->x1 ^= sponge->x0;
     sponge->x0 ^= sponge->x4;

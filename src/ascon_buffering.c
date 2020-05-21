@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 /**
  * @internal
@@ -120,6 +120,5 @@ size_t buffered_accumulation(ascon_bufstate_t* const ctx,
         smallcpy(ctx->buffer, data_in, (uint8_t) data_in_len);
         ctx->buffer_len = (uint8_t) data_in_len;
     }
-    ctx->total_output_len += fresh_out_bytes;
     return fresh_out_bytes;
 }

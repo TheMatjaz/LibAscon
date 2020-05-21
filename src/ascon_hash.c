@@ -7,7 +7,7 @@
  */
 
 #include "ascon.h"
-#include "internal.h"
+#include "ascon_internal.h"
 
 void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
                 const uint8_t* const data,
