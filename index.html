@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">0.4.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -68,7 +68,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a></p>
-<p>LibAscon is an ISO C11 library wrapping the <a href="https://github.com/ascon/ascon-c">reference C implementation</a> of the Ascon family of lightweight authenticated encryption schemes with associated data (AEAD) and hashing functions, but it also includes Init-Update-Final processing and variable tag length.</p>
+<p>LibAscon is an ISO C11 cryptographic library wrapping the <a href="https://github.com/ascon/ascon-c">reference C implementation</a> of the Ascon family of lightweight authenticated encryption schemes with associated data (AEAD) and hashing functions, but it also includes Init-Update-Final processing and variable tag length.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Features</h1>
 <p>LibAscon provides:</p>
@@ -121,78 +121,78 @@ FAQ</h1>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Usage example</h1>
 <div class="fragment"><div class="line"><span class="comment">// Initialisation</span></div>
-<div class="line">    <span class="comment">// We need the key and the nonce, both 128 bits.</span></div>
-<div class="line">    <span class="comment">// Note: Ascon80pq uses longer keys</span></div>
-<div class="line">    <span class="keyword">const</span> uint8_t secret_key[<a class="code" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>] = {</div>
-<div class="line">            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6</div>
-<div class="line">    };</div>
-<div class="line">    <span class="keyword">const</span> uint8_t unique_nonce[<a class="code" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>] = {</div>
-<div class="line">            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6</div>
-<div class="line">    };</div>
-<div class="line">    <a class="code" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> ctx;</div>
-<div class="line">    <a class="code" href="ascon_8h.html#a3b6d5f400bbacd57d45ec228bb772fb7">ascon_aead128_init</a>(&amp;ctx, secret_key, unique_nonce);</div>
+<div class="line"><span class="comment">// We need the key and the nonce, both 128 bits.</span></div>
+<div class="line"><span class="comment">// Note: Ascon80pq uses longer keys</span></div>
+<div class="line"><span class="keyword">const</span> uint8_t secret_key[<a class="code" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>] = {</div>
+<div class="line">        1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6</div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">const</span> uint8_t unique_nonce[<a class="code" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>] = {</div>
+<div class="line">        1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6</div>
+<div class="line">};</div>
+<div class="line"><a class="code" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> ctx;</div>
+<div class="line"><a class="code" href="ascon_8h.html#a3b6d5f400bbacd57d45ec228bb772fb7">ascon_aead128_init</a>(&amp;ctx, secret_key, unique_nonce);</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Now we feed any associated data into the cipher first</span></div>
-<div class="line">    <span class="comment">// Our data is fragmented into 2 parts, so we feed one at the time.</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> associated_data_pt1[] = <span class="stringliteral">&quot;2 messages will foll&quot;</span>;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> associated_data_pt2[] = <span class="stringliteral">&quot;ow, but they are both secret.&quot;</span>;</div>
-<div class="line">    <a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt1, strlen</div>
-<div class="line">            (associated_data_pt1));</div>
-<div class="line">    <a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt2, strlen</div>
-<div class="line">            (associated_data_pt2));</div>
+<div class="line"><span class="comment">// Now we feed any associated data into the cipher first</span></div>
+<div class="line"><span class="comment">// Our data is fragmented into 2 parts, so we feed one at the time.</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> associated_data_pt1[] = <span class="stringliteral">&quot;2 messages will foll&quot;</span>;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> associated_data_pt2[] = <span class="stringliteral">&quot;ow, but they are both secret.&quot;</span>;</div>
+<div class="line"><a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt1, strlen</div>
+<div class="line">        (associated_data_pt1));</div>
+<div class="line"><a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt2, strlen</div>
+<div class="line">        (associated_data_pt2));</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Next, we feed the plaintext, which is also fragmented in 2 parts.</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> plaintext_pt1[] = <span class="stringliteral">&quot;Hello, I&#39;m a secret mes&quot;</span>;</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> plaintext_pt2[] = <span class="stringliteral">&quot;sage and I should be encrypted!&quot;</span>;</div>
-<div class="line">    uint8_t buffer[100];</div>
-<div class="line">    <span class="comment">// The ciphertext is generated block-wise, so we need the return value</span></div>
-<div class="line">    <span class="comment">// to know how to offset the pointer to where the next ciphertext</span></div>
-<div class="line">    <span class="comment">// part should be written.</span></div>
-<div class="line">    <span class="keywordtype">size_t</span> ciphertext_len = 0;</div>
-<div class="line">    ciphertext_len += <a class="code" href="ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2">ascon_aead128_encrypt_update</a>(</div>
-<div class="line">            &amp;ctx, buffer + ciphertext_len,</div>
-<div class="line">            (uint8_t*) plaintext_pt1, strlen(plaintext_pt1));</div>
-<div class="line">    ciphertext_len += <a class="code" href="ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2">ascon_aead128_encrypt_update</a>(</div>
-<div class="line">            &amp;ctx, buffer + ciphertext_len,</div>
-<div class="line">            (uint8_t*) plaintext_pt2, strlen(plaintext_pt2));</div>
+<div class="line"><span class="comment">// Next, we feed the plaintext, which is also fragmented in 2 parts.</span></div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> plaintext_pt1[] = <span class="stringliteral">&quot;Hello, I&#39;m a secret mes&quot;</span>;</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> plaintext_pt2[] = <span class="stringliteral">&quot;sage and I should be encrypted!&quot;</span>;</div>
+<div class="line">uint8_t buffer[100];</div>
+<div class="line"><span class="comment">// The ciphertext is generated block-wise, so we need the return value</span></div>
+<div class="line"><span class="comment">// to know how to offset the pointer to where the next ciphertext</span></div>
+<div class="line"><span class="comment">// part should be written.</span></div>
+<div class="line"><span class="keywordtype">size_t</span> ciphertext_len = 0;</div>
+<div class="line">ciphertext_len += <a class="code" href="ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2">ascon_aead128_encrypt_update</a>(</div>
+<div class="line">        &amp;ctx, buffer + ciphertext_len,</div>
+<div class="line">        (uint8_t*) plaintext_pt1, strlen(plaintext_pt1));</div>
+<div class="line">ciphertext_len += <a class="code" href="ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2">ascon_aead128_encrypt_update</a>(</div>
+<div class="line">        &amp;ctx, buffer + ciphertext_len,</div>
+<div class="line">        (uint8_t*) plaintext_pt2, strlen(plaintext_pt2));</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Finally, we wrap up the encryption and generate the tag.</span></div>
-<div class="line">    <span class="comment">// There may still be some trailing ciphertext to be produced.</span></div>
-<div class="line">    <span class="comment">// The tag length can be specified. ASCON_AEAD_TAG_MIN_SECURE_LEN is</span></div>
-<div class="line">    <span class="comment">// the minimum recommended (128 b)</span></div>
-<div class="line">    uint8_t tag[<a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>];</div>
-<div class="line">    ciphertext_len += <a class="code" href="ascon_8h.html#a11e452fd7944fe05900edffb392386c7">ascon_aead128_encrypt_final</a>(</div>
-<div class="line">            &amp;ctx, buffer + ciphertext_len,</div>
-<div class="line">            NULL, tag, <a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>);</div>
-<div class="line">    <span class="comment">// Now the buffer contains our ciphertext, long ciphertext_len</span></div>
+<div class="line"><span class="comment">// Finally, we wrap up the encryption and generate the tag.</span></div>
+<div class="line"><span class="comment">// There may still be some trailing ciphertext to be produced.</span></div>
+<div class="line"><span class="comment">// The tag length can be specified. ASCON_AEAD_TAG_MIN_SECURE_LEN is</span></div>
+<div class="line"><span class="comment">// the minimum recommended (128 b)</span></div>
+<div class="line">uint8_t tag[<a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>];</div>
+<div class="line">ciphertext_len += <a class="code" href="ascon_8h.html#a9d59965e94b1590643a09b3b809d0bb6">ascon_aead128_encrypt_final</a>(</div>
+<div class="line">        &amp;ctx, buffer + ciphertext_len,</div>
+<div class="line">        tag, <a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>);</div>
+<div class="line"><span class="comment">// Now the buffer contains our ciphertext, long ciphertext_len</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Now we can decrypt</span></div>
-<div class="line">    <a class="code" href="ascon_8h.html#a3b6d5f400bbacd57d45ec228bb772fb7">ascon_aead128_init</a>(&amp;ctx, secret_key, unique_nonce);</div>
-<div class="line">    <a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt1,</div>
-<div class="line">                                    strlen(associated_data_pt1));</div>
-<div class="line">    <a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt2,</div>
-<div class="line">                                    strlen(associated_data_pt2));</div>
-<div class="line">    <span class="comment">// We perform the decryption in-place, in the same buffer where the</span></div>
-<div class="line">    <span class="comment">// ciphertext it: to do so, we pass the same pointer for plaintext</span></div>
-<div class="line">    <span class="comment">// and ciphertext</span></div>
-<div class="line">    <span class="keywordtype">size_t</span> plaintext_len = 0;</div>
-<div class="line">    plaintext_len += <a class="code" href="ascon_8h.html#a875b78b43a6fa72bd75e3a4bb84b5190">ascon_aead128_decrypt_update</a>(</div>
-<div class="line">            &amp;ctx, buffer,</div>
-<div class="line">            buffer, ciphertext_len);</div>
-<div class="line">    <span class="comment">// The final decryption step automatically checks the tag</span></div>
-<div class="line">    <span class="keywordtype">bool</span> is_tag_valid = <span class="keyword">false</span>;</div>
-<div class="line">    plaintext_len += <a class="code" href="ascon_8h.html#a8fb38efa9304195bd22740add909ffd6">ascon_aead128_decrypt_final</a>(</div>
-<div class="line">            &amp;ctx, buffer + plaintext_len,</div>
-<div class="line">            NULL,</div>
-<div class="line">            &amp;is_tag_valid, tag,</div>
-<div class="line">            <a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;Tag is valid: %d\n&quot;</span>, is_tag_valid);  <span class="comment">// Yes, it&#39;s valid :)</span></div>
-<div class="line">    <span class="comment">// The macros ASCON_TAG_OK=true and ASCON_TAG_INVALID=false are also</span></div>
-<div class="line">    <span class="comment">// available if you prefer them over booleans for is_tag_valid.</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+<div class="line"><span class="comment">// Now we can decrypt</span></div>
+<div class="line"><a class="code" href="ascon_8h.html#a3b6d5f400bbacd57d45ec228bb772fb7">ascon_aead128_init</a>(&amp;ctx, secret_key, unique_nonce);</div>
+<div class="line"><a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt1,</div>
+<div class="line">                                strlen(associated_data_pt1));</div>
+<div class="line"><a class="code" href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a>(&amp;ctx, (uint8_t*) associated_data_pt2,</div>
+<div class="line">                                strlen(associated_data_pt2));</div>
+<div class="line"><span class="comment">// We perform the decryption in-place, in the same buffer where the</span></div>
+<div class="line"><span class="comment">// ciphertext it: to do so, we pass the same pointer for plaintext</span></div>
+<div class="line"><span class="comment">// and ciphertext</span></div>
+<div class="line"><span class="keywordtype">size_t</span> plaintext_len = 0;</div>
+<div class="line">plaintext_len += <a class="code" href="ascon_8h.html#a875b78b43a6fa72bd75e3a4bb84b5190">ascon_aead128_decrypt_update</a>(</div>
+<div class="line">        &amp;ctx, buffer,</div>
+<div class="line">        buffer, ciphertext_len);</div>
+<div class="line"><span class="comment">// The final decryption step automatically checks the tag</span></div>
+<div class="line"><span class="keywordtype">bool</span> is_tag_valid = <span class="keyword">false</span>;</div>
+<div class="line">plaintext_len += <a class="code" href="ascon_8h.html#a8d0e97ae544ddb8ff0b37265438c89c3">ascon_aead128_decrypt_final</a>(</div>
+<div class="line">        &amp;ctx, buffer + plaintext_len,</div>
+<div class="line">        &amp;is_tag_valid, tag, <a class="code" href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a>);</div>
+<div class="line">buffer[plaintext_len] = <span class="charliteral">&#39;\0&#39;</span>; <span class="comment">// Null terminated, because it&#39;s text</span></div>
+<div class="line">printf(<span class="stringliteral">&quot;Decrypted msg: %s, tag is valid: %d\n&quot;</span>, buffer, is_tag_valid);</div>
+<div class="line"><span class="comment">// The macros ASCON_TAG_OK=true and ASCON_TAG_INVALID=false are also</span></div>
+<div class="line"><span class="comment">// available if you prefer them over booleans for is_tag_valid.</span></div>
+</div><!-- fragment --><p>For more use-cases, check the test suite.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Known limitations</h1>
 <ul>
-<li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size, the cipher is about 4x slower than the <a href="https://github.com/ascon/ascon-c">reference implementation</a>.</li>
+<li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size and with the Init-Update-Digest paradigm, which has some internal buffering, the cipher is about <b>4x slower</b> than the <a href="https://github.com/ascon/ascon-c">reference implementation (<code>ref</code>)</a>.</li>
 <li>There is no architecture-specific optimisation, only a generic portable implementation using mostly <code>uint64_t</code> data types.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md5"></a>
@@ -231,16 +231,16 @@ Compiling Ascon into all possible targets</h2>
 </div><!-- fragment --><p>To compile with the optimisation for size, use the <code>-DCMAKE_BUILD_TYPE=MinSizeRel</code> flag instead. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="aascon_8h_html_a5d925f62c1deac9834156f754ec6c365"><div class="ttname"><a href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a></div><div class="ttdeci">#define ASCON_AEAD128_KEY_LEN</div><div class="ttdoc">Length in bytes of the secret symmetric key used for the Ascon128 cipher.</div><div class="ttdef"><b>Definition:</b> ascon.h:68</div></div>
+<div class="ttc" id="aascon_8h_html_a5d925f62c1deac9834156f754ec6c365"><div class="ttname"><a href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a></div><div class="ttdeci">#define ASCON_AEAD128_KEY_LEN</div><div class="ttdoc">Length in bytes of the secret symmetric key used for the Ascon128 cipher.</div><div class="ttdef"><b>Definition:</b> ascon.h:57</div></div>
 <div class="ttc" id="aascon_8h_html_aa059df9996a56fe9fbc7367f3804b6d2"><div class="ttname"><a href="ascon_8h.html#aa059df9996a56fe9fbc7367f3804b6d2">ascon_aead128_encrypt_update</a></div><div class="ttdeci">size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</div><div class="ttdoc">Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.</div></div>
-<div class="ttc" id="aascon_8h_html_af7ad24ebb29bc3179e2b0a11c1b782e8"><div class="ttname"><a href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a></div><div class="ttdeci">#define ASCON_AEAD_NONCE_LEN</div><div class="ttdoc">Length in bytes of the public nonce used for authenticated encryption and decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:84</div></div>
-<div class="ttc" id="astructascon__aead__ctx__t_html"><div class="ttname"><a href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a></div><div class="ttdoc">Cipher context for authenticated encryption and validated decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:183</div></div>
-<div class="ttc" id="aascon_8h_html_a11e452fd7944fe05900edffb392386c7"><div class="ttname"><a href="ascon_8h.html#a11e452fd7944fe05900edffb392386c7">ascon_aead128_encrypt_final</a></div><div class="ttdeci">size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t *ctx, uint8_t *ciphertext, uint64_t *total_encrypted_bytes, uint8_t *tag, uint8_t tag_len)</div><div class="ttdoc">Online symmetric encryption using Ascon128, finalisation and tag generation.</div></div>
-<div class="ttc" id="aascon_8h_html_a8fb38efa9304195bd22740add909ffd6"><div class="ttname"><a href="ascon_8h.html#a8fb38efa9304195bd22740add909ffd6">ascon_aead128_decrypt_final</a></div><div class="ttdeci">size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t *ctx, uint8_t *plaintext, uint64_t *total_decrypted_len, bool *is_tag_valid, const uint8_t *tag, uint8_t tag_len)</div><div class="ttdoc">Online symmetric decryption using Ascon128, finalisation and tag validation.</div></div>
+<div class="ttc" id="aascon_8h_html_a8d0e97ae544ddb8ff0b37265438c89c3"><div class="ttname"><a href="ascon_8h.html#a8d0e97ae544ddb8ff0b37265438c89c3">ascon_aead128_decrypt_final</a></div><div class="ttdeci">size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *tag, uint8_t tag_len)</div><div class="ttdoc">Online symmetric decryption using Ascon128, finalisation and tag validation.</div></div>
+<div class="ttc" id="aascon_8h_html_af7ad24ebb29bc3179e2b0a11c1b782e8"><div class="ttname"><a href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a></div><div class="ttdeci">#define ASCON_AEAD_NONCE_LEN</div><div class="ttdoc">Length in bytes of the public nonce used for authenticated encryption and decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:73</div></div>
+<div class="ttc" id="astructascon__aead__ctx__t_html"><div class="ttname"><a href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a></div><div class="ttdoc">Cipher context for authenticated encryption and validated decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:169</div></div>
 <div class="ttc" id="aascon_8h_html_a875b78b43a6fa72bd75e3a4bb84b5190"><div class="ttname"><a href="ascon_8h.html#a875b78b43a6fa72bd75e3a4bb84b5190">ascon_aead128_decrypt_update</a></div><div class="ttdeci">size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</div><div class="ttdoc">Online symmetric decryption using Ascon128, feeding ciphertext and getting plaintext.</div></div>
 <div class="ttc" id="aascon_8h_html_a3b6d5f400bbacd57d45ec228bb772fb7"><div class="ttname"><a href="ascon_8h.html#a3b6d5f400bbacd57d45ec228bb772fb7">ascon_aead128_init</a></div><div class="ttdeci">void ascon_aead128_init(ascon_aead_ctx_t *ctx, const uint8_t key[ASCON_AEAD128_KEY_LEN], const uint8_t nonce[ASCON_AEAD_NONCE_LEN])</div><div class="ttdoc">Online symmetric encryption/decryption using Ascon128, initialisation.</div></div>
-<div class="ttc" id="aascon_8h_html_a01059c28b3716d7b8e334f770453eb2b"><div class="ttname"><a href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a></div><div class="ttdeci">#define ASCON_AEAD_TAG_MIN_SECURE_LEN</div><div class="ttdoc">Minimum recommended length in bytes of the authentication tag generated by the authenticated encrypti...</div><div class="ttdef"><b>Definition:</b> ascon.h:90</div></div>
+<div class="ttc" id="aascon_8h_html_a01059c28b3716d7b8e334f770453eb2b"><div class="ttname"><a href="ascon_8h.html#a01059c28b3716d7b8e334f770453eb2b">ASCON_AEAD_TAG_MIN_SECURE_LEN</a></div><div class="ttdeci">#define ASCON_AEAD_TAG_MIN_SECURE_LEN</div><div class="ttdoc">Minimum recommended length in bytes of the authentication tag generated by the authenticated encrypti...</div><div class="ttdef"><b>Definition:</b> ascon.h:79</div></div>
 <div class="ttc" id="aascon_8h_html_a6d5a5621b6c7e9c280aea59384aaf253"><div class="ttname"><a href="ascon_8h.html#a6d5a5621b6c7e9c280aea59384aaf253">ascon_aead128_assoc_data_update</a></div><div class="ttdeci">void ascon_aead128_assoc_data_update(ascon_aead_ctx_t *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</div><div class="ttdoc">Online symmetric encryption/decryption using Ascon128, feeding associated data.</div></div>
+<div class="ttc" id="aascon_8h_html_a9d59965e94b1590643a09b3b809d0bb6"><div class="ttname"><a href="ascon_8h.html#a9d59965e94b1590643a09b3b809d0bb6">ascon_aead128_encrypt_final</a></div><div class="ttdeci">size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t *ctx, uint8_t *ciphertext, uint8_t *tag, uint8_t tag_len)</div><div class="ttdoc">Online symmetric encryption using Ascon128, finalisation and tag generation.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
