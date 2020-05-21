@@ -263,7 +263,7 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the ascon_aead128_encrypt_final() or ascon_aead128_decrypt_final()
  * call. In case the encryption or decryption session is interrupted and never
- * finalised, clear the context with ascon_aead_clear() to erase the key copy.
+ * finalised, clear the context with ascon_aead_cleanup() to erase the key copy.
  *
  * @warning
  * Do not mix Init-Update-Final functions across ciphers.
@@ -388,7 +388,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -518,7 +518,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -549,7 +549,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t tag_len);
 
 /**
- * Security cleanup function of the context, in case the online processing
+ * Security cleanup of the AEAD context, in case the online processing
  * is not completed to the end.
  *
  * Use this function only when something goes wrong between the calls of
@@ -651,7 +651,7 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the ascon_aead128a_encrypt_final() or ascon_aead128a_decrypt_final()
  * call. In case the encryption or decryption session is interrupted and never
- * finalised, clear the context with ascon_aead_clear() to erase the key copy.
+ * finalised, clear the context with ascon_aead_cleanup() to erase the key copy.
  *
  * @warning
  * Do not mix Init-Update-Final functions across ciphers.
@@ -778,7 +778,7 @@ size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -910,7 +910,7 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -1026,7 +1026,7 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the ascon_aead80pq_encrypt_final() or ascon_aead80pq_decrypt_final()
  * call. In case the encryption or decryption session is interrupted and never
- * finalised, clear the context with ascon_aead_clear() to erase the key copy.
+ * finalised, clear the context with ascon_aead_cleanup() to erase the key copy.
  *
  * @warning
  * Do not mix Init-Update-Final functions across ciphers.
@@ -1153,7 +1153,7 @@ size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -1284,7 +1284,7 @@ size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  * A copy of the secret key is kept in the \p ctx struct and securely erased
  * during the this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
- * ascon_aead_clear() to erase the key copy.
+ * ascon_aead_cleanup() to erase the key copy.
  *
  * @param[in, out] ctx the decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. It will be erased
@@ -1328,13 +1328,6 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
  * is **no need to build an HMAC** construct around it, as it does not suffer
  * from length-extension vulnerabilities.
  *
- * @warning
- * For security reasons, a digest length of at least 128 bits (16 bytes) is
- * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
- * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits. For longer digest sizes, use the XOF-hash
- * functions (ascon_hash_xof() or ascon_hash_xof_init()).
- *
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of #ASCON_HASH_DIGEST_LEN bytes.
  * @param[in] data message fed into the hash function.
@@ -1359,11 +1352,7 @@ void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  * from length-extension vulnerabilities.
  *
  * @warning
- * For security reasons, a digest length of at least 128 bits (16 bytes) is
- * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
- * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits. For longer digest sizes, use the XOF-hash
- * functions (ascon_hash_xof() or ascon_hash_xof_init()).
+ * Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
@@ -1419,10 +1408,10 @@ void ascon_hash_final(ascon_hash_ctx_t* ctx,
  * suffer from length-extension vulnerabilities.
  *
  * @warning
- * For security reasons, a digest length of at least 128 bits (16 bytes) is
- * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
- * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits.
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
  *
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of \p digest_len bytes.
@@ -1450,10 +1439,7 @@ void ascon_hash_xof(uint8_t* digest,
  * suffer from length-extension vulnerabilities.
  *
  * @warning
- * For security reasons, a digest length of at least 128 bits (16 bytes) is
- * recommended. Against birthday attacks (collisions), 256 bits (32 bytes)
- * are recommended. Against quantum computers, the hash size should be double
- * the amount of wanted security bits.
+ * Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
@@ -1485,6 +1471,12 @@ void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
  *
  * Finalises the hashing by returning the digest of the message.
  *
+ * @warning
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
+ *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. It will be erased
  *       securely before this function returns. Not NULL.
@@ -1497,16 +1489,17 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                           size_t digest_len);
 
 /**
- * Security cleanup function of the context, in case the online processing
- * is not completed to the end.
+ * Security cleanup of the hashing context, in case the online
+ * processing is not completed to the end.
  *
  * Use this function only when something goes wrong between the calls of
- * online hashing and you never call the ascon_hash_final()
- * or ascon_hash_xof_final(), functions
- * (because these 2 functions perform the cleanup automatically).
+ * online hashing or decryption and you never call the ascon_hash_final()
+ * or ascon_hash_xof_final() functions (because these 2 functions perform the
+ * cleanup automatically).
  *
  * This is to prevent any information to leak through the context in case an
- * hashing transaction is rolled back/abruptly terminated.
+ * hashing transaction is rolled back/abruptly terminated, especially parts of
+ * a key (for keyed hashing) still buffered in the context.
  *
  * @param[in, out] ctx to erase.
  */
