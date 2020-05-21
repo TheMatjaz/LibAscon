@@ -435,7 +435,7 @@ static void test_encrypt_update_single_byte(void)
                 &aead_ctx,
                 obtained_ciphertext + total_ct_bytes,
                 obtained_tag, sizeof(obtained_tag));
-        total_ct_bytes+=new_ct_bytes;
+        total_ct_bytes += new_ct_bytes;
         atto_lt(new_ct_bytes, ASCON_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_bytes, testcase.ciphertext_len);
@@ -496,10 +496,10 @@ static void test_encrypt_update_three_bytes(void)
             step = MIN(remaining, 3);
             new_ct_bytes = ascon_aead128_encrypt_update(
                     &aead_ctx,
-                    obtained_ciphertext +total_ct_bytes,
+                    obtained_ciphertext + total_ct_bytes,
                     &testcase.plaintext[i],
                     step);
-            total_ct_bytes+=new_ct_bytes;
+            total_ct_bytes += new_ct_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
             if (aead_ctx.bufstate.buffer_len < previous_buffer_len)
             {
@@ -517,7 +517,7 @@ static void test_encrypt_update_three_bytes(void)
                 &aead_ctx,
                 obtained_ciphertext + total_ct_bytes,
                 obtained_tag, sizeof(obtained_tag));
-        total_ct_bytes+=new_ct_bytes;
+        total_ct_bytes += new_ct_bytes;
         atto_lt(new_ct_bytes, ASCON_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_ct_bytes, testcase.ciphertext_len);

@@ -38,14 +38,14 @@ static void test_inplace_offline(void)
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
         ascon_aead128a_encrypt(transformed,
-                              obtained_tag,
-                              testcase.key,
-                              testcase.nonce,
-                              testcase.assoc_data,
-                              transformed,
-                              testcase.assoc_data_len,
-                              testcase.plaintext_len,
-                              sizeof(testcase.tag));
+                               obtained_tag,
+                               testcase.key,
+                               testcase.nonce,
+                               testcase.assoc_data,
+                               transformed,
+                               testcase.assoc_data_len,
+                               testcase.plaintext_len,
+                               sizeof(testcase.tag));
         vecs_aead_enc_log(&testcase, transformed, obtained_tag,
                           testcase.ciphertext_len);
         atto_memeq(transformed,
@@ -103,17 +103,17 @@ static void test_inplace_update_single_byte(void)
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
             ascon_aead128a_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
-                                            1);
+                                             1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
         }
         for (size_t i = 0; i < testcase.plaintext_len; i++)
         {
             new_bytes = ascon_aead128a_encrypt_update(
                     &aead_ctx,
-                    transformed +total_new_bytes,
+                    transformed + total_new_bytes,
                     &transformed[i],
                     1);
-            total_new_bytes+=new_bytes;
+            total_new_bytes += new_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
@@ -125,10 +125,10 @@ static void test_inplace_update_single_byte(void)
             }
         }
         new_bytes = ascon_aead128a_encrypt_final(&aead_ctx,
-                                                transformed+total_new_bytes,
-                                                obtained_tag,
-                                                sizeof(testcase.tag));
-        total_new_bytes+=new_bytes;
+                                                 transformed + total_new_bytes,
+                                                 obtained_tag,
+                                                 sizeof(testcase.tag));
+        total_new_bytes += new_bytes;
         atto_lt(new_bytes, ASCON_DOUBLE_RATE);
         atto_eq(new_bytes, testcase.ciphertext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_new_bytes, testcase.ciphertext_len);
@@ -140,21 +140,22 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
 
         // Decrypt
-        total_new_bytes=0;
+        total_new_bytes = 0;
         ascon_aead128a_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
         {
             ascon_aead128a_assoc_data_update(&aead_ctx, &testcase.assoc_data[i],
-                                            1);
+                                             1);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
         }
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
             new_bytes = ascon_aead128a_decrypt_update(&aead_ctx,
-                                                     transformed +total_new_bytes,
-                                                     &transformed[i],
-                                                     1);
-            total_new_bytes+=new_bytes;
+                                                      transformed +
+                                                      total_new_bytes,
+                                                      &transformed[i],
+                                                      1);
+            total_new_bytes += new_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
@@ -166,10 +167,10 @@ static void test_inplace_update_single_byte(void)
             }
         }
         new_bytes = ascon_aead128a_decrypt_final(&aead_ctx,
-                                                transformed +total_new_bytes,
-                                                &is_valid, testcase.tag,
-                                                sizeof(testcase.tag));
-        total_new_bytes+=new_bytes;
+                                                 transformed + total_new_bytes,
+                                                 &is_valid, testcase.tag,
+                                                 sizeof(testcase.tag));
+        total_new_bytes += new_bytes;
         atto_lt(new_bytes, ASCON_DOUBLE_RATE);
         atto_eq(new_bytes, testcase.plaintext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_new_bytes, testcase.plaintext_len);
