@@ -213,7 +213,7 @@ typedef struct
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN. Not NULL.
- * @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be authenticated with the same tag
  *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] plaintext data to be encrypted into \p ciphertext.
@@ -271,7 +271,7 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
                         const uint8_t key[ASCON_AEAD128_KEY_LEN],
@@ -432,7 +432,7 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  *       to decrypt the ciphertext in-place, sparing on memory instead
  *       of writing into a separate output buffer. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN bytes. Not NULL.
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
@@ -599,7 +599,7 @@ void ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
 *       fingerprint), used to validate the integrity and authenticity of the
 *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
 * @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL.
-* @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
+* @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
 * @param[in] assoc_data data to be authenticated with the same tag
 *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
 * @param[in] plaintext data to be encrypted into \p ciphertext.
@@ -659,7 +659,7 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD128a_KEY_LEN],
@@ -823,7 +823,7 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  *       to decrypt the ciphertext in-place, sparing on memory instead
  *       of writing into a separate output buffer. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL.
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
@@ -973,7 +973,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
 *       fingerprint), used to validate the integrity and authenticity of the
 *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
 * @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL.
-* @param[in] nonce public **unique** nonce of ASCON_AEAD_NONCE_LEN bytes.
+* @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
 * @param[in] assoc_data data to be authenticated with the same tag
 *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
 * @param[in] plaintext data to be encrypted into \p ciphertext.
@@ -1034,7 +1034,7 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
  */
 void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
@@ -1198,7 +1198,7 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  *       to decrypt the ciphertext in-place, sparing on memory instead
  *       of writing into a separate output buffer. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL.
- * @param[in] nonce public unique nonce of ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes.
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
