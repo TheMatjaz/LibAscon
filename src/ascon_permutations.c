@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 #include "ascon.h"
-/* Linter warnings about #include "internal.h" being unused are WRONG.
+/* Linter warnings about #include "ascon_internal.h" being unused are WRONG.
  * If you do not include the header, the linker cannot find the references. */
 #include "ascon_internal.h"
 

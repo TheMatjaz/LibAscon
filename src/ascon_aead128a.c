@@ -157,11 +157,11 @@ static void ascon_128a_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
         {
             ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
                                                     ASCON_RATE);
+            const uint8_t second_half = (uint8_t) (
+                    ctx->bufstate.buffer_len - ASCON_RATE);
             ctx->bufstate.sponge.x1 ^= bytes_to_u64(
-                    ctx->bufstate.buffer + ASCON_RATE,
-                    ctx->bufstate.buffer_len - ASCON_RATE);
-            ctx->bufstate.sponge.x1 ^= PADDING(
-                    ctx->bufstate.buffer_len - ASCON_RATE);
+                    ctx->bufstate.buffer + ASCON_RATE, second_half);
+            ctx->bufstate.sponge.x1 ^= PADDING(second_half);
         }
         else
         {
