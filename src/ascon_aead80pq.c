@@ -52,11 +52,6 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
     return is_tag_valid;
 }
 
-inline void ascon_aead80pq_cleanup(ascon_aead_ctx_t* const ctx)
-{
-    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
-}
-
 inline void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
                                 const uint8_t* const key,
                                 const uint8_t* const nonce)
@@ -129,7 +124,7 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     // Squeeze out tag into its buffer.
     ascon_aead_generate_tag(ctx, tag, tag_len);
     // Final security cleanup of the internal state, key and buffer.
-    ascon_aead128_cleanup(ctx);
+    ascon_aead_cleanup(ctx);
     return freshly_generated_ciphertext_len;
 }
 
@@ -213,6 +208,6 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     }
     // Final security cleanup of the internal state, key and buffer.
     memset(expected_tag, 0, tag_len);
-    ascon_aead80pq_cleanup(ctx);
+    ascon_aead_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }

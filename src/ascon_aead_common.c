@@ -75,3 +75,8 @@ void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
     remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
 }
+
+inline void ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
+{
+    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
+}

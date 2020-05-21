@@ -17,7 +17,7 @@
 static void test_aead_cleanup(void)
 {
     ascon_aead_ctx_t ctx = {.k0 = 42};
-    ascon_aead128a_cleanup(&ctx);
+    ascon_aead_cleanup(&ctx);
     atto_zeros(&ctx, sizeof(ascon_aead_ctx_t));
 }
 
