@@ -508,7 +508,7 @@ static void test_decrypt_update_three_bytes(void)
             step = MIN(remaining, 3);
             new_pt_bytes = ascon_aead128_decrypt_update(
                     &aead_ctx,
-                    obtained_plaintext + total_py_bytes,
+                    obtained_plaintext + total_pt_bytes,
                     &testcase.ciphertext[i],
                     step);
             atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
