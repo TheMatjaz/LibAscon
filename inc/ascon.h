@@ -271,7 +271,8 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
+ *       NULL.
  */
 void ascon_aead128_init(ascon_aead_ctx_t* ctx,
                         const uint8_t key[ASCON_AEAD128_KEY_LEN],
@@ -659,7 +660,8 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
+ *       NULL.
  */
 void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD128a_KEY_LEN],
@@ -1034,7 +1036,8 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
  *       state and buffering of incoming data to be processed. Not NULL.
  * @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL
- * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not NULL.
+ * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
+ *       NULL.
  */
 void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
@@ -1413,6 +1416,12 @@ void ascon_hash_final(ascon_hash_ctx_t* ctx,
  * quantum computers, the hash size should be double the amount of wanted
  * security bits.
  *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of \p digest_len bytes.
  * @param[in] data message fed into the hash function.
@@ -1476,6 +1485,12 @@ void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
  * a digest length of at least 256 bits (32 bytes) is recommended. Against
  * quantum computers, the hash size should be double the amount of wanted
  * security bits.
+ *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. It will be erased
