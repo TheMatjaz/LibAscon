@@ -402,9 +402,11 @@ static void test_decrypt_update_single_byte(void)
             }
         }
         new_pt_bytes = ascon_aead80pq_decrypt_final(&aead_ctx,
-                                                    obtained_plaintext + total_pt_bytes,
+                                                    obtained_plaintext +
+                                                    total_pt_bytes,
                                                     &is_valid, testcase.tag,
                                                     sizeof(testcase.tag));
+        total_pt_bytes += new_pt_bytes;
         atto_lt(new_pt_bytes, ASCON_RATE);
         atto_eq(new_pt_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_pt_bytes, testcase.plaintext_len);
@@ -525,7 +527,7 @@ static void test_decrypt_update_three_bytes(void)
                     obtained_plaintext + total_pt_bytes,
                     &testcase.ciphertext[i],
                     step);
-            new_pt_bytes += total_pt_bytes;
+            total_pt_bytes += new_pt_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
             if (aead_ctx.bufstate.buffer_len < previous_buffer_len)
             {
@@ -540,7 +542,8 @@ static void test_decrypt_update_three_bytes(void)
             i += step;
         }
         new_pt_bytes = ascon_aead80pq_decrypt_final(&aead_ctx,
-                                                    obtained_plaintext + total_pt_bytes,
+                                                    obtained_plaintext +
+                                                    total_pt_bytes,
                                                     &is_valid, testcase.tag,
                                                     sizeof(testcase.tag));
         total_pt_bytes += new_pt_bytes;

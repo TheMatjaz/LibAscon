@@ -125,7 +125,8 @@ static void test_inplace_update_single_byte(void)
             }
         }
         new_bytes = ascon_aead128a_encrypt_final(&aead_ctx,
-                                                transformed+total_new_bytes, obtained_tag,
+                                                transformed+total_new_bytes,
+                                                obtained_tag,
                                                 sizeof(testcase.tag));
         total_new_bytes+=new_bytes;
         atto_lt(new_bytes, ASCON_DOUBLE_RATE);

@@ -405,6 +405,7 @@ static void test_encrypt_update_single_byte(void)
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
         memset(obtained_tag, 0, sizeof(obtained_tag));
+        total_ct_bytes = 0;
         // Many 1-byte update calls
         ascon_aead128a_init(&aead_ctx, testcase.key, testcase.nonce);
         for (size_t i = 0; i < testcase.assoc_data_len; i++)
@@ -436,6 +437,7 @@ static void test_encrypt_update_single_byte(void)
                 &aead_ctx,
                 obtained_ciphertext + total_ct_bytes,
                 obtained_tag, sizeof(obtained_tag));
+        total_ct_bytes+=new_ct_bytes;
         atto_lt(new_ct_bytes, ASCON_DOUBLE_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_ct_bytes, testcase.ciphertext_len);
@@ -473,6 +475,7 @@ static void test_encrypt_update_three_bytes(void)
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
         memset(obtained_tag, 0, sizeof(obtained_tag));
+        total_ct_bytes = 0;
         // Many 3-byte update calls
         ascon_aead128a_init(&aead_ctx, testcase.key, testcase.nonce);
         size_t remaining;
@@ -500,6 +503,7 @@ static void test_encrypt_update_three_bytes(void)
                     obtained_ciphertext + total_ct_bytes,
                     &testcase.plaintext[i],
                     step);
+            total_ct_bytes+=new_ct_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + step) %
                                                   ASCON_DOUBLE_RATE);
             if (aead_ctx.bufstate.buffer_len < previous_buffer_len)
@@ -518,6 +522,7 @@ static void test_encrypt_update_three_bytes(void)
                 &aead_ctx,
                 obtained_ciphertext + total_ct_bytes,
                 obtained_tag, sizeof(obtained_tag));
+        total_ct_bytes+=new_ct_bytes;
         atto_lt(new_ct_bytes, ASCON_DOUBLE_RATE);
         atto_eq(new_ct_bytes, testcase.ciphertext_len % ASCON_DOUBLE_RATE);
         atto_eq(total_ct_bytes, testcase.ciphertext_len);

@@ -511,6 +511,7 @@ static void test_decrypt_update_three_bytes(void)
                     obtained_plaintext + total_pt_bytes,
                     &testcase.ciphertext[i],
                     step);
+            total_pt_bytes+=new_pt_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + step) % ASCON_RATE);
             if (aead_ctx.bufstate.buffer_len < previous_buffer_len)
             {

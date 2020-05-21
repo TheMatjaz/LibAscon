@@ -96,7 +96,7 @@ static void test_inplace_update_single_byte(void)
         atto_ctr(testcase.count);
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
-
+        total_new_bytes = 0;
         // Encrypt
         memcpy(transformed, testcase.plaintext, testcase.plaintext_len);
         ascon_aead80pq_init(&aead_ctx, testcase.key, testcase.nonce);

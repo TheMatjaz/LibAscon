@@ -111,7 +111,7 @@ static void test_inplace_update_single_byte(void)
         {
             new_bytes = ascon_aead128_encrypt_update(
                     &aead_ctx,
-                    transformed +total_new_bytes,
+                    transformed + total_new_bytes,
                     &transformed[i],
                     1);
             total_new_bytes += new_bytes;
@@ -129,6 +129,7 @@ static void test_inplace_update_single_byte(void)
                                                 transformed + total_new_bytes,
                                                 obtained_tag,
                                                 sizeof(testcase.tag));
+        total_new_bytes += new_bytes;
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.ciphertext_len % ASCON_RATE);
         atto_eq(total_new_bytes, testcase.ciphertext_len);
@@ -151,9 +152,11 @@ static void test_inplace_update_single_byte(void)
         for (size_t i = 0; i < testcase.ciphertext_len; i++)
         {
             new_bytes = ascon_aead128_decrypt_update(&aead_ctx,
-                                                     transformed +total_new_bytes,
+                                                     transformed +
+                                                     total_new_bytes,
                                                      &transformed[i],
                                                      1);
+            total_new_bytes += new_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len, (i + 1) % ASCON_RATE);
             if (aead_ctx.bufstate.buffer_len == 0)
             {
@@ -168,6 +171,7 @@ static void test_inplace_update_single_byte(void)
                                                 transformed + total_new_bytes,
                                                 &is_valid, testcase.tag,
                                                 sizeof(testcase.tag));
+        total_new_bytes += new_bytes;
         atto_lt(new_bytes, ASCON_RATE);
         atto_eq(new_bytes, testcase.plaintext_len % ASCON_RATE);
         atto_eq(total_new_bytes, testcase.plaintext_len);
