@@ -113,7 +113,6 @@ static void absorb_plaintext(ascon_sponge_t* const sponge,
     ascon_permutation_b6(sponge);
 }
 
-// TODO consider replacing uint8_t* with void* everywhere
 void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len)

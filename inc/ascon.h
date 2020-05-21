@@ -30,8 +30,6 @@
  * @authors See AUTHORS.md file
  */
 
-// TODO static analyser
-
 #ifndef ASCON_H
 #define ASCON_H
 

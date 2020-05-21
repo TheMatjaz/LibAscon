@@ -76,7 +76,8 @@ void test_readme_example(void)
     plaintext_len += ascon_aead128_decrypt_final(
             &ctx, buffer + plaintext_len,
             &is_tag_valid, tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
-    printf("Tag is valid: %d\n", is_tag_valid);  // Yes, it's valid :)
+    buffer[plaintext_len] = '\0'; // Null terminated, because it's text
+    printf("Decrypted msg: %s, tag is valid: %d\n", buffer, is_tag_valid);
     // The macros ASCON_TAG_OK=true and ASCON_TAG_INVALID=false are also
     // available if you prefer them over booleans for is_tag_valid.
 

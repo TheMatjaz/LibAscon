@@ -576,7 +576,6 @@ static void test_encrypt_update_var_bytes(void)
             i += step;
         }
         i = 0;
-        total_ct_len = 0;
         remaining = testcase.plaintext_len;
         while (remaining)
         {
