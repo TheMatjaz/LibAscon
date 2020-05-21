@@ -275,7 +275,7 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
                                                testcase.ciphertext_len);
     atto_eq(new_pt_len, 0);
     new_pt_len = ascon_aead80pq_decrypt_final(&aead_ctx, obtained_plaintext,
-                                              &plaintext_len, &is_valid,
+                                              &is_valid,
                                               testcase.tag,
                                               sizeof(testcase.tag));
     vecs_aead_dec_log(&testcase, obtained_plaintext, plaintext_len);
