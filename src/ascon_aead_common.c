@@ -65,13 +65,13 @@ void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
         u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
                      sizeof(uint64_t));
         ascon_permutation_a12(&ctx->bufstate.sponge);
-        tag_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
+        tag_len = (uint8_t) (tag_len - ASCON_AEAD_TAG_MIN_SECURE_LEN);
         tag += ASCON_AEAD_TAG_MIN_SECURE_LEN;
     }
     uint8_t remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x3, remaining);
     tag += sizeof(uint64_t);
-    tag_len -= remaining;
+    tag_len = (uint8_t) (tag_len - remaining);
     remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
 }
