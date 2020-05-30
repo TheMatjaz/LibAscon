@@ -1,3 +1,8 @@
+# CMake configuration to build LibAscon
+# License: Creative Commons Zero (CC0) 1.0
+#
+# For example usage: see README.md
+
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
         VERSION 1.0.1
@@ -53,6 +58,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DRELEASE \
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
+set(LIB_HEADER inc/ascon.h)
 set(LIB_SRC_FILES_COMMON
         src/ascon_internal.h
         src/ascon_permutations.c
@@ -111,6 +117,9 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # -----------------------------------------------------------------------------
 # Build targets
 # ----------------------------------------------------------------------------
+# Copy the library API header into the build directory
+configure_file(${LIB_HEADER} ${CMAKE_BINARY_DIR} COPYONLY)
+
 # Build the library first into an object, but keep `objlibascon` as
 # a reference to it, so there is no need to recompile it when building
 # a different target, that uses the same source files.
@@ -122,7 +131,7 @@ add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
 
 # Shared library (.dylib / .dll)
-# Does not reuse the static library object files, as they may be
+# Does not reuse the static library object files, as they are
 # recompiled in order to have position-independent code
 add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -130,9 +139,9 @@ set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 # Test runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(testascon
-        $<TARGET_OBJECTS:asconfull>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
+target_link_libraries(testascon asconfull)
 # Copy test vectors files to build directory after the make-build.
 # They are used by the test runner
 add_custom_command(
@@ -148,8 +157,8 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(benchmark
-        $<TARGET_OBJECTS:asconfull>
         ${BENCHMARK_SRC_FILES})
+target_link_libraries(benchmark asconfull)
 
 # Doxygen documentation builder
 find_package(Doxygen)
