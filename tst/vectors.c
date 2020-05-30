@@ -145,7 +145,8 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* const ctx, vecs_hash_t* const testcase)
     if (errcode != VECS_OK) { goto termination; }
     errcode = fscan_digest(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    (void)fscanf(ctx->handle, " ");  // Discard any trailing whitespace
+    int res = fscanf(ctx->handle, " ");  // Discard any trailing whitespace
+    (void) res; // Unused
     termination:
     {
         if (errcode != VECS_OK)
@@ -307,7 +308,8 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
     if (errcode != VECS_OK) { goto termination; }
     errcode = fscan_ciphertext(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    (void)fscanf(ctx->handle, " ");  // Discard any trailing whitespace
+    int res = fscanf(ctx->handle, " ");  // Discard any trailing whitespace
+    (void) res; // Unused
     termination:
     {
         if (errcode != VECS_OK)

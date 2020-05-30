@@ -60,6 +60,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DRELEASE \
 # -----------------------------------------------------------------------------
 set(LIB_HEADER inc/ascon.h)
 set(LIB_SRC_FILES_COMMON
+        ${LIB_HEADER}
         src/ascon_internal.h
         src/ascon_permutations.c
         src/ascon_buffering.c)
@@ -117,7 +118,8 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # -----------------------------------------------------------------------------
 # Build targets
 # ----------------------------------------------------------------------------
-# Copy the library API header into the build directory
+# Copy the library API header into the build directory.
+# With this command, if the header changes, it's copied, otherwise not.
 configure_file(${LIB_HEADER} ${CMAKE_BINARY_DIR} COPYONLY)
 
 # Build the library first into an object, but keep `objlibascon` as
