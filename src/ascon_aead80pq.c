@@ -52,7 +52,7 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
     return is_tag_valid;
 }
 
-inline void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
+void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
                                 const uint8_t* const key,
                                 const uint8_t* const nonce)
 {
