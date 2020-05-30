@@ -1,0 +1,26 @@
+
+# Matrix
+language: c
+compiler:
+  - clang
+  - gcc
+os:
+  - osx
+  - linux
+  - windows
+env:
+  - BUILD_TYPE=Release     # Optimised for speed
+  - BUILD_TYPE=MinSizeRel  # Optimised for size
+
+# Configure out-of-source build with cmake
+before_script:
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+
+# Compile all targets
+script:
+  - cmake --build .
+
+# Run test suite
+after_success:
+  - ./testascon

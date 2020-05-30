@@ -1,6 +1,11 @@
+# CMake configuration to build LibAscon
+# License: Creative Commons Zero (CC0) 1.0
+#
+# For example usage: see README.md
+
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
-        VERSION 1.0.0
+        VERSION 1.0.1
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -18,6 +23,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Compiler flags
 # -----------------------------------------------------------------------------
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 # Activate a million warnings to have the cleanest possible code
 set(FLAGS_WARNINGS -Wall -Wextra -pedantic -Wconversion -Wdouble-promotion
         -Wswitch-default -Wswitch-enum -Wuninitialized -Wno-unused-variable
@@ -25,22 +32,24 @@ set(FLAGS_WARNINGS -Wall -Wextra -pedantic -Wconversion -Wdouble-promotion
         -Waggregate-return -Wmissing-declarations -Wsign-conversion
         -Wjump-misses-init)
 # Debug build: compile with no optimisation, debug info and printing
-set(CMAKE_C_FLAGS_DEBUG "${WARNING_FLAGS} -g -O0 -DDEBUG")
+set(CMAKE_C_FLAGS_DEBUG "${WARNING_FLAGS} -g -O0 -DDEBUG \
+    -fprofile-instr-generate -fcoverage-mapping")
 # Append sanitiser flags on non-Windows systems
 if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} \
-            -fsanitize=address,undefined -static-libsan")
+            -fsanitize=address,undefined -static-libsan \
+            -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
 endif ()
 
 # Mini-sized release build: compile with optimisation for size
 # convert warnings into errors and some other optimisations
-set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} \
+set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} -DMINSIZEREL \
         ${WARNING_FLAGS} \
         -Os -Werror -fomit-frame-pointer -march=native -mtune=native -flto")
 
 # Performance-oriented release build: compile with optimisation for speed
 # convert warnings into errors and some other optimisations
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DRELEASE \
         ${WARNING_FLAGS} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops -flto")
@@ -49,7 +58,9 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
+set(LIB_HEADER inc/ascon.h)
 set(LIB_SRC_FILES_COMMON
+        ${LIB_HEADER}
         src/ascon_internal.h
         src/ascon_permutations.c
         src/ascon_buffering.c)
@@ -107,6 +118,10 @@ include_directories(AFTER SYSTEM inc/ tst/atto/)
 # -----------------------------------------------------------------------------
 # Build targets
 # ----------------------------------------------------------------------------
+# Copy the library API header into the build directory.
+# With this command, if the header changes, it's copied, otherwise not.
+configure_file(${LIB_HEADER} ${CMAKE_BINARY_DIR} COPYONLY)
+
 # Build the library first into an object, but keep `objlibascon` as
 # a reference to it, so there is no need to recompile it when building
 # a different target, that uses the same source files.
@@ -118,7 +133,7 @@ add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
 
 # Shared library (.dylib / .dll)
-# Does not reuse the static library object files, as they may be
+# Does not reuse the static library object files, as they are
 # recompiled in order to have position-independent code
 add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -126,9 +141,11 @@ set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 # Test runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(testascon
-        $<TARGET_OBJECTS:asconfull>
         ${TEST_FRAMEWORK}
         ${TEST_SRC_FILES})
+target_link_libraries(testascon PUBLIC asconfull)
+target_include_directories(testascon PUBLIC inc/)
+
 # Copy test vectors files to build directory after the make-build.
 # They are used by the test runner
 add_custom_command(
@@ -144,8 +161,10 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(benchmark
-        $<TARGET_OBJECTS:asconfull>
         ${BENCHMARK_SRC_FILES})
+target_link_libraries(benchmark PUBLIC asconfull)
+target_include_directories(benchmark PUBLIC inc/)
+
 
 # Doxygen documentation builder
 find_package(Doxygen)

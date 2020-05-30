@@ -21,6 +21,12 @@ extern "C"
 #include <stdint.h>
 #include "ascon.h"
 
+#if DEBUG || MINSIZEREL
+    #define ASCON_INLINE
+#else
+    #define ASCON_INLINE inline
+#endif
+
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_12_ROUNDS 12
@@ -77,18 +83,6 @@ typedef enum
     ASCON_FLOW_SOME_ASSOC_DATA = 1,
     ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
 } ascon_flow_t;
-
-/**
- * @internal
- * Prints the sponge state to stdout for debugging purposes.
- *
- * Does nothing unless the macro DEBUG_PERMUTATIONS is defined.
- *
- * @param[in] text string to print before the state, used to indicate when the
- *        printing is performed
- * @param[in] sponge the state to print
- */
-void log_sponge(const char* text, const ascon_sponge_t* sponge);
 
 /**
  * @internal

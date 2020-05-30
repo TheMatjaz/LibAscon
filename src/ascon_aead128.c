@@ -154,7 +154,6 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     // Squeeze out last ciphertext bytes, if any.
     u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0, ctx->bufstate.buffer_len);
     freshly_generated_ciphertext_len += ctx->bufstate.buffer_len;
-    log_sponge("process plaintext:", &ctx->bufstate.sponge);
     // End of encryption, start of tag generation.
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x1 ^= ctx->k0;
@@ -162,7 +161,6 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
-    log_sponge("finalization:", &ctx->bufstate.sponge);
     // Squeeze out tag into its buffer.
     ascon_aead_generate_tag(ctx, tag, tag_len);
     // Final security cleanup of the internal state, key and buffer.
@@ -209,7 +207,6 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
     ctx->bufstate.sponge.x0 |= c_0;
     ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
-    log_sponge("process ciphertext:", &ctx->bufstate.sponge);
     // End of decryption, start of tag validation.
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x1 ^= ctx->k0;
@@ -217,9 +214,11 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
-    log_sponge("finalization:", &ctx->bufstate.sponge);
     // Validate tag with variable len
-    uint8_t expected_tag[tag_len > 0 ? tag_len : 1];
+    // If the user requests tag_len==0, than expected_tag[0] is problematic
+    // for some compilers. Thus we replace it with a 1 just in this case
+    const uint8_t local_len = tag_len > 0 ? tag_len : 1;
+    uint8_t expected_tag[local_len];
     ascon_aead_generate_tag(ctx, expected_tag, tag_len);
     const int tags_differ = memcmp(tag, expected_tag, tag_len);
     if (tags_differ)
