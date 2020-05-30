@@ -20,19 +20,25 @@ Fixed slowdowns - now as fast as reference implementation, 100% test coverage.
 
 - Fixed 2x slowdown compared to original reference implementation by
   unrolling loops in `ascon_permutation_[a12|b8|b6]`. Apparently the
-  compiler does not do that automatically, even when requested.
+  compiler does not do that automatically, even when requested with
+  `-funroll-loops`.
   This brings LibAscon to the same performance as the reference implementation,
   when compiled in _Release_ mode.
+
 - When building in _MinSizeRel_ mode (`-DCMAKE_BUILD_TYPE=MinSizeRel`), the core
   round and permutation functions are not hinted to be inlined by the compiled,
   thus the library takes slightly less space.
+
 - Replaced rewritten benchmark runner with original one (copy-pasted and
   slightly changed). Apparently the rewritten benchmark was about 2x slower.
   Now the benchmark results are comparable between original implementation
   and LibAscon.
+
 - Test coverage reached 100%: removed a dead branch in
   `ascon_aead80pq_decrypt_final()`, which was a copy-paste error.
+
 - Fix a `int` to `uint8` type conversion warning.
+
 - Removed unused internal `log_sponge()` function, making the library slightly
   smaller.
 

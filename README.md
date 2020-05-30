@@ -222,7 +222,8 @@ This will build all targets:
   for a smaller build result when not all features are needed
 - `testascon`: a test runner executable , which test all features
 - `benchmark`: a simple benchmarking tool to get the number of CPU cycles per
-  processed byte for Ascon128 only
+  processed byte for offline-Ascon128 only. This is copied from the original
+  reference implementation and used to compare the performance
 - `doxygen`: the Doxygen documentation (if Doxygen is installed)
 
 To compile only a single target, for example `ascon80pq`, run
