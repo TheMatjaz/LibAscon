@@ -1,0 +1,22 @@
+language: c
+compiler:
+  - clang
+  #- gcc
+os:
+  - osx
+  #- linux
+  #- windows
+
+# Configure out-of-source build with cmake
+before_script:
+  - mkdir build_release
+  - cd build_release
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
+
+# Compile all targets
+script:
+  - cmake --build .
+
+# Run test suite
+after_success:
+  - ./testascon
