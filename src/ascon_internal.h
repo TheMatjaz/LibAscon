@@ -21,6 +21,12 @@ extern "C"
 #include <stdint.h>
 #include "ascon.h"
 
+#if DEBUG || MINSIZEREL
+    #define ASCON_INLINE
+#else
+    #define ASCON_INLINE inline
+#endif
+
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_12_ROUNDS 12

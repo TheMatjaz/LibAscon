@@ -29,18 +29,19 @@ set(CMAKE_C_FLAGS_DEBUG "${WARNING_FLAGS} -g -O0 -DDEBUG")
 # Append sanitiser flags on non-Windows systems
 if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} \
-            -fsanitize=address,undefined -static-libsan")
+            -fsanitize=address,undefined -static-libsan \
+            -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer")
 endif ()
 
 # Mini-sized release build: compile with optimisation for size
 # convert warnings into errors and some other optimisations
-set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} \
+set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} -DMINSIZEREL\
         ${WARNING_FLAGS} \
         -Os -Werror -fomit-frame-pointer -march=native -mtune=native -flto")
 
 # Performance-oriented release build: compile with optimisation for speed
 # convert warnings into errors and some other optimisations
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} \
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DRELEASE \
         ${WARNING_FLAGS} \
         -O3 -Werror -fomit-frame-pointer -march=native -mtune=native \
         -funroll-loops -flto")
