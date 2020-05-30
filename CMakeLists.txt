@@ -142,8 +142,9 @@ set_property(TARGET ascon PROPERTY POSITION_INDEPENDENT_CODE ON)
 # the source files
 add_executable(testascon
         ${TEST_FRAMEWORK}
-        ${TEST_SRC_FILES}
-        ${LIB_SRC_FILES_FULL})
+        ${TEST_SRC_FILES})
+target_link_libraries(testascon PUBLIC asconfull)
+target_include_directories(testascon PUBLIC inc/)
 
 # Copy test vectors files to build directory after the make-build.
 # They are used by the test runner
@@ -160,8 +161,10 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
 add_executable(benchmark
-        ${BENCHMARK_SRC_FILES}
-        ${LIB_SRC_FILES_FULL})
+        ${BENCHMARK_SRC_FILES})
+target_link_libraries(benchmark PUBLIC asconfull)
+target_include_directories(benchmark PUBLIC inc/)
+
 
 # Doxygen documentation builder
 find_package(Doxygen)

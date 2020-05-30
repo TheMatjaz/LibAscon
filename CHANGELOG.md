@@ -41,6 +41,10 @@ Fixed slowdowns - now as fast as reference implementation, 100% test coverage.
 
 - Removed unused internal `log_sponge()` function, making the library slightly
   smaller.
+  
+- Add initial Travis-CI script for a few builds. Some are still failing, but the
+  reasons seems to be in the system configuration or old compiler versions
+  or "linker not found", not in the LibAscon source code.
 
 
 
