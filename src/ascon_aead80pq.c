@@ -151,38 +151,16 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     size_t freshly_generated_plaintext_len = 0;
     // If there is any remaining less-than-a-block ciphertext to be absorbed
     // cached in the buffer, pad it and absorb it.
-    if (ctx->bufstate.buffer_len >= ASCON_RATE)
-    {
-        // Absorb ciphertext in buffer
-        const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer, ASCON_RATE);
-        const uint8_t second_half =
-                (uint8_t) (ctx->bufstate.buffer_len - ASCON_RATE);
-        const uint64_t c_1 = bytes_to_u64(
-                ctx->bufstate.buffer + ASCON_RATE, second_half);
-        // Squeeze out last plaintext bytes
-        u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0, ASCON_RATE);
-        u64_to_bytes(plaintext + ASCON_RATE,
-                     ctx->bufstate.sponge.x1 ^ c_1,
-                     second_half);
-        // Final state changes at decryption's end
-        ctx->bufstate.sponge.x0 = c_0;
-        ctx->bufstate.sponge.x1 &= ~byte_mask(second_half);
-        ctx->bufstate.sponge.x1 |= c_1;
-        ctx->bufstate.sponge.x1 ^= PADDING(second_half);
-    }
-    else
-    {
-        // Absorb ciphertext in buffer
-        const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer,
-                                          ctx->bufstate.buffer_len);
-        // Squeeze out last plaintext bytes
-        u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
-                     ctx->bufstate.buffer_len);
-        // Final state changes at decryption's end
-        ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
-        ctx->bufstate.sponge.x0 |= c_0;
-        ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
-    }
+    // Absorb ciphertext in buffer
+    const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer,
+                                      ctx->bufstate.buffer_len);
+    // Squeeze out last plaintext bytes
+    u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
+                 ctx->bufstate.buffer_len);
+    // Final state changes at decryption's end
+    ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
+    ctx->bufstate.sponge.x0 |= c_0;
+    ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
     freshly_generated_plaintext_len += ctx->bufstate.buffer_len;
     log_sponge("process ciphertext:", &ctx->bufstate.sponge);
     // End of decryption, start of tag validation.
