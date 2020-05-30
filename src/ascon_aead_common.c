@@ -23,13 +23,11 @@ void ascon_aead_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 = bytes_to_u64(nonce, sizeof(uint64_t));
     ctx->bufstate.sponge.x4 = bytes_to_u64(nonce + sizeof(uint64_t),
                                            sizeof(uint64_t));
-    log_sponge("initial value:", &ctx->bufstate.sponge);
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
-    log_sponge("initialization:", &ctx->bufstate.sponge);
 }
 
 void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
@@ -52,7 +50,6 @@ void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     ctx->bufstate.sponge.x4 ^= 1U;
     ctx->bufstate.buffer_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
-    log_sponge("process associated data:", &ctx->bufstate.sponge);
 }
 
 void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,

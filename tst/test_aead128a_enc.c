@@ -564,7 +564,7 @@ static void test_encrypt_update_var_bytes(void)
         // Many increasingly-larger update calls
         ascon_aead128a_init(&aead_ctx, testcase.key, testcase.nonce);
         size_t remaining;
-        size_t step = 1;
+        size_t step = 0;
         size_t i = 0;
         remaining = testcase.assoc_data_len;
         while (remaining)
@@ -578,6 +578,7 @@ static void test_encrypt_update_var_bytes(void)
             i += step;
         }
         i = 0;
+        step = 0;
         total_ct_len = 0;
         remaining = testcase.plaintext_len;
         while (remaining)
@@ -591,10 +592,6 @@ static void test_encrypt_update_var_bytes(void)
             total_ct_len += new_ct_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len,
                     (i + step) % ASCON_DOUBLE_RATE);
-            if (step > ASCON_DOUBLE_RATE)
-            {
-                atto_ge(new_ct_bytes, ASCON_DOUBLE_RATE);
-            }
             remaining -= step;
             i += step;
         }

@@ -41,6 +41,9 @@ LibAscon provides:
 - Encryption/decryption can be performed in-place, without the need of a
   second output buffer; 
 
+- Same performance as the original implementation in _Release_ mode,
+  about 2x slower in _MinSizeRel_ mode.
+
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
   developer-friendly API**, making it easier to compile and add to your project,
   both through static and dynamic inclusion
@@ -182,10 +185,6 @@ For more use-cases, check the test suite.
 Known limitations
 ----------------------------------------
 
-- Because LibAscon is implemented with reuse of existing functions in mind,
-  in order to spare on code size and with the Init-Update-Digest paradigm,
-  which has some internal buffering, the cipher is about **4x slower** than the
-  [reference implementation (`ref`)](https://github.com/ascon/ascon-c).
 - There is no architecture-specific optimisation, only a generic portable
   implementation using mostly `uint64_t` data types.
 

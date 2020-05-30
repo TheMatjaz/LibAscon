@@ -580,10 +580,10 @@ static void test_decrypt_update_var_bytes(void)
         atto_eq(errcode, VECS_OK);
         atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
         memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
-        // Many 3-byte update calls
+        // Many variable-length update calls
         ascon_aead128a_init(&aead_ctx, testcase.key, testcase.nonce);
         size_t remaining;
-        size_t step = 1;
+        size_t step = 0;
         size_t i = 0;
         remaining = testcase.assoc_data_len;
         while (remaining)
@@ -599,6 +599,7 @@ static void test_decrypt_update_var_bytes(void)
         i = 0;
         total_pt_len = 0;
         remaining = testcase.ciphertext_len;
+        step = 0;
         while (remaining)
         {
             step = MIN(remaining, step + 1);
@@ -612,10 +613,6 @@ static void test_decrypt_update_var_bytes(void)
             total_pt_len += new_pt_bytes;
             atto_eq(aead_ctx.bufstate.buffer_len,
                     (i + step) % ASCON_DOUBLE_RATE);
-            if (step > ASCON_DOUBLE_RATE)
-            {
-                atto_ge(new_pt_bytes, ASCON_DOUBLE_RATE);
-            }
             remaining -= step;
             i += step;
         }
