@@ -167,7 +167,10 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     // Validate tag with variable len
-    uint8_t expected_tag[tag_len > 0 ? tag_len : 1];
+    // If the user requests tag_len==0, than expected_tag[0] is problematic
+    // for some compilers. Thus we replace it with a 1 just in this case
+    const uint8_t local_len = tag_len > 0 ? tag_len : 1;
+    uint8_t expected_tag[local_len];
     ascon_aead_generate_tag(ctx, expected_tag, tag_len);
     const int tags_differ = memcmp(tag, expected_tag, tag_len);
     if (tags_differ)
