@@ -53,8 +53,8 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
 }
 
 void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
-                                const uint8_t* const key,
-                                const uint8_t* const nonce)
+                         const uint8_t* const key,
+                         const uint8_t* const nonce)
 {
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bytes_to_u64(key, sizeof(uint64_t)) >> 32U;
@@ -66,14 +66,12 @@ void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 = bytes_to_u64(nonce, sizeof(uint64_t));
     ctx->bufstate.sponge.x4 = bytes_to_u64(nonce + sizeof(uint64_t),
                                            sizeof(uint64_t));
-    log_sponge("initial value:", &ctx->bufstate.sponge);
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x2 ^= ctx->k0;
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     ctx->bufstate.buffer_len = 0;
     ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
-    log_sponge("initialization:", &ctx->bufstate.sponge);
 }
 
 inline void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
@@ -111,7 +109,6 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     // Squeeze out last ciphertext bytes, if any.
     u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0, ctx->bufstate.buffer_len);
     freshly_generated_ciphertext_len += ctx->bufstate.buffer_len;
-    log_sponge("process plaintext:", &ctx->bufstate.sponge);
     // End of encryption, start of tag generation.
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x1 ^= ctx->k0 << 32U | ctx->k1 >> 32U;
@@ -120,7 +117,6 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
-    log_sponge("finalization:", &ctx->bufstate.sponge);
     // Squeeze out tag into its buffer.
     ascon_aead_generate_tag(ctx, tag, tag_len);
     // Final security cleanup of the internal state, key and buffer.
@@ -162,7 +158,6 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x0 |= c_0;
     ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
     freshly_generated_plaintext_len += ctx->bufstate.buffer_len;
-    log_sponge("process ciphertext:", &ctx->bufstate.sponge);
     // End of decryption, start of tag validation.
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x1 ^= ctx->k0 << 32U | ctx->k1 >> 32U;
@@ -171,7 +166,6 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     ascon_permutation_a12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
-    log_sponge("finalization:", &ctx->bufstate.sponge);
     // Validate tag with variable len
     uint8_t expected_tag[tag_len > 0 ? tag_len : 1];
     ascon_aead_generate_tag(ctx, expected_tag, tag_len);

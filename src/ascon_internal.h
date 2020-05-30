@@ -86,18 +86,6 @@ typedef enum
 
 /**
  * @internal
- * Prints the sponge state to stdout for debugging purposes.
- *
- * Does nothing unless the macro DEBUG_PERMUTATIONS is defined.
- *
- * @param[in] text string to print before the state, used to indicate when the
- *        printing is performed
- * @param[in] sponge the state to print
- */
-void log_sponge(const char* text, const ascon_sponge_t* sponge);
-
-/**
- * @internal
  * Converts an array of 8 bytes, out of which the first n are used, to a
  * uint64_t value.
  *

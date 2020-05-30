@@ -43,9 +43,7 @@ static void init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
     ctx->sponge.x3 = 0;
     ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
-    log_sponge("initial value:", &ctx->sponge);
     ascon_permutation_a12(&ctx->sponge);
-    log_sponge("initialization:", &ctx->sponge);
 }
 
 inline void ascon_hash_init(ascon_hash_ctx_t* const ctx)
