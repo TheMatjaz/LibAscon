@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(LibAscon
-        VERSION 1.0.0
+        VERSION 1.0.1
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -18,6 +18,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Compiler flags
 # -----------------------------------------------------------------------------
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 # Activate a million warnings to have the cleanest possible code
 set(FLAGS_WARNINGS -Wall -Wextra -pedantic -Wconversion -Wdouble-promotion
         -Wswitch-default -Wswitch-enum -Wuninitialized -Wno-unused-variable
