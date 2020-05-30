@@ -1,11 +1,11 @@
 language: c
 compiler:
   - clang
-  #- gcc
+  - gcc
 os:
   - osx
-  #- linux
-  #- windows
+  - linux
+  - windows
 
 # Configure out-of-source build with cmake
 before_script:
