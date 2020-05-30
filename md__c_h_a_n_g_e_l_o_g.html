@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">1.0.1</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -71,9 +71,23 @@ $(function() {
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr  />
 <h1><a class="anchor" id="autotoc_md8"></a>
+[1.0.1] - 2020-05-30</h1>
+<p>Fixed slowdowns - now as fast as reference implementation, 100% test coverage.</p>
+<h2><a class="anchor" id="autotoc_md9"></a>
+Fixed</h2>
+<ul>
+<li>Fixed 2x slowdown compared to original reference implementation by unrolling loops in <code>ascon_permutation_[a12|b8|b6]</code>. Apparently the compiler does not do that automatically, even when requested with <code>-funroll-loops</code>. This brings LibAscon to the same performance as the reference implementation, when compiled in <em>Release</em> mode.</li>
+<li>When building in <em>MinSizeRel</em> mode (<code>-DCMAKE_BUILD_TYPE=MinSizeRel</code>), the core round and permutation functions are not hinted to be inlined by the compiled, thus the library takes slightly less space.</li>
+<li>Replaced rewritten benchmark runner with original one (copy-pasted and slightly changed). Apparently the rewritten benchmark was about 2x slower. Now the benchmark results are comparable between original implementation and LibAscon.</li>
+<li>Test coverage reached 100%: removed a dead branch in <code><a class="el" href="ascon_8h.html#a6d3d8d31de2d7f7aeeffad2fb9835198" title="Online symmetric decryption using Ascon80pq, finalisation and tag validation.">ascon_aead80pq_decrypt_final()</a></code>, which was a copy-paste error.</li>
+<li>Fix a <code>int</code> to <code>uint8</code> type conversion warning.</li>
+<li>Removed unused internal <code>log_sponge()</code> function, making the library slightly smaller.</li>
+<li>Add initial Travis-CI script for a few builds. Some are still failing, but the reasons seems to be in the system configuration or old compiler versions or "linker not found", not in the LibAscon source code.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md10"></a>
 [1.0.0] - 2020-05-21</h1>
 <p>First stable version with all ciphers.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Modified</h2>
 <ul>
 <li><p class="startli"><b>Breaking</b> change from previous versions: removed <code>total_output_len</code> parameters from the functions</p><ul>
@@ -86,7 +100,7 @@ Modified</h2>
 </li>
 <li>Renamed all files in <code>src</code> so they start with <code>ascon_</code>.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Fixed</h2>
 <ul>
 <li>Added more tests to cover more branching cases of the online-buffering algorithm.</li>
@@ -94,22 +108,22 @@ Fixed</h2>
 <li>Typos</li>
 <li>Added missing <em>Known limitations</em> paragraphs to the previous releases in this Changelog.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Known limitations</h2>
 <ul>
 <li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size and with the Init-Update-Digest paradigm, which has some internal buffering, the cipher is about <b>4x slower</b> than the <a href="https://github.com/ascon/ascon-c">reference implementation (<code>ref</code>)</a>.</li>
 <li>There is no architecture-specific optimisation, only a generic portable implementation using mostly <code>uint64_t</code> data types.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 [0.4.0] - 2020-05-20</h1>
 <p>Added Ascon80pq cipher, example in Readme.</p>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Added</h2>
 <ul>
 <li><code>ascon_aead128a_*</code> functions, working exactly as the <code>aead128</code> versions. Internally they absorb the data with a double rate.</li>
 <li>Example encryption and decrpytion code into Readme.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Removed</h2>
 <ul>
 <li>Macros to exclude some parts of the library from the previous version, as they only complicate the building process. It's easier to exclude some source files from the build, now that they are better organised.<ul>
@@ -119,16 +133,16 @@ Removed</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 Known limitations</h2>
 <ul>
 <li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size and with the Init-Update-Digest paradigm, which has some internal buffering, the cipher is about <b>4x slower</b> than the <a href="https://github.com/ascon/ascon-c">reference implementation (<code>ref</code>)</a>.</li>
 <li>There is no architecture-specific optimisation, only a generic portable implementation using mostly <code>uint64_t</code> data types.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md18"></a>
 [0.3.0] - 2020-05-20</h1>
 <p>Added Ascon128a cipher and macros to exclude some parts of the library.</p>
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md19"></a>
 Added</h2>
 <ul>
 <li><code>ascon_aead128a_*</code> functions, working exactly as the <code>aead128</code> versions. Internally they absorb the data with a double rate.</li>
@@ -139,22 +153,22 @@ Added</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Known limitations</h2>
 <ul>
 <li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size and with the Init-Update-Digest paradigm, which has some internal buffering, the cipher is about <b>4x slower</b> than the <a href="https://github.com/ascon/ascon-c">reference implementation (<code>ref</code>)</a>.</li>
 <li>There is no architecture-specific optimisation, only a generic portable implementation using mostly <code>uint64_t</code> data types.</li>
 <li>The only AEAD algorithms implemented are Ascon128 and Ascon128a. Ascon80pq is still to be done.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 [0.2.0] - 2020-05-17</h1>
 <p>Variable tags length, secure context cleanup, minor QOL improvements.</p>
-<h2><a class="anchor" id="autotoc_md20"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Added</h2>
 <ul>
 <li><code>ascon_aead128_cleanup()</code> and <code><a class="el" href="ascon_8h.html#aa97e18fda28c6705927281d7b986c21a" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a></code> to securely cleanup the context in case the online processing is not terminated with the final function.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 Changed</h2>
 <ul>
 <li><p class="startli"><code><a class="el" href="ascon_8h.html#a5d2dfce9bf654f1710a777a82c772760" title="Offline symmetric encryption using Ascon128.">ascon_aead128_encrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a9d59965e94b1590643a09b3b809d0bb6" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a></code>, <code><a class="el" href="ascon_8h.html#ada9df5eef513a2007a2b6c57d1710b34" title="Offline symmetric decryption using Ascon128.">ascon_aead128_decrypt()</a></code>, <code><a class="el" href="ascon_8h.html#a8d0e97ae544ddb8ff0b37265438c89c3" title="Online symmetric decryption using Ascon128, finalisation and tag validation.">ascon_aead128_decrypt_final()</a></code> have a <b>new parameter</b>: <code>tag_len</code>. The user can specify the length of the tag to generate and verify respectively. The value can be any value in [0, 255] bytes. At least 16 is of course recommended.</p>
@@ -164,7 +178,7 @@ Changed</h2>
 <li>Because of the previous point: <code>srtbool.h</code> as now a dependency.</li>
 <li>Changed ISO C standard for compilation from C99 to C11, as there are no noticeable differences for this codebase.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 Fixed</h2>
 <ul>
 <li>Improvements in the Doxygen documentation, especially the security warnings.</li>
@@ -172,15 +186,15 @@ Fixed</h2>
 <li>Variety of typos and linter warnings.</li>
 <li>Minor readme improvements.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Known limitations</h2>
 <ul>
 <li>Same as in v0.1.0</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 [0.1.0] - 2020-02-11</h1>
 <p>Initial version.</p>
-<h2><a class="anchor" id="autotoc_md25"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 Added</h2>
 <ul>
 <li>AEAD encryption and decryption with Ascon128, both offline and online</li>
@@ -188,7 +202,7 @@ Added</h2>
 <li>Test suite checking against test vectors</li>
 <li>Wrapping everything with single extensively documented header file</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Known limitations</h2>
 <ul>
 <li>At the moment the library is <b>optimised for size</b>, making the cipher about 4x slower than the <a href="https://github.com/ascon/ascon-c">reference implementation</a>. On the other hand the size of the whole library is about 2x smaller than the AEAD-Ascon128 implementation alone, while the library includes online processing, Ascon-Hash and Ascon-XOF.</li>

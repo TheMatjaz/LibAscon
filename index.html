@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">1.0.1</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -90,6 +90,7 @@ Features</h1>
 <p class="startli">Note: the tag bytes above 16 bytes are an extension of the original Ascon algorithm using the same sponge squeezing technique as for the XOF;</p>
 </li>
 <li>Encryption/decryption can be performed in-place, without the need of a second output buffer;</li>
+<li>Same performance as the original implementation in <em>Release</em> mode, about 2x slower in <em>MinSizeRel</em> mode.</li>
 <li>A <b><a href="https://thematjaz.github.io/LibAscon/">heavily documented</a> developer-friendly API</b>, making it easier to compile and add to your project, both through static and dynamic inclusion</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
@@ -192,7 +193,6 @@ Usage example</h1>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Known limitations</h1>
 <ul>
-<li>Because LibAscon is implemented with reuse of existing functions in mind, in order to spare on code size and with the Init-Update-Digest paradigm, which has some internal buffering, the cipher is about <b>4x slower</b> than the <a href="https://github.com/ascon/ascon-c">reference implementation (<code>ref</code>)</a>.</li>
 <li>There is no architecture-specific optimisation, only a generic portable implementation using mostly <code>uint64_t</code> data types.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md5"></a>
@@ -222,7 +222,7 @@ Compiling Ascon into all possible targets</h2>
 </ul>
 </li>
 <li><code>testascon</code>: a test runner executable , which test all features</li>
-<li><code>benchmark</code>: a simple benchmarking tool to get the number of CPU cycles per processed byte for Ascon128 only</li>
+<li><code>benchmark</code>: a simple benchmarking tool to get the number of CPU cycles per processed byte for offline-Ascon128 only. This is copied from the original reference implementation and used to compare the performance</li>
 <li><code>doxygen</code>: the Doxygen documentation (if Doxygen is installed)</li>
 </ul>
 <p>To compile only a single target, for example <code>ascon80pq</code>, run </p><div class="fragment"><div class="line">mkdir build &amp;&amp; cd build</div>
