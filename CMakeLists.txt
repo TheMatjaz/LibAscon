@@ -157,6 +157,8 @@ configure_file(${LIB_HEADER} ${CMAKE_BINARY_DIR} COPYONLY)
 # Static libraries (.a), compiled with all features or only some features
 add_library(asconfull STATIC ${LIB_SRC_FILES_FULL})
 target_include_directories(asconfull PUBLIC inc/ PRIVATE src/)
+set_target_properties(asconfull PROPERTIES
+        INTERPROCEDURAL_OPTIMISATION TRUE)
 add_library(ascon128 STATIC ${LIB_SRC_FILES_128})
 target_include_directories(ascon128 PUBLIC inc/ PRIVATE src/)
 add_library(ascon128a STATIC ${LIB_SRC_FILES_128a})
