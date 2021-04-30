@@ -18,7 +18,7 @@ before_install:
         ## End of GCC installation
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        export MAKE=mingw64-make  # so that Autotools can find it
+        export MAKE=mingw32-make  # so that Autotools can find it
         ;;
     esac
 
@@ -49,10 +49,14 @@ os:
 env:
   - BUILD_TYPE=Release     # Optimised for speed
   - BUILD_TYPE=MinSizeRel  # Optimised for size
+jobs:
+  exclude:
+    - os: windows
+      compiler: clang
 
 # Configure out-of-source build with cmake
 before_script:
-  - where gcc
+  - which gcc
   - mkdir build && cd build
   - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
 
