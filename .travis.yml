@@ -19,8 +19,10 @@ before_script:
 
 # Compile all targets
 script:
-  - cmake --build .
+  - cmake --build . --parallel 8 -clean-first
 
-# Run test suite
+# Run tests
 after_success:
+  - ls -l
   - ./testascon
+  - ./testasconshared
