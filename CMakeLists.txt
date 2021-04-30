@@ -131,6 +131,9 @@ add_library(ascon128 STATIC ${LIB_SRC_FILES_128})
 add_library(ascon128a STATIC ${LIB_SRC_FILES_128a})
 add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
+add_library(ascon128hash STATIC ${LIB_SRC_FILES_128} ${LIB_SRC_FILES_HASH})
+add_library(ascon128ahash STATIC ${LIB_SRC_FILES_128a} ${LIB_SRC_FILES_HASH})
+add_library(ascon80pqhash STATIC ${LIB_SRC_FILES_80pq} ${LIB_SRC_FILES_HASH})
 
 # Shared library (.dylib / .dll)
 # Does not reuse the static library object files, as they are
