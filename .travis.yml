@@ -19,6 +19,7 @@ before_install:
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         export PATH=/C/tools/msys64/mingw64/bin:$PATH
         export MAKE=mingw32-make  # so that Autotools can find it
+        cp /C/tools/msys64/mingw64/bin/mingw32-make.exe /C/tools/msys64/mingw64/bin/make.exe
         ;;
     esac
 
@@ -57,8 +58,13 @@ jobs:
 # Configure out-of-source build with cmake
 before_script:
   - which gcc
+  - which make
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+  - if [[ ${TRAVIS_OS_NAME} == "windows" ]]; then
+      cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "MinGW Makefiles";
+    else
+      cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE};
+    fi
 
 # Compile all targets
 script:
