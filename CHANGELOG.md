@@ -10,6 +10,43 @@ and this project adheres to
 
 *******************************************************************************
 
+[1.0.2] - 2021-04-30
+----------------------------------------
+
+CMake and build process changes, 4 new targets, minor fix to avoid unwanted
+compiler optimisations.
+
+
+### Added
+
+- Add static build targets `ascon128hash`, `ascon128ahash`, `ascon80pqhash`
+  which compile to static libraries with the indicated AEAD cipher and
+  the Ascon-Hash/Xof functions. Useful to avoid setting manual compile targets
+  when only one cipher and the hash functions are needed.
+- Add test runner which tests the shared library build target `testasconshared`
+  to check that everything works also with dynamic linking.
+
+
+### Fixed
+
+- Prefer `memset_s` when available to clear the context, as `memset` may be
+  optimised out by the compiler, while `memset_s` is guaranteed to always
+  execute.
+- Improved `CMakeLists.txt`:
+  - Bump minimum CMake version to 3.9 to use the
+    `INTERPROCEDURAL_OPTIMISATION` property (aka Link time optimisation)
+    on just the targets that need it.
+  - Remove `-flto` flag, it may cause compiling issues in some cases (breaking
+    the Travis CI build, for one), prefer CMake's abstraction as per point
+    above.
+  - List explicit include directories for each target.
+  - Add explicit dependencies to each target that has some.
+- Improved Travis CI:
+  - Enable parallel make-all
+  - Install MSYS2 and use GCC on Windows to compile.
+
+
+
 [1.0.1] - 2020-05-30
 ----------------------------------------
 
@@ -239,4 +276,3 @@ Initial version.
   C implementation using mostly `uint64_t` data types.
 - The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and 
   Ascon80pq are still to be done.
-
