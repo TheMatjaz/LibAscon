@@ -1,7 +1,8 @@
 LibAscon - Lightweight Authenticated Encryption & Hashing
 ================================================================================
 
-![Travis build status](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)
+![Travis build status master](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)
+![Travis build status develop](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=develop)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)
 ![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)
 
