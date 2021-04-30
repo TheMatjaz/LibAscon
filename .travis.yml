@@ -57,8 +57,13 @@ jobs:
 # Configure out-of-source build with cmake
 before_script:
   - which gcc
+  - which make
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+  - if [[ ${TRAVIS_OS_NAME} == "windows" ]]; then
+      cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "MinGW Makefiles";
+    else
+      cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE};
+    fi
 
 # Compile all targets
 script:
