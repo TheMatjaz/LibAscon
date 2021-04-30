@@ -19,7 +19,7 @@ before_script:
 
 # Compile all targets
 script:
-  - cmake --build . --parallel 8 -clean-first
+  - cmake --build . --parallel 8 --clean-first
 
 # Run tests
 after_success:
