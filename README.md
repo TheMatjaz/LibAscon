@@ -1,6 +1,10 @@
 LibAscon - Lightweight Authenticated Encryption & Hashing
 ================================================================================
 
+![Travis build status](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)
+![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)
+
 LibAscon is an ISO C11 cryptographic library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
 of the Ascon family of lightweight authenticated encryption schemes with
@@ -39,14 +43,16 @@ LibAscon provides:
   algorithm using the same sponge squeezing technique as for the XOF;
 
 - Encryption/decryption can be performed in-place, without the need of a
-  second output buffer; 
+  second output buffer.
 
 - Same performance as the original implementation in _Release_ mode,
   about 2x slower in _MinSizeRel_ mode.
 
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
   developer-friendly API**, making it easier to compile and add to your project,
-  both through static and dynamic inclusion
+  both through static and dynamic inclusion.
+
+- Tested with **100% code coverage**!
 
 
 
@@ -98,7 +104,7 @@ FAQ
 
 - **Q**: I don't trust this implementation.
 
-  **A**: Good, again. First of all you can read the source code to see what it
+  **A**: Good, again. First of all, you can read the source code to see what it
   does to be sure ;) If you find any bugs or possible improvements,
   open a pull request or an issue. I would like to make as clear and as good
   as possible.
@@ -178,7 +184,7 @@ printf("Decrypted msg: %s, tag is valid: %d\n", buffer, is_tag_valid);
 // available if you prefer them over booleans for is_tag_valid.
 ```
 
-For more use-cases, check the test suite.
+For more examples, check the test suite.
 
 
 
@@ -195,6 +201,8 @@ Compiling
 
 ### Static source inclusion
 
+If you just want to compile manually from sources in your existing project:
+
 - Copy the `inc` and `src` folders (or their content) into your existing
   C project.
 - Add both to the include folders list.
@@ -202,12 +210,12 @@ Compiling
 - Compile.
 
 
-### Compiling Ascon into all possible targets
+### Compiling Ascon into all possible targets with CMake
 
 ```
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build .
+cmake --build . --parallel 8
 ```
 
 This will build all targets:
@@ -219,12 +227,22 @@ This will build all targets:
   - `ascon128a` with only Ascon128a
   - `ascon80pq` with only Ascon80pq
   - `asconhash` with only Ascon-hash and Ascon-XOF
+  - `ascon128hash` with only Ascon128, Ascon-hash and Ascon-XOF
+  - `ascon128ahash` with only Ascon128a, Ascon-hash and Ascon-XOF
+  - `ascon80pqhash` with only Ascon80pq, Ascon-hash and Ascon-XOF
   for a smaller build result when not all features are needed
+- shared libraries:
+  - `ascon` with full feature set (like `asconfull`, but shared)
 - `testascon`: a test runner executable , which test all features
 - `benchmark`: a simple benchmarking tool to get the number of CPU cycles per
   processed byte for offline-Ascon128 only. This is copied from the original
   reference implementation and used to compare the performance
-- `doxygen`: the Doxygen documentation (if Doxygen is installed)
+  
+Doxygen (if installed) is built separately to avoid recompiling it for any
+library change:
+```
+cmake --build . --target doxygen
+```
 
 To compile only a single target, for example `ascon80pq`, run
 ```
