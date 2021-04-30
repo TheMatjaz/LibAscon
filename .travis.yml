@@ -1,4 +1,4 @@
-# Installation of MSYS2 to compile a C project on Windows
+# Installation of MSYS2 ang GCC toolchain to compile a C project on Windows
 # Snippet copied from https://docs.travis-ci.com/user/reference/windows/
 before_install:
   - |-
@@ -13,10 +13,12 @@ before_install:
         export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
         export msys2+=" -msys2 -c "\"\$@"\" --"
         $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
-        ## Install more MSYS2 packages from https://packages.msys2.org/base here
+        ## Installing GCC
+        $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-libs mingw-w64-x86_64-gdb mingw64/mingw-w64-x86_64-make
+        ## End of GCC installation
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        export MAKE=mingw32-make  # so that Autotools can find it
+        export MAKE=mingw64-make  # so that Autotools can find it
         ;;
     esac
 
@@ -50,6 +52,7 @@ env:
 
 # Configure out-of-source build with cmake
 before_script:
+  - where gcc
   - mkdir build && cd build
   - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
 
