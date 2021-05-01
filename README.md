@@ -105,7 +105,7 @@ FAQ
 
 - **Q**: I don't trust this implementation.
 
-  **A**: Good, again. First of all, you can read the source code to see what it
+  **A**: Good, again. You can read the source code to see what it
   does to be sure ;) If you find any bugs or possible improvements,
   open a pull request or an issue. I would like to make as clear and as good
   as possible.

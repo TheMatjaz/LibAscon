@@ -13,7 +13,7 @@ and this project adheres to
 [1.0.2] - 2021-04-30
 ----------------------------------------
 
-CMake and build process changes, 4 new targets, minor fix to avoid unwanted
+CMake and build process improvements, 4 new targets, minor fix to avoid unwanted
 compiler optimisations.
 
 
@@ -42,8 +42,8 @@ compiler optimisations.
   - List explicit include directories for each target.
   - Add explicit dependencies to each target that has some.
 - Improved Travis CI:
-  - Enable parallel make-all
-  - Install MSYS2 and use GCC on Windows to compile.
+  - Enable parallel make-all.
+  - Install MSYS2 and use GCC on Windows to compile properly.
 
 
 
