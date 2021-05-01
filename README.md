@@ -1,10 +1,9 @@
 LibAscon - Lightweight Authenticated Encryption & Hashing
 ================================================================================
 
-![Travis build status master](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)
-![Travis build status develop](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=develop)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)
-![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)
+[![Build Status](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)](https://travis-ci.com/TheMatjaz/LibAscon)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/releases/latest)
+[![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/blob/master/LICENSE.md)
 
 LibAscon is an ISO C11 cryptographic library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
