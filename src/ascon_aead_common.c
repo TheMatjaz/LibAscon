@@ -75,5 +75,12 @@ void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
 
 inline void ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
+    // Prefer memset_s over memset if the compiler provides it
+    // Reason: memset() may be optimised out by the compiler, but not memset_s.
+    // https://www.daemonology.net/blog/2014-09-04-how-to-zero-a-buffer.html
+#if defined(memset_s)
+    memset_s(ctx, sizeof(ascon_aead_ctx_t), 0, sizeof(ascon_aead_ctx_t));
+#else
     memset(ctx, 0, sizeof(ascon_aead_ctx_t));
+#endif
 }
