@@ -1,4 +1,0 @@
-<map id="s_ascon_bufstate" name="s_ascon_bufstate">
-<area shape="rect" id="node1" title="Internal cipher sponge state associated with a buffer holding for less&#45;than&#45;rate updates." alt="" coords="5,92,131,117"/>
-<area shape="rect" id="node2" href="$structs__ascon__sponge.html" title="Internal cipher sponge state (320 bits)." alt="" coords="7,5,129,31"/>
-</map>
