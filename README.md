@@ -220,7 +220,7 @@ cmake --build . --parallel 8
 
 This will build all targets:
 
-- `ascon`: a shared library (`.dll` or `.dylib`)
+- `ascon` a shared library (`.dll` or `.dylib`)
 - static libraries:
   - `asconfull` with full feature set
   - `ascon128` with only Ascon128
@@ -233,10 +233,14 @@ This will build all targets:
   for a smaller build result when not all features are needed
 - shared libraries:
   - `ascon` with full feature set (like `asconfull`, but shared)
-- `testascon`: a test runner executable , which test all features
-- `benchmark`: a simple benchmarking tool to get the number of CPU cycles per
+- `testascon` a test runner executable , which test all features of the
+  static library
+- `testasconshared` a test runner executable , which test all features
+  of the shared library
+- `benchmark` a simple benchmarking tool to get the number of CPU cycles per
   processed byte for offline-Ascon128 only. This is copied from the original
-  reference implementation and used to compare the performance
+  reference implementation and used to compare the performance. Tests the
+  static library.
   
 Doxygen (if installed) is built separately to avoid recompiling it for any
 library change:
