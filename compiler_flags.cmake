@@ -35,7 +35,11 @@ else ()
     string(APPEND CMAKE_C_FLAGS " -Wuninitialized")  # Usage of uninitialised variable
     string(APPEND CMAKE_C_FLAGS " -Wno-unused-variable")  # Variable never used
     string(APPEND CMAKE_C_FLAGS " -Wpacked")  # Packing of struct not needed
-    string(APPEND CMAKE_C_FLAGS " -Wpadded")  # Struct contains paddings
+    # NOTE: deactivating padded struct warning: all structs in LibAscon have been inspected and
+    # optimised. Some will still inevitably have trailing padding (to reach the aligned address
+    # where the next struct in an array of structs would start) and this padding varies on each
+    # platform. There is not much to be done anymore.
+    #string(APPEND CMAKE_C_FLAGS " -Wpadded")  # Struct contains paddings
     string(APPEND CMAKE_C_FLAGS " -Wshadow")  # Shadowing variable name
     string(APPEND CMAKE_C_FLAGS " -Waggregate-return")  # Returning a struct from a function
     string(APPEND CMAKE_C_FLAGS " -Wformat-security")  # (s/f)printf format string vulnerability

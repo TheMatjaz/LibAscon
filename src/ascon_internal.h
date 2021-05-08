@@ -139,6 +139,26 @@ byte_mask(uint_fast8_t n);
 
 /**
  * @internal
+ * Performs one permutation round on the Ascon sponge for the given round
+ * constant.
+ *
+ * @warning
+ * Do not use directly! Use ascon_permutation_a12(), ascon_permutation_b8(),
+ * ascon_permutation_b6() instead.
+ *
+ * Although this function is never used outside of the file where it is
+ * defined, it is NOT marked as static and it is declared globally
+ * as it is generally inlined the functions  using it to increase the
+ * performance. Inlining static functions into functions used outside of their
+ * file leads to compilation errors: "error: static function 'ascon_round' is
+ * used in an inline function with external linkage
+ * [-Werror,-Wstatic-in-inline]".
+ */
+void
+ascon_round(ascon_sponge_t* sponge, uint_fast8_t round_const);
+
+/**
+ * @internal
  * Ascon sponge permutation with 12 rounds, known as permutation-a.
  */
 void
