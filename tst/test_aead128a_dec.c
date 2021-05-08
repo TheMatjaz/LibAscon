@@ -222,7 +222,7 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
             };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_plaintext[testcase.plaintext_len * 2];
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
     ascon_aead_ctx_t aead_ctx;
     size_t new_pt_len = 0;
     bool is_valid;
@@ -286,7 +286,7 @@ static void test_decrypt_1_byte_pt_1_byte_ad(void)
                     },
             };
     atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
-    uint8_t obtained_plaintext[testcase.plaintext_len * 2];
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN];
     ascon_aead_ctx_t aead_ctx;
     size_t new_pt_len = 0;
     bool is_valid;

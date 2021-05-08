@@ -19,7 +19,8 @@
  * It should work faster than memcpy for very small amounts of bytes given
  * the reduced overhead.
  */
-inline static void smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
+inline static void
+smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
 {
     while (amount--)
     {
@@ -27,7 +28,8 @@ inline static void smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
     }
 }
 
-uint64_t bytes_to_u64(const uint8_t* const bytes, const uint_fast8_t n)
+uint64_t
+bytes_to_u64(const uint8_t* const bytes, const uint_fast8_t n)
 {
     uint64_t x = 0;
     for (uint_fast8_t i = 0; i < n; i++)
@@ -40,7 +42,8 @@ uint64_t bytes_to_u64(const uint8_t* const bytes, const uint_fast8_t n)
     return x;
 }
 
-void u64_to_bytes(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
+void
+u64_to_bytes(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
 {
     for (uint_fast8_t i = 0; i < n; i++)
     {
@@ -51,7 +54,8 @@ void u64_to_bytes(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
     }
 }
 
-uint64_t byte_mask(const uint_fast8_t n)
+uint64_t
+byte_mask(const uint_fast8_t n)
 {
     uint64_t x = 0;
     for (uint_fast8_t i = 0; i < n; i++)
@@ -64,12 +68,13 @@ uint64_t byte_mask(const uint_fast8_t n)
     return x;
 }
 
-size_t buffered_accumulation(ascon_bufstate_t* const ctx,
-                             uint8_t* data_out,
-                             const uint8_t* data_in,
-                             absorb_fptr absorb,
-                             size_t data_in_len,
-                             const uint8_t rate)
+size_t
+buffered_accumulation(ascon_bufstate_t* const ctx,
+                      uint8_t* data_out,
+                      const uint8_t* data_in,
+                      absorb_fptr absorb,
+                      size_t data_in_len,
+                      const uint8_t rate)
 {
     size_t fresh_out_bytes = 0;
     if (ctx->buffer_len > 0)

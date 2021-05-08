@@ -35,7 +35,9 @@
 //#define cpucycles(cycles) cycles = __rdtscp(&tmp)
 #endif
 
-#if defined(__ARM_ARCH_6__) || __ARM_ARCH == 6 || _M_ARM == 6
+#if defined(__ARM_ARCH_6__) \
+    || (defined(__ARM_ARCH_6__) && __ARM_ARCH == 6) \
+    || (defined(_M_ARM) && _M_ARM == 6)
 #define ALIGN(x) __attribute__((aligned(x)))
 #pragma message("Using ARMv6 PMU to count cycles")
 #define init_cpucycles() \
@@ -75,17 +77,17 @@ unsigned char ALIGN(16) h[CRYPTO_BYTES];
 unsigned long long cycles[NUM_MLENS][NUM_RUNS * 2];
 unsigned int tmp;
 
-void init_input() {
+static void init_input(void) {
   int i;
-  for (i = 0; i < MAX_LEN; ++i) m[i] = rand();
+  for (i = 0; i < MAX_LEN; ++i) m[i] = (uint8_t) rand();
 #if defined(CRYPTO_AEAD)
-  for (i = 0; i < MAX_LEN; ++i) a[i] = rand();
-  for (i = 0; i < CRYPTO_KEYBYTES; ++i) k[i] = rand();
-  for (i = 0; i < CRYPTO_NPUBBYTES; ++i) npub[i] = rand();
+  for (i = 0; i < MAX_LEN; ++i) a[i] = (uint8_t) rand();
+  for (i = 0; i < CRYPTO_KEYBYTES; ++i) k[i] = (uint8_t) rand();
+  for (i = 0; i < CRYPTO_NPUBBYTES; ++i) npub[i] = (uint8_t) rand();
 #endif
 }
 
-unsigned long long measure(unsigned long long mlen) {
+static unsigned long long measure(unsigned long long mlen) {
   unsigned long long NREPS = NUM_BYTES / mlen;
   unsigned long long i;
 #if defined(__arm__) || defined(_M_ARM)
@@ -113,7 +115,7 @@ unsigned long long measure(unsigned long long mlen) {
   return after - before;
 }
 
-int compare_uint64(const void* first, const void* second) {
+static int compare_uint64(const void* first, const void* second) {
   const unsigned long long* ia = (const unsigned long long*)first;
   const unsigned long long* ib = (const unsigned long long*)second;
   if (*ia > *ib) return 1;
@@ -146,8 +148,8 @@ int main(int argc, char* argv[]) {
     unsigned long long NREPS = NUM_BYTES / mlens[i];
     unsigned long long bytes = mlens[i] * NREPS;
     printf("%5d: %6.1f %6.1f\n", (int)mlens[i],
-           factor * cycles[i][0] / bytes + 0.05,
-           factor * cycles[i][NUM_RUNS / 2] / bytes + 0.05);
+           factor * (double) cycles[i][0] / (double) bytes + 0.05,
+           factor * (double) cycles[i][NUM_RUNS / 2] / (double) bytes + 0.05);
   }
   printf("\n");
 
@@ -159,12 +161,11 @@ int main(int argc, char* argv[]) {
     unsigned long long NREPS = NUM_BYTES / mlens[i];
     unsigned long long bytes = mlens[i] * NREPS;
     if (mlens[i] <= 32)
-      printf("| %5.0f ", factor * cycles[i][0] / bytes + 0.5);
+      printf("| %5.0f ", factor * (double) cycles[i][0] / (double) bytes + 0.5);
     else
-      printf("| %5.1f ", factor * cycles[i][0] / bytes + 0.05);
+      printf("| %5.1f ", factor * (double) cycles[i][0] / (double) bytes + 0.05);
   }
   printf("|\n");
 
   return 0;
 }
-
