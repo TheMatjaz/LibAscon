@@ -4,6 +4,8 @@
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+message(STATUS "C compiler ID: ${CMAKE_C_COMPILER_ID}")
+
 if (MSVC)
     # Options specific for the Microsoft Visual C++ compiler CL
     # Activate a million warnings to have the cleanest possible code
@@ -73,8 +75,13 @@ string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -DMINSIZEREL")
 
 # Append sanitiser flags on non-Windows systems
 if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
+    if ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"
+            OR "${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
+        string(APPEND CMAKE_C_FLAGS_DEBUG " -static-libsan")  # Note: san, not Asan
+    else()  # GCC
+        string(APPEND CMAKE_C_FLAGS_DEBUG " -static-libasan")  # Note: Asan, not san
+    endif()
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=address,undefined")
-    string(APPEND CMAKE_C_FLAGS_DEBUG " -static-libsan")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fno-omit-frame-pointer")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -mno-omit-leaf-frame-pointer")
 endif ()
