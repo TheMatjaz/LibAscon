@@ -61,10 +61,10 @@ typedef enum
 
 typedef struct
 {
-    uint8_t message[VECS_MAX_HASH_MESSAGE_LEN];
-    uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
     size_t message_len;
     size_t count;
+    uint8_t message[VECS_MAX_HASH_MESSAGE_LEN];
+    uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
 } vecs_hash_t;
 
 typedef struct
@@ -80,6 +80,7 @@ typedef struct
     uint8_t key[ASCON_AEAD80pq_KEY_LEN]; // Max key len
     uint8_t nonce[ASCON_AEAD_NONCE_LEN];
     uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
+    uint8_t pad[4];  // if sizeof(size_t)==8, fills the trailing padding. Otherwise just adds 4 B.
 } vecs_aead_t;
 
 typedef struct
