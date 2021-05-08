@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sponge_65',['sponge',['../structascon__bufstate__t.html#a5a0966931e87d1bd970acbc8f49bc90a',1,'ascon_bufstate_t']]]
+  ['sponge_66',['sponge',['../structascon__bufstate__t.html#a5a0966931e87d1bd970acbc8f49bc90a',1,'ascon_bufstate_t']]]
 ];
