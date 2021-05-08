@@ -247,7 +247,7 @@ static void test_encrypt_1_byte_pt_empty_ad(void)
             };
     atto_eq(testcase.plaintext_len,
             testcase.ciphertext_len);
-    uint8_t obtained_ciphertext[testcase.ciphertext_len * 2];
+    uint8_t obtained_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
     uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
 
     ascon_aead_ctx_t aead_ctx;
@@ -317,7 +317,7 @@ static void test_encrypt_1_byte_pt_1_byte_ad(void)
                     },
             };
     atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
-    uint8_t obtained_ciphertext[testcase.ciphertext_len * 2];
+    uint8_t obtained_ciphertext[VECS_MAX_AEAD_CIPHERTEXT_LEN];
     uint8_t obtained_tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
 
     ascon_aead_ctx_t aead_ctx;

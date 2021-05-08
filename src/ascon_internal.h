@@ -21,43 +21,69 @@ extern "C"
 #include <stdint.h>
 #include "ascon.h"
 
-#if DEBUG || MINSIZEREL
-    #define ASCON_INLINE
+#if defined(DEBUG) || defined(MINSIZEREL) || defined(ASCON_WINDOWS)
+// Do not inline in debug mode or when sparing space.
+// Inlining on MSVC creates linking issues: some inlined functions cannot
+// be resolved.
+#define ASCON_INLINE
 #else
-    #define ASCON_INLINE inline
+#define ASCON_INLINE inline
+#endif
+
+/**
+ * @internal
+ * @def ASCON_U8ARR_STACK_ALLOC allocates an `uint8_t` array of `len` bytes
+ * on the stack. Wrapped to generalise as declaring an array of unknown length
+ * on the stack at compile time does not work with the MSVC toolchain,
+ * which requires `malloc.h`. Free the array with #ASCON_U8ARR_STACK_FREE.
+ * Also ensures a positive array length, assuming `len` is an unsigned integer,
+ * to avoid problems with zero-length arrays.
+ */
+/**
+ * @internal
+ * @def ASCON_U8ARR_STACK_FREE frees the `uint8_t` array declared
+ * with #ASCON_U8ARR_STACK_ALLOC. Does nothing unless the MSVC toolchain is
+ * used: the void casting is just to avoid warnings about empty statements.
+ */
+#ifdef ASCON_WINDOWS
+#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t* name = _malloca((len) + 1U)
+#define ASCON_U8ARR_STACK_FREE(name) _freea(name)
+#else
+#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t name[(len) + 1U]
+#define ASCON_U8ARR_STACK_FREE(name) (void)(name)
 #endif
 
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
-#define PERMUTATION_12_ROUNDS 12
-#define PERMUTATION_8_ROUNDS 8
-#define PERMUTATION_6_ROUNDS 6
+#define PERMUTATION_12_ROUNDS 12U
+#define PERMUTATION_8_ROUNDS 8U
+#define PERMUTATION_6_ROUNDS 6U
 #define XOF_IV ( \
-      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
     )
 #define AEAD128_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD128_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_6_ROUNDS)     << 32U) \
-     )
-#define AEAD128a_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * ASCON_DOUBLE_RATE)    << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_8_ROUNDS)    << 32U) \
-     )
-#define AEAD80pq_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * ASCON_RATE)               << 48U) \
+       ((uint64_t)(8U * (ASCON_AEAD128_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * (ASCON_RATE))            << 48U) \
      | ((uint64_t)(PERMUTATION_12_ROUNDS)        << 40U) \
      | ((uint64_t)(PERMUTATION_6_ROUNDS)         << 32U) \
      )
+#define AEAD128a_IV ( \
+       ((uint64_t)(8U * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * ASCON_DOUBLE_RATE)        << 48U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
+     | ((uint64_t)(PERMUTATION_8_ROUNDS)          << 32U) \
+     )
+#define AEAD80pq_IV ( \
+       ((uint64_t)(8U * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * ASCON_RATE)               << 48U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
+     | ((uint64_t)(PERMUTATION_6_ROUNDS)          << 32U) \
+     )
 #define HASH_IV ( \
-      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
-    | ((uint64_t)(8 * ASCON_HASH_DIGEST_LEN)) \
+    | ((uint64_t)(8U * ASCON_HASH_DIGEST_LEN)) \
     )
 
 /**
@@ -65,7 +91,7 @@ extern "C"
  * Applies 0b1000...000 right-side padding to a uint8_t[8] array of
  * `bytes` filled elements..
  */
-#define PADDING(bytes) (0x80ULL << (56 - 8 * ((unsigned int) (bytes))))
+#define PADDING(bytes) (0x80ULL << (56U - 8U * ((unsigned int) (bytes))))
 
 /**
  * @internal
@@ -91,7 +117,8 @@ typedef enum
  *
  * Big endian encoding.
  */
-uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
+uint64_t
+bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
 /**
  * Converts a uint64_t value to an array of n bytes, truncating the result
@@ -99,40 +126,66 @@ uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
  *
  * Big endian encoding.
  */
-void u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
+void
+u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 
 /**
  * @internal
  * Creates a mask to extract the n most significant bytes of a uint64_t.
  */
-uint64_t byte_mask(uint_fast8_t n);
+uint64_t
+byte_mask(uint_fast8_t n);
+
+/**
+ * @internal
+ * Performs one permutation round on the Ascon sponge for the given round
+ * constant.
+ *
+ * @warning
+ * Do not use directly! Use ascon_permutation_a12(), ascon_permutation_b8(),
+ * ascon_permutation_b6() instead.
+ *
+ * Although this function is never used outside of the file where it is
+ * defined, it is NOT marked as static and it is declared globally
+ * as it is generally inlined the functions  using it to increase the
+ * performance. Inlining static functions into functions used outside of their
+ * file leads to compilation errors: "error: static function 'ascon_round' is
+ * used in an inline function with external linkage
+ * [-Werror,-Wstatic-in-inline]".
+ */
+void
+ascon_round(ascon_sponge_t* sponge, uint_fast8_t round_const);
 
 /**
  * @internal
  * Ascon sponge permutation with 12 rounds, known as permutation-a.
  */
-void ascon_permutation_a12(ascon_sponge_t* sponge);
+void
+ascon_permutation_a12(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 8 rounds.
  */
-void ascon_permutation_b8(ascon_sponge_t* const sponge);
+void
+ascon_permutation_b8(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 6 rounds, known as permutation-b.
  */
-void ascon_permutation_b6(ascon_sponge_t* sponge);
+void
+ascon_permutation_b6(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Initialises the AEAD128 or AEAD128a online processing.
  */
-void ascon_aead_init(ascon_aead_ctx_t* ctx,
-                     const uint8_t* key,
-                     const uint8_t* nonce,
-                     uint64_t iv);
+void
+ascon_aead_init(ascon_aead_ctx_t* ctx,
+                const uint8_t* key,
+                const uint8_t* nonce,
+                uint64_t iv);
 
 /**
  * @internal
@@ -145,7 +198,8 @@ void ascon_aead_init(ascon_aead_ctx_t* ctx,
  *
  * It handles both the case when some or none associated data was given.
  */
-void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
+void
+ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
 
 /**
  * @internal
@@ -155,9 +209,10 @@ void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
  * MUST be called ONLY when all AD and PT/CT is absorbed and state is
  * prepared for tag generation.
  */
-void ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
-                             uint8_t* tag,
-                             uint8_t tag_len);
+void
+ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
+                        uint8_t* tag,
+                        size_t tag_len);
 
 /**
  * @internal
@@ -197,12 +252,13 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  *        an absorption is required
  * @return number of bytes written into \p data_out
  */
-size_t buffered_accumulation(ascon_bufstate_t* ctx,
-                             uint8_t* data_out,
-                             const uint8_t* data_in,
-                             absorb_fptr absorb,
-                             size_t data_in_len,
-                             uint8_t rate);
+size_t
+buffered_accumulation(ascon_bufstate_t* ctx,
+                      uint8_t* data_out,
+                      const uint8_t* data_in,
+                      absorb_fptr absorb,
+                      size_t data_in_len,
+                      uint8_t rate);
 
 #ifdef __cplusplus
 }

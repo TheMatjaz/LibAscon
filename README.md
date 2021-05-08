@@ -1,7 +1,8 @@
 LibAscon - Lightweight Authenticated Encryption & Hashing
 ================================================================================
 
-[![Build Status](https://travis-ci.com/TheMatjaz/LibAscon.svg?branch=master)](https://travis-ci.com/TheMatjaz/LibAscon)
+[![Build Status Master](https://github.com/TheMatjaz/LibAscon/actions/workflows/build_master.yml/badge.svg)](https://github.com/TheMatjaz/LibAscon/actions/workflows/build_master.yml)
+[![Build Status Develop](https://github.com/TheMatjaz/LibAscon/actions/workflows/build_develop.yml/badge.svg)](https://github.com/TheMatjaz/LibAscon/actions/workflows/build_develop.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/releases/latest)
 [![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/blob/master/LICENSE.md)
 
@@ -9,7 +10,16 @@ LibAscon is an ISO C11 cryptographic library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
 of the Ascon family of lightweight authenticated encryption schemes with
 associated data (AEAD) and hashing functions, but it also includes
-Init-Update-Final processing and variable tag length.
+Init-Update-Final processing and variable tag length. Heavily tested
+and ready for embedded systems!
+
+
+### Disclaimer
+
+This is not a security-hardened implementation, just a simple one focused
+mostly on usability, portability and high(er) set of features
+There is no added protection against side-channel
+attacks other than what the Ascon algorithm itself provides by design.
 
 
 Features
@@ -38,8 +48,8 @@ LibAscon provides:
 - **Variable tag length** for authenticated encryption: can generate any tag
   length **from 0 to 255 bytes**. Of course at least 16 bytes (128 bits) is
   recommended.
-  
-  Note: the tag bytes above 16 bytes are an extension of the original Ascon 
+
+  Note: the tag bytes above 16 bytes are an extension of the original Ascon
   algorithm using the same sponge squeezing technique as for the XOF;
 
 - Encryption/decryption can be performed in-place, without the need of a
@@ -55,17 +65,32 @@ LibAscon provides:
 - Tested with **100% code coverage**!
 
 
+Dependencies
+----------------------------------------
+
+Only the C standard library, mostly C99 features:
+
+- `stdint.h`
+- `stddef.h`
+- `string.h`
+- `stdbool.h`
+
+On Windows, there is also `malloc.h`, used for `_malloca()` and  `_freea()`,
+as the CL compiler does not support arrays on the stack without a constant
+size at compile-time.
+
+
 
 FAQ
 ----------------------------------------
 
 - **Q**: May I use this library for-
- 
+
   **A**: YES! :D The library (and also the Ascon reference implementation)
   is released under the Creative Commons Zero (CC0) license which basically(*)
   means you can do whatever you want with it. Commercial purposes, personal
   projects, modifications of it, anything goes.
-  
+
   (*) for the legally-binding text check the [license file](LICENSE.md).
 
 - **Q**: Where is the documentation?
@@ -75,7 +100,7 @@ FAQ
   [compiled here](https://thematjaz.github.io/LibAscon/).
 
 - **Q**: Why should I use Ascon-AEAD instead of, say, AES?
-  
+
   **A**: Ascon is designed to be lightweight (great for embedded systems) and
   natively supports authenticated encryption of data of any length, while
   AES must be wrapped in an AEAD mode such as AES-GCM, which is well-proven
@@ -95,7 +120,7 @@ FAQ
 - **Q**: I don't trust Ascon.
 
   **A**: Good. You should not keep your guard up for everything, but Ascon
-  has been selected as the primary choice for lightweight authenticated 
+  has been selected as the primary choice for lightweight authenticated
   encryption in the final portfolio of the
   [CAESAR competition (2014–2019)](https://competitions.cr.yp.to/caesar-submissions.html)
   and is currently competing in the
@@ -187,7 +212,6 @@ printf("Decrypted msg: %s, tag is valid: %d\n", buffer, is_tag_valid);
 For more examples, check the test suite.
 
 
-
 Known limitations
 ----------------------------------------
 
@@ -195,32 +219,46 @@ Known limitations
   implementation using mostly `uint64_t` data types.
 
 
-
 Compiling
 ----------------------------------------
 
+The project's compilation has been tested with GCC, Clang and CL (MSVC).
+Most compiler warnings have already been mitigated, so they hopefully don't
+occur on your platform.
+
+
 ### Static source inclusion
 
-If you just want to compile manually from sources in your existing project:
+The project is relatively small, so you can simply include it into yours
+as a Git Subtree, Git Submodule or by simply copy-pasting the `inc` and `src`
+folders. Be sure to:
 
-- Copy the `inc` and `src` folders (or their content) into your existing
-  C project.
-- Add both to the include folders list.
+- Add `inc` and `src` to the include folders list
+  (the internal header is in `src`).
 - Add `src` to the sources folders list.
 - Compile.
 
 
 ### Compiling Ascon into all possible targets with CMake
 
+A note if you are compiling on Windows from the command line:
+
+- you will need
+  [the environment variables](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160#developer_command_file_locations)
+  to use the MSVC toolchain from the command line
+- be sure to select the generator `CodeBlocks - NMake Makefiles` when
+  configuring CMake
+
+Compile an out of source build:
+
 ```
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release  # On Windows add: -G "CodeBlocks - NMake Makefiles"
 cmake --build . --parallel 8
 ```
 
-This will build all targets:
+This will build all useful targets:
 
-- `ascon`: a shared library (`.dll` or `.dylib`)
 - static libraries:
   - `asconfull` with full feature set
   - `ascon128` with only Ascon128
@@ -231,13 +269,13 @@ This will build all targets:
   - `ascon128ahash` with only Ascon128a, Ascon-hash and Ascon-XOF
   - `ascon80pqhash` with only Ascon80pq, Ascon-hash and Ascon-XOF
   for a smaller build result when not all features are needed
-- shared libraries:
-  - `ascon` with full feature set (like `asconfull`, but shared)
-- `testascon`: a test runner executable , which test all features
-- `benchmark`: a simple benchmarking tool to get the number of CPU cycles per
-  processed byte for offline-Ascon128 only. This is copied from the original
-  reference implementation and used to compare the performance
-  
+- `ascon` a shared library (`.dll` or `.dylib` or `.so`) with full feature set
+  (like `asconfull`, but shared)
+- `testascon` a test runner executable , which test all features of the
+  static library
+- `testasconshared` a test runner executable , which test all features
+  of the shared library
+
 Doxygen (if installed) is built separately to avoid recompiling it for any
 library change:
 ```
@@ -253,3 +291,5 @@ cmake --build . --target ascon80pq
 
 To compile with the optimisation for size, use the
 `-DCMAKE_BUILD_TYPE=MinSizeRel` flag instead.
+
+To run the test executables, call `ctest` in the build directory.

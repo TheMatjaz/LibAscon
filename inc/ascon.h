@@ -42,14 +42,33 @@ extern "C"
 #include <string.h> /* For memset() */
 #include <stdbool.h> /* For bool, true, false */
 
+/**
+ * @def ASCON_API
+ * Marker of all the library's public API functions. Used to add exporting
+ * indicators for DLL on Windows, empty on other platforms.
+ */
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
+    #include <malloc.h>  /* For _malloca(), _freea() */
+    /**
+     * @def ASCON_WINDOWS
+     * Indicator simplifying the check for the Windows platform (undefined on other platforms).
+     * Used for internal decisions on how to inline functions and declare arrays of variable length
+     * on the stack.
+     */
+    #define ASCON_WINDOWS 1
+    #define ASCON_API __declspec(dllexport)
+#else
+    #define ASCON_API
+#endif
+
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 1
 /** Minor version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MINOR 0
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 2
+#define ASCON_API_VERSION_BUGFIX 3
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.0.2"
+#define ASCON_API_VERSION "1.0.3"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
@@ -223,16 +242,20 @@ typedef struct
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack
+ *       during decryption.
  */
-void ascon_aead128_encrypt(uint8_t* ciphertext,
-                           uint8_t* tag,
-                           const uint8_t key[ASCON_AEAD128_KEY_LEN],
-                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                           const uint8_t* assoc_data,
-                           const uint8_t* plaintext,
-                           size_t assoc_data_len,
-                           size_t plaintext_len,
-                           uint8_t tag_len);
+ASCON_API void
+ascon_aead128_encrypt(uint8_t* ciphertext,
+                      uint8_t* tag,
+                      const uint8_t key[ASCON_AEAD128_KEY_LEN],
+                      const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                      const uint8_t* assoc_data,
+                      const uint8_t* plaintext,
+                      size_t assoc_data_len,
+                      size_t plaintext_len,
+                      size_t tag_len);
 
 /**
  * Online symmetric encryption/decryption using Ascon128, initialisation.
@@ -274,9 +297,10 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead128_init(ascon_aead_ctx_t* ctx,
-                        const uint8_t key[ASCON_AEAD128_KEY_LEN],
-                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+ASCON_API void
+ascon_aead128_init(ascon_aead_ctx_t* ctx,
+                   const uint8_t key[ASCON_AEAD128_KEY_LEN],
+                   const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
  * Online symmetric encryption/decryption using Ascon128, feeding associated
@@ -315,9 +339,10 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                     const uint8_t* assoc_data,
-                                     size_t assoc_data_len);
+ASCON_API void
+ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                const uint8_t* assoc_data,
+                                size_t assoc_data_len);
 
 /**
  * Online symmetric encryption using Ascon128, feeding plaintext and getting
@@ -359,10 +384,11 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
-size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
-                                    uint8_t* ciphertext,
-                                    const uint8_t* plaintext,
-                                    size_t plaintext_len);
+ASCON_API size_t
+ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
+                             uint8_t* ciphertext,
+                             const uint8_t* plaintext,
+                             size_t plaintext_len);
 
 /**
  * Online symmetric encryption using Ascon128, finalisation and tag generation.
@@ -404,14 +430,18 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack during
+ *       decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
-                                   uint8_t* ciphertext,
-                                   uint8_t* tag,
-                                   uint8_t tag_len);
+ASCON_API size_t
+ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
+                            uint8_t* ciphertext,
+                            uint8_t* tag,
+                            size_t tag_len);
 
 /**
  * Offline symmetric decryption using Ascon128.
@@ -445,21 +475,24 @@ size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes.
+ * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ *       the same length as generated during the encryption
+ *       but it can be shorter (although it's not recommended).
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  */
-bool ascon_aead128_decrypt(uint8_t* plaintext,
-                           const uint8_t key[ASCON_AEAD128_KEY_LEN],
-                           const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                           const uint8_t* assoc_data,
-                           const uint8_t* ciphertext,
-                           const uint8_t* tag,
-                           size_t assoc_data_len,
-                           size_t ciphertext_len,
-                           uint8_t tag_len);
+ASCON_API bool
+ascon_aead128_decrypt(uint8_t* plaintext,
+                      const uint8_t key[ASCON_AEAD128_KEY_LEN],
+                      const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                      const uint8_t* assoc_data,
+                      const uint8_t* ciphertext,
+                      const uint8_t* tag,
+                      size_t assoc_data_len,
+                      size_t ciphertext_len,
+                      size_t tag_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -495,10 +528,11 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
  */
-size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
-                                    uint8_t* plaintext,
-                                    const uint8_t* ciphertext,
-                                    size_t ciphertext_len);
+ASCON_API size_t
+ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
+                             uint8_t* plaintext,
+                             const uint8_t* ciphertext,
+                             size_t ciphertext_len);
 
 /**
  * Online symmetric decryption using Ascon128, finalisation and tag validation.
@@ -537,17 +571,20 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
- *       the same length as generated by ascon_aead128_encrypt_final()
+ *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
-                                   uint8_t* plaintext,
-                                   bool* is_tag_valid,
-                                   const uint8_t* tag,
-                                   uint8_t tag_len);
+ASCON_API size_t
+ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
+                            uint8_t* plaintext,
+                            bool* is_tag_valid,
+                            const uint8_t* tag,
+                            size_t tag_len);
 
 /**
  * Security cleanup of the AEAD context, in case the online processing
@@ -565,61 +602,66 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  *
  * @param[in, out] ctx to erase.
  */
-void ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
+ASCON_API void
+ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
 
 /**
  * Offline symmetric encryption using Ascon128a, which uses a double data rate
  * compared to Ascon128.
-*
-* Encrypts the data which is already available as a whole in a contiguous
-* buffer, authenticating any optional associated data in the process.
-* Provides the ciphertext and the authentication tag as output.
-*
-* In case of no associated data at all to be authenticated, set
-* \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
-* be set to NULL.
-*
-* @image html encrypt.png
-*
-* @warning
-* The nonce **must be unique**, as the strength of the AEAD is based on
-* its uniqueness.
-*
-* @warning
-* Using the AEAD to just authenticate any associated data with no
-* plaintext to be encrypted is not recommended as the AEAD algorithm is not
-* designed for that. Instead use the Ascon hashing or xof functions in the form
-* `Hash(key || msg)`.
-*
-* @param[out] ciphertext encrypted data with the same length as the
-*       plaintext, thus \p plaintext_len will be written in this buffer.
-*       This pointer may also point to the same location as \p plaintext
-*       to encrypt the plaintext in-place, sparing on memory instead
-*       of writing into a separate output buffer. Not NULL.
-* @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
-*       fingerprint), used to validate the integrity and authenticity of the
-*       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
-* @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL.
-* @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
-* @param[in] assoc_data data to be authenticated with the same tag
-*        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
-* @param[in] plaintext data to be encrypted into \p ciphertext.
-* @param[in] assoc_data_len length of the data pointed by \p assoc_data in
-*        bytes. Can be 0.
-* @param[in] plaintext_len length of the data pointed by \p plaintext in
-*        bytes. Can be 0 (not recommended, see warning).
-* @param[in] tag_len length of the tag to generate in bytes. At least
-*       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *
+ * Encrypts the data which is already available as a whole in a contiguous
+ * buffer, authenticating any optional associated data in the process.
+ * Provides the ciphertext and the authentication tag as output.
+ *
+ * In case of no associated data at all to be authenticated, set
+ * \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
+ * be set to NULL.
+ *
+ * @image html encrypt.png
+ *
+ * @warning
+ * The nonce **must be unique**, as the strength of the AEAD is based on
+ * its uniqueness.
+ *
+ * @warning
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * `Hash(key || msg)`.
+ *
+ * @param[out] ciphertext encrypted data with the same length as the
+ *       plaintext, thus \p plaintext_len will be written in this buffer.
+ *       This pointer may also point to the same location as \p plaintext
+ *       to encrypt the plaintext in-place, sparing on memory instead
+ *       of writing into a separate output buffer. Not NULL.
+ * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ *       fingerprint), used to validate the integrity and authenticity of the
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
+ * @param[in] key secret key of #ASCON_AEAD128a_KEY_LEN bytes. Not NULL.
+ * @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] assoc_data data to be authenticated with the same tag
+ *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
+ * @param[in] plaintext data to be encrypted into \p ciphertext.
+ * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
+ *        bytes. Can be 0.
+ * @param[in] plaintext_len length of the data pointed by \p plaintext in
+ *        bytes. Can be 0 (not recommended, see warning).
+ * @param[in] tag_len length of the tag to generate in bytes. At least
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack
+ *       during decryption.
 */
-void ascon_aead128a_encrypt(uint8_t* ciphertext,
-                            uint8_t* tag,
-                            const uint8_t key[ASCON_AEAD128_KEY_LEN],
-                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                            const uint8_t* assoc_data,
-                            const uint8_t* plaintext,
-                            size_t assoc_data_len,
-                            size_t plaintext_len,
-                            uint8_t tag_len);
+ASCON_API void
+ascon_aead128a_encrypt(uint8_t* ciphertext,
+                       uint8_t* tag,
+                       const uint8_t key[ASCON_AEAD128_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                       const uint8_t* assoc_data,
+                       const uint8_t* plaintext,
+                       size_t assoc_data_len,
+                       size_t plaintext_len,
+                       size_t tag_len);
 
 
 /**
@@ -663,9 +705,10 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
-                         const uint8_t key[ASCON_AEAD128a_KEY_LEN],
-                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+ASCON_API void
+ascon_aead128a_init(ascon_aead_ctx_t* ctx,
+                    const uint8_t key[ASCON_AEAD128a_KEY_LEN],
+                    const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
  * Online symmetric encryption/decryption using Ascon128a, feeding associated
@@ -705,9 +748,10 @@ void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                      const uint8_t* assoc_data,
-                                      size_t assoc_data_len);
+ASCON_API void
+ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                 const uint8_t* assoc_data,
+                                 size_t assoc_data_len);
 
 /**
  * Online symmetric encryption using Ascon128a, feeding plaintext and getting
@@ -749,10 +793,11 @@ void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_DOUBLE_RATE[.
  */
-size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
-                                     uint8_t* ciphertext,
-                                     const uint8_t* plaintext,
-                                     size_t plaintext_len);
+ASCON_API size_t
+ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* ciphertext,
+                              const uint8_t* plaintext,
+                              size_t plaintext_len);
 
 
 /**
@@ -795,14 +840,18 @@ size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack
+ *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
-                                    uint8_t* ciphertext,
-                                    uint8_t* tag,
-                                    uint8_t tag_len);
+ASCON_API size_t
+ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
+                             uint8_t* ciphertext,
+                             uint8_t* tag,
+                             size_t tag_len);
 
 /**
  * Offline symmetric decryption using Ascon128a, which uses a double data rate
@@ -837,21 +886,26 @@ size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes.
+ * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ *       the same length as generated during the encryption
+ *       but it can be shorter (although it's not recommended).
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  */
-bool ascon_aead128a_decrypt(uint8_t* plaintext,
-                            const uint8_t key[ASCON_AEAD128a_KEY_LEN],
-                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                            const uint8_t* assoc_data,
-                            const uint8_t* ciphertext,
-                            const uint8_t* tag,
-                            size_t assoc_data_len,
-                            size_t ciphertext_len,
-                            uint8_t tag_len);
+ASCON_API bool
+ascon_aead128a_decrypt(uint8_t* plaintext,
+                       const uint8_t key[ASCON_AEAD128a_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                       const uint8_t* assoc_data,
+                       const uint8_t* ciphertext,
+                       const uint8_t* tag,
+                       size_t assoc_data_len,
+                       size_t ciphertext_len,
+                       size_t tag_len);
 
 /**
  * Online symmetric decryption using Ascon128a, feeding ciphertext and getting
@@ -887,10 +941,11 @@ bool ascon_aead128a_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_DOUBLE_RATE in [0, \p ciphertext_len + #ASCON_DOUBLE_RATE[.
  */
-size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
-                                     uint8_t* plaintext,
-                                     const uint8_t* ciphertext,
-                                     size_t ciphertext_len);
+ASCON_API size_t
+ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* plaintext,
+                              const uint8_t* ciphertext,
+                              size_t ciphertext_len);
 
 
 /**
@@ -930,71 +985,77 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
- *       the same length as generated by ascon_aead128a_encrypt_final()
+ *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
-                                    uint8_t* plaintext,
-                                    bool* is_tag_valid,
-                                    const uint8_t* tag,
-                                    uint8_t tag_len);
+ASCON_API size_t
+ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
+                             uint8_t* plaintext,
+                             bool* is_tag_valid,
+                             const uint8_t* tag,
+                             size_t tag_len);
 
 
 /**
  * Offline symmetric encryption using Ascon80pq, which uses a larger key.
-*
-* Encrypts the data which is already available as a whole in a contiguous
-* buffer, authenticating any optional associated data in the process.
-* Provides the ciphertext and the authentication tag as output.
-*
-* In case of no associated data at all to be authenticated, set
-* \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
-* be set to NULL.
-*
-* @image html encrypt.png
-*
-* @warning
-* The nonce **must be unique**, as the strength of the AEAD is based on
-* its uniqueness.
-*
-* @warning
-* Using the AEAD to just authenticate any associated data with no
-* plaintext to be encrypted is not recommended as the AEAD algorithm is not
-* designed for that. Instead use the Ascon hashing or xof functions in the form
-* `Hash(key || msg)`.
-*
-* @param[out] ciphertext encrypted data with the same length as the
-*       plaintext, thus \p plaintext_len will be written in this buffer.
-*       This pointer may also point to the same location as \p plaintext
-*       to encrypt the plaintext in-place, sparing on memory instead
-*       of writing into a separate output buffer. Not NULL.
-* @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
-*       fingerprint), used to validate the integrity and authenticity of the
-*       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
-* @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL.
-* @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
-* @param[in] assoc_data data to be authenticated with the same tag
-*        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
-* @param[in] plaintext data to be encrypted into \p ciphertext.
-* @param[in] assoc_data_len length of the data pointed by \p assoc_data in
-*        bytes. Can be 0.
-* @param[in] plaintext_len length of the data pointed by \p plaintext in
-*        bytes. Can be 0 (not recommended, see warning).
-* @param[in] tag_len length of the tag to generate in bytes. At least
-*       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *
+ * Encrypts the data which is already available as a whole in a contiguous
+ * buffer, authenticating any optional associated data in the process.
+ * Provides the ciphertext and the authentication tag as output.
+ *
+ * In case of no associated data at all to be authenticated, set
+ * \p assoc_data_len to 0. Iff that is the case, \p assoc_data can
+ * be set to NULL.
+ *
+ * @image html encrypt.png
+ *
+ * @warning
+ * The nonce **must be unique**, as the strength of the AEAD is based on
+ * its uniqueness.
+ *
+ * @warning
+ * Using the AEAD to just authenticate any associated data with no
+ * plaintext to be encrypted is not recommended as the AEAD algorithm is not
+ * designed for that. Instead use the Ascon hashing or xof functions in the
+ * form `Hash(key || msg)`.
+ *
+ * @param[out] ciphertext encrypted data with the same length as the
+ *       plaintext, thus \p plaintext_len will be written in this buffer.
+ *       This pointer may also point to the same location as \p plaintext
+ *       to encrypt the plaintext in-place, sparing on memory instead
+ *       of writing into a separate output buffer. Not NULL.
+ * @param[out] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ *       fingerprint), used to validate the integrity and authenticity of the
+ *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
+ * @param[in] key secret key of #ASCON_AEAD80pq_KEY_LEN bytes. Not NULL.
+ * @param[in] nonce public **unique** nonce of #ASCON_AEAD_NONCE_LEN bytes.
+ * @param[in] assoc_data data to be authenticated with the same tag
+ *        but not encrypted. Can be NULL iff \p assoc_data_len is 0.
+ * @param[in] plaintext data to be encrypted into \p ciphertext.
+ * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
+ *        bytes. Can be 0.
+ * @param[in] plaintext_len length of the data pointed by \p plaintext in
+ *        bytes. Can be 0 (not recommended, see warning).
+ * @param[in] tag_len length of the tag to generate in bytes. At least
+ *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
 */
-void ascon_aead80pq_encrypt(uint8_t* ciphertext,
-                            uint8_t* tag,
-                            const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
-                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                            const uint8_t* assoc_data,
-                            const uint8_t* plaintext,
-                            size_t assoc_data_len,
-                            size_t plaintext_len,
-                            uint8_t tag_len);
+ASCON_API void
+ascon_aead80pq_encrypt(uint8_t* ciphertext,
+                       uint8_t* tag,
+                       const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                       const uint8_t* assoc_data,
+                       const uint8_t* plaintext,
+                       size_t assoc_data_len,
+                       size_t plaintext_len,
+                       size_t tag_len);
 
 
 /**
@@ -1039,9 +1100,10 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
-                         const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
-                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
+ASCON_API void
+ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
+                    const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                    const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
 /**
  * Online symmetric encryption/decryption using Ascon80pq, feeding associated
@@ -1081,9 +1143,10 @@ void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                      const uint8_t* assoc_data,
-                                      size_t assoc_data_len);
+ASCON_API void
+ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                 const uint8_t* assoc_data,
+                                 size_t assoc_data_len);
 
 /**
  * Online symmetric encryption using Ascon80pq, feeding plaintext and getting
@@ -1125,10 +1188,11 @@ void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
-size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
-                                     uint8_t* ciphertext,
-                                     const uint8_t* plaintext,
-                                     size_t plaintext_len);
+ASCON_API size_t
+ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* ciphertext,
+                              const uint8_t* plaintext,
+                              size_t plaintext_len);
 
 
 /**
@@ -1171,14 +1235,18 @@ size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack
+ *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
-                                    uint8_t* ciphertext,
-                                    uint8_t* tag,
-                                    uint8_t tag_len);
+ASCON_API size_t
+ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
+                             uint8_t* ciphertext,
+                             uint8_t* tag,
+                             size_t tag_len);
 
 /**
  * Offline symmetric decryption using Ascon80pq, which uses a larger key
@@ -1213,21 +1281,26 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes.
+ * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ *       the same length as generated during the encryption
+ *       but it can be shorter (although it's not recommended).
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
  */
-bool ascon_aead80pq_decrypt(uint8_t* plaintext,
-                            const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
-                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
-                            const uint8_t* assoc_data,
-                            const uint8_t* ciphertext,
-                            const uint8_t* tag,
-                            size_t assoc_data_len,
-                            size_t ciphertext_len,
-                            uint8_t tag_len);
+ASCON_API bool
+ascon_aead80pq_decrypt(uint8_t* plaintext,
+                       const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
+                       const uint8_t* assoc_data,
+                       const uint8_t* ciphertext,
+                       const uint8_t* tag,
+                       size_t assoc_data_len,
+                       size_t ciphertext_len,
+                       size_t tag_len);
 
 /**
  * Online symmetric decryption using Ascon80pq, feeding ciphertext and getting
@@ -1263,10 +1336,11 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
  */
-size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
-                                     uint8_t* plaintext,
-                                     const uint8_t* ciphertext,
-                                     size_t ciphertext_len);
+ASCON_API size_t
+ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* plaintext,
+                              const uint8_t* ciphertext,
+                              size_t ciphertext_len);
 
 /**
  * Online symmetric decryption using Ascon80pq, finalisation and tag validation.
@@ -1305,17 +1379,20 @@ size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
- *       the same length as generated by ascon_aead80pq_encrypt_final()
+ *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
+ *       Avoid too large tag lengths (say > 64 B) as the generated value
+ *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
-                                    uint8_t* plaintext,
-                                    bool* is_tag_valid,
-                                    const uint8_t* tag,
-                                    uint8_t tag_len);
+ASCON_API size_t
+ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
+                             uint8_t* plaintext,
+                             bool* is_tag_valid,
+                             const uint8_t* tag,
+                             size_t tag_len);
 
 /**
  * Offline Ascon Hash with fixed digest length.
@@ -1336,9 +1413,10 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] data message fed into the hash function.
  * @param[in] data_len length of \p data in bytes.
  */
-void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
-                const uint8_t* data,
-                size_t data_len);
+ASCON_API void
+ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
+           const uint8_t* data,
+           size_t data_len);
 
 /**
  * Online Ascon Hash with fixed digest length, initialisation.
@@ -1360,7 +1438,8 @@ void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
  */
-void ascon_hash_init(ascon_hash_ctx_t* ctx);
+ASCON_API void
+ascon_hash_init(ascon_hash_ctx_t* ctx);
 
 /**
  * Online Ascon Hash with fixed digest length, feeding data to hash.
@@ -1376,9 +1455,10 @@ void ascon_hash_init(ascon_hash_ctx_t* ctx);
  * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
  * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
  */
-void ascon_hash_update(ascon_hash_ctx_t* ctx,
-                       const uint8_t* data,
-                       size_t data_len);
+ASCON_API void
+ascon_hash_update(ascon_hash_ctx_t* ctx,
+                  const uint8_t* data,
+                  size_t data_len);
 
 /**
  * Online Ascon Hash with fixed digest length, finalisation and digest
@@ -1392,8 +1472,9 @@ void ascon_hash_update(ascon_hash_ctx_t* ctx,
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of #ASCON_HASH_DIGEST_LEN bytes.
  */
-void ascon_hash_final(ascon_hash_ctx_t* ctx,
-                      uint8_t digest[ASCON_HASH_DIGEST_LEN]);
+ASCON_API void
+ascon_hash_final(ascon_hash_ctx_t* ctx,
+                 uint8_t digest[ASCON_HASH_DIGEST_LEN]);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1428,10 +1509,11 @@ void ascon_hash_final(ascon_hash_ctx_t* ctx,
  * @param[in] digest_len desired length of the \p digest in bytes.
  * @param[in] data_len length of \p data in bytes.
  */
-void ascon_hash_xof(uint8_t* digest,
-                    const uint8_t* data,
-                    size_t digest_len,
-                    size_t data_len);
+ASCON_API void
+ascon_hash_xof(uint8_t* digest,
+               const uint8_t* data,
+               size_t digest_len,
+               size_t data_len);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1453,7 +1535,8 @@ void ascon_hash_xof(uint8_t* digest,
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
  */
-void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
+ASCON_API void
+ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1470,9 +1553,10 @@ void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
  * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
  * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
  */
-void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
-                           const uint8_t* data,
-                           size_t data_len);
+ASCON_API void
+ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
+                      const uint8_t* data,
+                      size_t data_len);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1499,9 +1583,10 @@ void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
  *       of \p digest_size bytes.
  * @param[in] digest_len desired length of the \p digest in bytes.
  */
-void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
-                          uint8_t* digest,
-                          size_t digest_len);
+ASCON_API void
+ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
+                     uint8_t* digest,
+                     size_t digest_len);
 
 /**
  * Security cleanup of the hashing context, in case the online
@@ -1518,7 +1603,8 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
  *
  * @param[in, out] ctx to erase.
  */
-void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
+ASCON_API void
+ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
 
 #ifdef __cplusplus
 }
