@@ -77,11 +77,11 @@ unsigned int tmp;
 
 void init_input() {
   int i;
-  for (i = 0; i < MAX_LEN; ++i) m[i] = rand();
+  for (i = 0; i < MAX_LEN; ++i) m[i] = (uint8_t) rand();
 #if defined(CRYPTO_AEAD)
-  for (i = 0; i < MAX_LEN; ++i) a[i] = rand();
-  for (i = 0; i < CRYPTO_KEYBYTES; ++i) k[i] = rand();
-  for (i = 0; i < CRYPTO_NPUBBYTES; ++i) npub[i] = rand();
+  for (i = 0; i < MAX_LEN; ++i) a[i] = (uint8_t) rand();
+  for (i = 0; i < CRYPTO_KEYBYTES; ++i) k[i] = (uint8_t) rand();
+  for (i = 0; i < CRYPTO_NPUBBYTES; ++i) npub[i] = (uint8_t) rand();
 #endif
 }
 
@@ -167,4 +167,3 @@ int main(int argc, char* argv[]) {
 
   return 0;
 }
-

@@ -42,10 +42,21 @@ extern "C"
 #include <string.h> /* For memset() */
 #include <stdbool.h> /* For bool, true, false */
 
+/**
+ * @def ASCON_API
+ * Marker of all the library's public API functions. Used to add exporting
+ * indicators for DLL on Windows, empty on other platforms.
+ */
+/**
+ * @def ASCON_WINDOWS
+ * Indicator simplifying the check for the Windows platform (undefined on other platforms).
+ * Used for internal decisions on how to inline functions and declare arrays of variable length on
+ * the stack.
+ */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
-#define ASCON_WINDOWS
-    #include <malloc.h>  /* For _malloca(), _freea() */
     #define ASCON_WINDOWS
+    #include <malloc.h>  /* For _malloca(), _freea() */
+    #define ASCON_WINDOWS 1
     #define ASCON_API __declspec(dllexport)
 #else
     #define ASCON_API
