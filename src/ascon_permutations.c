@@ -34,22 +34,8 @@
 #define ROUND_CONSTANT_11 0x5A
 #define ROUND_CONSTANT_12 0x4B
 
-/**
- * @internal
- * Bit-shift and rotation of a uint64_t to the right.
- *
- * Although this function is never used outside of this file,
- * it is NOT marked as static, as it is generally inline in the functions
- * using it to increase the performance. Inlining static functions into
- * functions used outside of this file leads to compilation errors:
- * "error: static function 'ascon_round' is used in an inline function with
- * external linkage [-Werror,-Wstatic-in-inline]".
- */
-inline uint64_t
-rotr64(const uint64_t x, const uint_fast8_t n)
-{
-    return (x << (64U - n)) | (x >> n);
-}
+/** Bit-shift and rotation of a uint64_t to the right by n bits. */
+#define ASCON_ROTR64(x, n) (((x) << (64U - (n)) ) | ((x) >> (n)))
 
 /**
  * @internal
@@ -96,11 +82,11 @@ ascon_round(ascon_sponge_t* sponge,
     sponge->x3 ^= sponge->x2;
     sponge->x2 = ~sponge->x2;
     // linear diffusion layer
-    sponge->x0 ^= rotr64(sponge->x0, 19) ^ rotr64(sponge->x0, 28);
-    sponge->x1 ^= rotr64(sponge->x1, 61) ^ rotr64(sponge->x1, 39);
-    sponge->x2 ^= rotr64(sponge->x2, 1) ^ rotr64(sponge->x2, 6);
-    sponge->x3 ^= rotr64(sponge->x3, 10) ^ rotr64(sponge->x3, 17);
-    sponge->x4 ^= rotr64(sponge->x4, 7) ^ rotr64(sponge->x4, 41);
+    sponge->x0 ^= ASCON_ROTR64(sponge->x0, 19) ^ ASCON_ROTR64(sponge->x0, 28);
+    sponge->x1 ^= ASCON_ROTR64(sponge->x1, 61) ^ ASCON_ROTR64(sponge->x1, 39);
+    sponge->x2 ^= ASCON_ROTR64(sponge->x2, 1) ^ ASCON_ROTR64(sponge->x2, 6);
+    sponge->x3 ^= ASCON_ROTR64(sponge->x3, 10) ^ ASCON_ROTR64(sponge->x3, 17);
+    sponge->x4 ^= ASCON_ROTR64(sponge->x4, 7) ^ ASCON_ROTR64(sponge->x4, 41);
 }
 
 ASCON_INLINE void
