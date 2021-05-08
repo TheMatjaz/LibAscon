@@ -27,6 +27,9 @@ if (MSVC)
     # This warning only pops up in the test suite's checks of the Ascon context and state struct
     # sizes, which ARE constant. The tests are there just as a double-check, an assertion,
     # and must stay, so the warning is disabled.
+    string(APPEND CMAKE_C_FLAGS " -wd4710 -wd4711")  # Suppress informational warning about inlining
+    # MSVC notifies with a warning when the optimised inlines/does not inline a function that
+    # is not/is marked for inlining. The warning is informational, thus disabled.
 
     # Debug mode
     string(APPEND CMAKE_C_FLAGS_DEBUG " -Od")  # Do not optimise
