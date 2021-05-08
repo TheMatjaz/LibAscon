@@ -30,6 +30,30 @@ extern "C"
     #define ASCON_INLINE inline
 #endif
 
+/**
+ * @internal
+ * @def ASCON_U8ARR_STACK_ALLOC allocates an `uint8_t` array of `len` bytes
+ * on the stack. Wrapped to generalise as declaring an array of unknown length
+ * on the stack at compile time does not work with the MSVC toolchain,
+ * which requires `malloc.h`. Free the array with #ASCON_U8ARR_STACK_FREE.
+ * Also ensures a positive array length, assuming `len` is an unsigned integer,
+ * to avoid problems with zero-length arrays.
+ */
+/**
+ * @internal
+ * @def ASCON_U8ARR_STACK_FREE frees the `uint8_t` array declared
+ * with #ASCON_U8ARR_STACK_ALLOC. Does nothing unless the MSVC toolchain is
+ * used: the void casting is just to avoid warnings about empty statements.
+ */
+#ifdef ASCON_WINDOWS
+#define ASCON_U8ARR_STACK_ALLOC(name, len) \
+    uint8_t* name = _malloca((len) + 1U)
+#define ASCON_U8ARR_STACK_FREE(name) _freea(name)
+#else
+#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t name[(len) + 1U]
+#define ASCON_U8ARR_STACK_FREE(name) (void)(name)
+#endif
+
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_12_ROUNDS 12U
