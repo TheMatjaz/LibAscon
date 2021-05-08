@@ -1,4 +1,4 @@
-# Github actions script to build the project's Master branch (official releases)
+# Github actions script to build the project master branch
 name: Build Master
 
 on:
@@ -6,15 +6,18 @@ on:
     branches:
       - master
 
+
 jobs:
   build_and_test_unixlike:
     runs-on: ${{matrix.os}}
     strategy:
+      fail-fast: false  # True to stop on the first job failing
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          - macos-latest
         build_type:
+          - Debug
           - Release
           - MinSizeRel
         compiler:
@@ -22,6 +25,10 @@ jobs:
           - clang
     steps:
       - uses: actions/checkout@v2
+      - name: Check the compiler version
+        run: |
+          cmake --version
+          ${{ matrix.compiler }} --version
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_C_COMPILER=${{matrix.compiler}}
       - name: Build all targets
@@ -30,44 +37,26 @@ jobs:
         working-directory: ${{github.workspace}}/build
         run: ctest --output-on-failure
 
-  # Separate job for Windows, as it requires the MSYS installation beforehand.
-  # Inspired by from https://ariya.io/2020/07/on-github-actions-with-msys2
   build_and_test_windows:
-    runs-on: windows-latest
+    runs-on: ${{matrix.os}}
     strategy:
+      fail-fast: false  # True to stop on the first job failing
       matrix:
+        os:
+          - windows-latest
         build_type:
+          - Debug
           - Release
           - MinSizeRel
-        compiler:
-          - gcc
-          - clang
-        msystem:
-          - MINGW64
-    defaults:
-      run:
-        shell: msys2 {0}
-
     steps:
       - uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
+      - uses: ilammy/msvc-dev-cmd@v1  # Configure the Developer Prompt for MS Visual C++ (MSVC)
         with:
-          msystem: ${{ matrix.msystem }}
-          install: mingw-w64-x86_64-cmake make
-      - name: Install GCC
-        if: matrix.compiler == 'gcc'
-        run: pacman --noconfirm -S mingw-w64-x86_64-gcc
-      - name: install Clang
-        if: matrix.compiler == 'clang'
-        run: pacman --noconfirm -S mingw-w64-x86_64-clang
-      - name: Check the compiler version
-        run: |
-          cmake --version
-          ${{ matrix.compiler }} --version
+          arch: amd64
       - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_C_COMPILER=${{matrix.compiler}} -G "MSYS Makefiles";
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -G "CodeBlocks - NMake Makefiles"
       - name: Build all targets
-        run: cmake --build build --parallel 8 --clean-first
+        run: cmake --build ${{github.workspace}}/build --parallel 8 --clean-first
       - name: Test with Atto
-        working-directory: build
+        working-directory: ${{github.workspace}}/build
         run: ctest --output-on-failure
