@@ -170,6 +170,7 @@ target_include_directories(benchmark PUBLIC inc/)
 add_dependencies(benchmark asconfull)
 target_link_libraries(benchmark PUBLIC asconfull)
 set_target_properties(benchmark PROPERTIES
+        EXCLUDE_FROM_ALL TRUE  # Used just for development, not for deployment
         POSITION_INDEPENDENT_CODE ON
         INTERPROCEDURAL_OPTIMISATION TRUE)
 
@@ -201,4 +202,3 @@ endif (DOXYGEN_FOUND)
 enable_testing()
 add_test(NAME testascon COMMAND ./testascon)
 add_test(NAME testasconshared COMMAND ./testasconshared)
-add_test(NAME benchmark COMMAND ./benchmark)
