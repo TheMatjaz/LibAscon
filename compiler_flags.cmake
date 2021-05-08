@@ -16,6 +16,17 @@ if (MSVC)
     string(APPEND CMAKE_C_FLAGS " -wd5045")  # Suppress the warning about Spectre mitigation
     # The problem is that even when the Spectre mitigation flag is enabled, the warning about
     # the mitigation being required still appears, so we have to forcibly disable it.
+    string(APPEND CMAKE_C_FLAGS " -wd4996")  # Suppress warning about deprecated stdio functions
+    # The warning notifies that the functions should be replaced with the safer C11 alternatives
+    # fopen -> fopen_s, fscanf -> fscanf_s etc. Here they are only used in the test framework,
+    # not in the Ascon implementation, so they are not critical. They are also used in a safe
+    # manner to start with, given that the parsed data is fixed (the test vectors).
+    # Finally, not every clib implements them, so we cannot assume the compilation succeeds
+    # if we use them. Thus, better deactivated.
+    string(APPEND CMAKE_C_FLAGS " -wd4127")  # Suppress warning about constant conditional expr.
+    # This warning only pops up in the test suite's checks of the Ascon context and state struct
+    # sizes, which ARE constant. The tests are there just as a double-check, an assertion,
+    # and must stay, so the warning is disabled.
 
     # Debug mode
     string(APPEND CMAKE_C_FLAGS_DEBUG " -Od")  # Do not optimise
