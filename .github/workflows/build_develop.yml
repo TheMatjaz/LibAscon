@@ -18,10 +18,8 @@ jobs:
       fail-fast: false  # True to stop on the first job failing
       matrix:
         os:
-          - ubuntu-20.04
-          - ubuntu-18.04
-          - macos-10.15
-          - macos-11.0
+          - ubuntu-latest
+          - macos-latest
         build_type:
           - Debug
           - Release
@@ -49,15 +47,16 @@ jobs:
       fail-fast: false  # True to stop on the first job failing
       matrix:
         os:
-          - windows-2019
-          - windows-2016
+          - windows-latest
         build_type:
           - Debug
           - Release
           - MinSizeRel
-        # No compiler settings: defaults to MSVC
     steps:
       - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1  # Configure the Developer Prompt for MS Visual C++ (MSVC)
+        with:
+          arch: amd64
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
       - name: Build all targets
