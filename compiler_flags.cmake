@@ -7,10 +7,15 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 message(STATUS "C compiler ID: ${CMAKE_C_COMPILER_ID}")
 
 if (MSVC)
+    message(STATUS "Using compiler flags for MSVC")
     # Options specific for the Microsoft Visual C++ compiler CL
     # Activate a million warnings to have the cleanest possible code
     string(APPEND CMAKE_C_FLAGS " -Wall")  # Activate all warnings
     # (compared to GCC, this actually turns on ALL of the warnings, not just most)
+    string(APPEND CMAKE_C_FLAGS " -Qspectre")  # Let the compiler inject Spectre mitigation code
+    string(APPEND CMAKE_C_FLAGS " -wd5045")  # Suppress the warning about Spectre mitigation
+    # The problem is that even when the Spectre mitigation flag is enabled, the warning about
+    # the mitigation being required still appears, so we have to forcibly disable it.
 
     # Debug mode
     string(APPEND CMAKE_C_FLAGS_DEBUG " -Od")  # Do not optimise
@@ -23,6 +28,7 @@ if (MSVC)
     string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -O1")  # Optimise for size
     string(APPEND CMAKE_C_FLAGS_RELEASE " -WX")  # Warnings as errors
 else ()
+    message(STATUS "Using compiler flags for GCC and Clang")
     # Options for other compilers (generally GCC and Clang)
     # Activate a million warnings to have the cleanest possible code
     string(APPEND CMAKE_C_FLAGS " -Wall -Wextra -pedantic") # Activate most warnings
