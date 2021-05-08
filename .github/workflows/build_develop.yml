@@ -58,10 +58,6 @@ jobs:
         # No compiler settings: defaults to MSVC
     steps:
       - uses: actions/checkout@v2
-      - name: Check the compiler version
-        run: |
-          cmake --version
-          cl
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
       - name: Build all targets
