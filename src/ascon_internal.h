@@ -27,7 +27,7 @@ extern "C"
 // be resolved.
 #define ASCON_INLINE
 #else
-    #define ASCON_INLINE inline
+#define ASCON_INLINE inline
 #endif
 
 /**
@@ -46,8 +46,7 @@ extern "C"
  * used: the void casting is just to avoid warnings about empty statements.
  */
 #ifdef ASCON_WINDOWS
-#define ASCON_U8ARR_STACK_ALLOC(name, len) \
-    uint8_t* name = _malloca((len) + 1U)
+#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t* name = _malloca((len) + 1U)
 #define ASCON_U8ARR_STACK_FREE(name) _freea(name)
 #else
 #define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t name[(len) + 1U]

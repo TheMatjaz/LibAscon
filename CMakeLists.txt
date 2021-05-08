@@ -154,13 +154,13 @@ set_target_properties(testasconshared PROPERTIES
 add_custom_command(
         TARGET testascon POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/tst/vectors
-        ${CMAKE_BINARY_DIR}/vectors)
+        ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
+        ${CMAKE_CURRENT_BINARY_DIR}/vectors)
 add_custom_command(
         TARGET testasconshared POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/tst/vectors
-        ${CMAKE_BINARY_DIR}/vectors)
+        ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
+        ${CMAKE_CURRENT_BINARY_DIR}/vectors)
 
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
