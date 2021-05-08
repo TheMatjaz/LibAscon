@@ -21,43 +21,46 @@ extern "C"
 #include <stdint.h>
 #include "ascon.h"
 
-#if DEBUG || MINSIZEREL
-    #define ASCON_INLINE
+#if defined(DEBUG) || defined(MINSIZEREL) || defined(ASCON_WINDOWS)
+// Do not inline in debug mode or when sparing space.
+// Inlining on MSVC creates linking issues: some inlined functions cannot
+// be resolved.
+#define ASCON_INLINE
 #else
     #define ASCON_INLINE inline
 #endif
 
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
-#define PERMUTATION_12_ROUNDS 12
-#define PERMUTATION_8_ROUNDS 8
-#define PERMUTATION_6_ROUNDS 6
+#define PERMUTATION_12_ROUNDS 12U
+#define PERMUTATION_8_ROUNDS 8U
+#define PERMUTATION_6_ROUNDS 6U
 #define XOF_IV ( \
-      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
     )
 #define AEAD128_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD128_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * (ASCON_RATE))         << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_6_ROUNDS)     << 32U) \
-     )
-#define AEAD128a_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * ASCON_DOUBLE_RATE)    << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)     << 40U) \
-     | ((uint64_t)(PERMUTATION_8_ROUNDS)    << 32U) \
-     )
-#define AEAD80pq_IV ( \
-       ((uint64_t)(8 * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8 * ASCON_RATE)               << 48U) \
+       ((uint64_t)(8U * (ASCON_AEAD128_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * (ASCON_RATE))            << 48U) \
      | ((uint64_t)(PERMUTATION_12_ROUNDS)        << 40U) \
      | ((uint64_t)(PERMUTATION_6_ROUNDS)         << 32U) \
      )
+#define AEAD128a_IV ( \
+       ((uint64_t)(8U * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * ASCON_DOUBLE_RATE)        << 48U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
+     | ((uint64_t)(PERMUTATION_8_ROUNDS)          << 32U) \
+     )
+#define AEAD80pq_IV ( \
+       ((uint64_t)(8U * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
+     | ((uint64_t)(8U * ASCON_RATE)               << 48U) \
+     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
+     | ((uint64_t)(PERMUTATION_6_ROUNDS)          << 32U) \
+     )
 #define HASH_IV ( \
-      ((uint64_t)(8 * (ASCON_RATE))     << 48U) \
+      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
     | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
-    | ((uint64_t)(8 * ASCON_HASH_DIGEST_LEN)) \
+    | ((uint64_t)(8U * ASCON_HASH_DIGEST_LEN)) \
     )
 
 /**
@@ -65,7 +68,7 @@ extern "C"
  * Applies 0b1000...000 right-side padding to a uint8_t[8] array of
  * `bytes` filled elements..
  */
-#define PADDING(bytes) (0x80ULL << (56 - 8 * ((unsigned int) (bytes))))
+#define PADDING(bytes) (0x80ULL << (56U - 8U * ((unsigned int) (bytes))))
 
 /**
  * @internal
@@ -117,7 +120,7 @@ void ascon_permutation_a12(ascon_sponge_t* sponge);
  * @internal
  * Ascon sponge permutation with 8 rounds.
  */
-void ascon_permutation_b8(ascon_sponge_t* const sponge);
+void ascon_permutation_b8(ascon_sponge_t* sponge);
 
 /**
  * @internal
