@@ -35,7 +35,9 @@
 //#define cpucycles(cycles) cycles = __rdtscp(&tmp)
 #endif
 
-#if defined(__ARM_ARCH_6__) || __ARM_ARCH == 6 || _M_ARM == 6
+#if defined(__ARM_ARCH_6__) \
+    || (defined(__ARM_ARCH_6__) && __ARM_ARCH == 6) \
+    || (defined(_M_ARM) && _M_ARM == 6)
 #define ALIGN(x) __attribute__((aligned(x)))
 #pragma message("Using ARMv6 PMU to count cycles")
 #define init_cpucycles() \
@@ -75,7 +77,7 @@ unsigned char ALIGN(16) h[CRYPTO_BYTES];
 unsigned long long cycles[NUM_MLENS][NUM_RUNS * 2];
 unsigned int tmp;
 
-static void init_input() {
+static void init_input(void) {
   int i;
   for (i = 0; i < MAX_LEN; ++i) m[i] = (uint8_t) rand();
 #if defined(CRYPTO_AEAD)
