@@ -34,13 +34,15 @@
 #define ROUND_CONSTANT_11 0x5A
 #define ROUND_CONSTANT_12 0x4B
 
-inline static uint64_t rotr64(const uint64_t x, const uint_fast8_t n)
+inline static uint64_t
+rotr64(const uint64_t x, const uint_fast8_t n)
 {
     return (x << (64U - n)) | (x >> n);
 }
 
-ASCON_INLINE static void ascon_round(ascon_sponge_t* sponge,
-                                     const uint_fast8_t round_const)
+ASCON_INLINE static void
+ascon_round(ascon_sponge_t* sponge,
+            const uint_fast8_t round_const)
 {
     ascon_sponge_t temp;
     // addition of round constant
@@ -78,7 +80,8 @@ ASCON_INLINE static void ascon_round(ascon_sponge_t* sponge,
     sponge->x4 ^= rotr64(sponge->x4, 7) ^ rotr64(sponge->x4, 41);
 }
 
-ASCON_INLINE void ascon_permutation_a12(ascon_sponge_t* const sponge)
+ASCON_INLINE void
+ascon_permutation_a12(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_01);
     ascon_round(sponge, ROUND_CONSTANT_02);
@@ -94,7 +97,8 @@ ASCON_INLINE void ascon_permutation_a12(ascon_sponge_t* const sponge)
     ascon_round(sponge, ROUND_CONSTANT_12);
 }
 
-ASCON_INLINE void ascon_permutation_b8(ascon_sponge_t* const sponge)
+ASCON_INLINE void
+ascon_permutation_b8(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_05);
     ascon_round(sponge, ROUND_CONSTANT_06);
@@ -106,7 +110,8 @@ ASCON_INLINE void ascon_permutation_b8(ascon_sponge_t* const sponge)
     ascon_round(sponge, ROUND_CONSTANT_12);
 }
 
-ASCON_INLINE void ascon_permutation_b6(ascon_sponge_t* const sponge)
+ASCON_INLINE void
+ascon_permutation_b6(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_07);
     ascon_round(sponge, ROUND_CONSTANT_08);

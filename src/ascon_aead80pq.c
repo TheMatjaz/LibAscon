@@ -9,15 +9,16 @@
 #include "ascon.h"
 #include "ascon_internal.h"
 
-void ascon_aead80pq_encrypt(uint8_t* ciphertext,
-                            uint8_t* tag,
-                            const uint8_t* key,
-                            const uint8_t* nonce,
-                            const uint8_t* assoc_data,
-                            const uint8_t* plaintext,
-                            size_t assoc_data_len,
-                            size_t plaintext_len,
-                            uint8_t tag_len)
+ASCON_API void
+ascon_aead80pq_encrypt(uint8_t* ciphertext,
+                       uint8_t* tag,
+                       const uint8_t* key,
+                       const uint8_t* nonce,
+                       const uint8_t* assoc_data,
+                       const uint8_t* plaintext,
+                       size_t assoc_data_len,
+                       size_t plaintext_len,
+                       size_t tag_len)
 {
     ascon_aead_ctx_t ctx;
     ascon_aead80pq_init(&ctx, key, nonce);
@@ -29,15 +30,16 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
                                  tag, tag_len);
 }
 
-bool ascon_aead80pq_decrypt(uint8_t* plaintext,
-                            const uint8_t* key,
-                            const uint8_t* nonce,
-                            const uint8_t* assoc_data,
-                            const uint8_t* ciphertext,
-                            const uint8_t* tag,
-                            size_t assoc_data_len,
-                            size_t ciphertext_len,
-                            uint8_t tag_len)
+ASCON_API bool
+ascon_aead80pq_decrypt(uint8_t* plaintext,
+                       const uint8_t* key,
+                       const uint8_t* nonce,
+                       const uint8_t* assoc_data,
+                       const uint8_t* ciphertext,
+                       const uint8_t* tag,
+                       size_t assoc_data_len,
+                       size_t ciphertext_len,
+                       size_t tag_len)
 {
     ascon_aead_ctx_t ctx;
     bool is_tag_valid;
@@ -52,9 +54,10 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
     return is_tag_valid;
 }
 
-void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
-                         const uint8_t* const key,
-                         const uint8_t* const nonce)
+ASCON_API void
+ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
+                    const uint8_t* const key,
+                    const uint8_t* const nonce)
 {
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bytes_to_u64(key, sizeof(uint64_t)) >> 32U;
@@ -74,26 +77,29 @@ void ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
 }
 
-inline void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
-                                             const uint8_t* assoc_data,
-                                             size_t assoc_data_len)
+ASCON_API void
+ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
+                                 const uint8_t* assoc_data,
+                                 size_t assoc_data_len)
 {
     ascon_aead128_assoc_data_update(ctx, assoc_data, assoc_data_len);
 }
 
-inline size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
-                                            uint8_t* ciphertext,
-                                            const uint8_t* plaintext,
-                                            size_t plaintext_len)
+ASCON_API size_t
+ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* ciphertext,
+                              const uint8_t* plaintext,
+                              size_t plaintext_len)
 {
     return ascon_aead128_encrypt_update(ctx, ciphertext, plaintext,
                                         plaintext_len);
 }
 
-size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
-                                    uint8_t* const ciphertext,
-                                    uint8_t* tag,
-                                    uint8_t tag_len)
+ASCON_API size_t
+ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
+                             uint8_t* const ciphertext,
+                             uint8_t* tag,
+                             size_t tag_len)
 {
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
@@ -124,20 +130,22 @@ size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     return freshly_generated_ciphertext_len;
 }
 
-inline size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
-                                            uint8_t* plaintext,
-                                            const uint8_t* ciphertext,
-                                            size_t ciphertext_len)
+ASCON_API size_t
+ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
+                              uint8_t* plaintext,
+                              const uint8_t* ciphertext,
+                              size_t ciphertext_len)
 {
     return ascon_aead128_decrypt_update(ctx, plaintext, ciphertext,
                                         ciphertext_len);
 }
 
-size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
-                                    uint8_t* plaintext,
-                                    bool* const is_tag_valid,
-                                    const uint8_t* const tag,
-                                    const uint8_t tag_len)
+ASCON_API size_t
+ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
+                             uint8_t* plaintext,
+                             bool* const is_tag_valid,
+                             const uint8_t* const tag,
+                             const size_t tag_len)
 {
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {

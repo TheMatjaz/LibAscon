@@ -94,7 +94,8 @@ typedef enum
  *
  * Big endian encoding.
  */
-uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
+uint64_t
+bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
 
 /**
  * Converts a uint64_t value to an array of n bytes, truncating the result
@@ -102,40 +103,46 @@ uint64_t bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
  *
  * Big endian encoding.
  */
-void u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
+void
+u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 
 /**
  * @internal
  * Creates a mask to extract the n most significant bytes of a uint64_t.
  */
-uint64_t byte_mask(uint_fast8_t n);
+uint64_t
+byte_mask(uint_fast8_t n);
 
 /**
  * @internal
  * Ascon sponge permutation with 12 rounds, known as permutation-a.
  */
-void ascon_permutation_a12(ascon_sponge_t* sponge);
+void
+ascon_permutation_a12(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 8 rounds.
  */
-void ascon_permutation_b8(ascon_sponge_t* sponge);
+void
+ascon_permutation_b8(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 6 rounds, known as permutation-b.
  */
-void ascon_permutation_b6(ascon_sponge_t* sponge);
+void
+ascon_permutation_b6(ascon_sponge_t* sponge);
 
 /**
  * @internal
  * Initialises the AEAD128 or AEAD128a online processing.
  */
-void ascon_aead_init(ascon_aead_ctx_t* ctx,
-                     const uint8_t* key,
-                     const uint8_t* nonce,
-                     uint64_t iv);
+void
+ascon_aead_init(ascon_aead_ctx_t* ctx,
+                const uint8_t* key,
+                const uint8_t* nonce,
+                uint64_t iv);
 
 /**
  * @internal
@@ -148,7 +155,8 @@ void ascon_aead_init(ascon_aead_ctx_t* ctx,
  *
  * It handles both the case when some or none associated data was given.
  */
-void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
+void
+ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
 
 /**
  * @internal
@@ -158,9 +166,10 @@ void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
  * MUST be called ONLY when all AD and PT/CT is absorbed and state is
  * prepared for tag generation.
  */
-void ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
-                             uint8_t* tag,
-                             uint8_t tag_len);
+void
+ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
+                        uint8_t* tag,
+                        size_t tag_len);
 
 /**
  * @internal
@@ -200,12 +209,13 @@ typedef void (* absorb_fptr)(ascon_sponge_t* sponge,
  *        an absorption is required
  * @return number of bytes written into \p data_out
  */
-size_t buffered_accumulation(ascon_bufstate_t* ctx,
-                             uint8_t* data_out,
-                             const uint8_t* data_in,
-                             absorb_fptr absorb,
-                             size_t data_in_len,
-                             uint8_t rate);
+size_t
+buffered_accumulation(ascon_bufstate_t* ctx,
+                      uint8_t* data_out,
+                      const uint8_t* data_in,
+                      absorb_fptr absorb,
+                      size_t data_in_len,
+                      uint8_t rate);
 
 #ifdef __cplusplus
 }

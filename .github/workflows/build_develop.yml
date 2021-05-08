@@ -12,7 +12,7 @@ on:
       - develop
 
 jobs:
-  build_and_test_unixline:
+  build_and_test_unixlike:
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false  # True to stop on the first job failing

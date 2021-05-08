@@ -9,10 +9,11 @@
 #include "ascon.h"
 #include "ascon_internal.h"
 
-void ascon_aead_init(ascon_aead_ctx_t* const ctx,
-                     const uint8_t* const key,
-                     const uint8_t* const nonce,
-                     const uint64_t iv)
+void
+ascon_aead_init(ascon_aead_ctx_t* const ctx,
+                const uint8_t* const key,
+                const uint8_t* const nonce,
+                const uint64_t iv)
 {
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bytes_to_u64(key, sizeof(uint64_t));
@@ -30,7 +31,8 @@ void ascon_aead_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
 }
 
-void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
+void
+ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
 {
     // If there was at least some associated data obtained so far,
     // pad it and absorb any content of the buffer.
@@ -52,9 +54,10 @@ void ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
 }
 
-void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
-                             uint8_t* tag,
-                             uint8_t tag_len)
+void
+ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
+                        uint8_t* tag,
+                        size_t tag_len)
 {
     while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
@@ -73,7 +76,8 @@ void ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
     u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
 }
 
-inline void ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
+inline void
+ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
     // Prefer memset_s over memset if the compiler provides it
     // Reason: memset() may be optimised out by the compiler, but not memset_s.
