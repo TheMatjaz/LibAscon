@@ -47,14 +47,14 @@ extern "C"
  * Marker of all the library's public API functions. Used to add exporting
  * indicators for DLL on Windows, empty on other platforms.
  */
-/**
- * @def ASCON_WINDOWS
- * Indicator simplifying the check for the Windows platform (undefined on other platforms).
- * Used for internal decisions on how to inline functions and declare arrays of variable length on
- * the stack.
- */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
     #include <malloc.h>  /* For _malloca(), _freea() */
+    /**
+     * @def ASCON_WINDOWS
+     * Indicator simplifying the check for the Windows platform (undefined on other platforms).
+     * Used for internal decisions on how to inline functions and declare arrays of variable length
+     * on the stack.
+     */
     #define ASCON_WINDOWS 1
     #define ASCON_API __declspec(dllexport)
 #else
@@ -66,9 +66,9 @@ extern "C"
 /** Minor version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MINOR 0
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 2
+#define ASCON_API_VERSION_BUGFIX 3
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.0.2"
+#define ASCON_API_VERSION "1.0.3"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.

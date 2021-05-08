@@ -10,6 +10,45 @@ and this project adheres to
 
 *******************************************************************************
 
+[1.0.3] - 2021-05-08
+----------------------------------------
+
+Support for compilation on Windows with MSVC, other CMake improvements.
+
+
+### Added
+
+- Enable `ctest` command to run the test executables.
+- Added `.editorconfig` for a portable text editing configuration.
+
+
+### Fixed
+
+- All `tag_len` parameters in the library API now are of type `size_t`
+  instead of `uint8_t` so that `sizeof()` can be used on the tag buffers.
+  As the tags are internally allocated on the stack, the lengths should not
+  be excessive (e.g. anything above 64 B = 512 bit is already a lot for
+  security purposes).
+
+- LibAscon now successfully compiles with CL (MSVC) on Windows:
+  - Fixed errors due to inlining of static function into exposed functions.
+  - Fixed errors at link time as the linker did not find the library's public
+    API functions: now a `ASCON_API` macro is set to export their symbols
+    properly (does nothing on any other OS) with `__declspec(dllexport)`.
+  - Use `_malloca()` and `_freea()` to declare arrays on the stack without
+    a constant length at compile-time.
+  - Fixed a variety of compiler warnings and errors for the test suite code
+    and benchmark executable, including paddings, Spectre mitigations,
+    inlining notifications, incorrect macro checking.
+
+- Moved compiler flag settings to a separate CMake file: `compiler_flags.cmake`
+  - Improved support for GCC vs. Clang differences in the compiler flags
+
+- Replaced Travis CI with GitHub Actions CI:
+  - Support for MSVC compilation using CL on Windows
+
+
+
 [1.0.2] - 2021-04-30
 ----------------------------------------
 
@@ -78,7 +117,7 @@ Fixed slowdowns - now as fast as reference implementation, 100% test coverage.
 
 - Removed unused internal `log_sponge()` function, making the library slightly
   smaller.
-  
+
 - Add initial Travis-CI script for a few builds. Some are still failing, but the
   reasons seems to be in the system configuration or old compiler versions
   or "linker not found", not in the LibAscon source code.
@@ -101,7 +140,7 @@ First stable version with all ciphers.
   - `ascon_aead*_decrypt_final()`
   and from the `ascon_bufstate_t` struct, making it 8 B smaller.
   Why? TL;DR it's redundant.
-  
+
   The reasoning is that the user of the first two (offline processing)
   already knows the length of the plaintext/ciphertext; the user of the second
   two obtains the length of the processed chunks as return values so they
@@ -183,7 +222,7 @@ Added Ascon128a cipher and macros to exclude some parts of the library.
   for a smaller build
   - `ASCON_COMPILE_AEAD128`
   - `ASCON_COMPILE_AEAD128a`
-  - `ASCON_COMPILE_AEAD80pq` (which is not included in the lib yet) 
+  - `ASCON_COMPILE_AEAD80pq` (which is not included in the lib yet)
   -` ASCON_COMPILE_HASH`
 
 
@@ -220,8 +259,8 @@ Variable tags length, secure context cleanup, minor QOL improvements.
   have a **new parameter**: `tag_len`. The user can specify the length of the
   tag to generate and verify respectively. The value can be any value in
   [0, 255] bytes. At least 16 is of course recommended.
-  
-  Note: the tag bytes above 16 B are an extension of the original Ascon 
+
+  Note: the tag bytes above 16 B are an extension of the original Ascon
   algorithm using the same sponge squeezing technique as for the XOF.
 
 - Replace `ascon_tag_validity_t` enum with simpler `bool` from `stdbool.h`
@@ -274,5 +313,5 @@ Initial version.
   processing, Ascon-Hash and Ascon-XOF.
 - There is no architecture-specific optimisation yet, only a generic portable
   C implementation using mostly `uint64_t` data types.
-- The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and 
+- The only AEAD algorithm implemented is the Ascon128 AEAD. The Ascon128a and
   Ascon80pq are still to be done.
