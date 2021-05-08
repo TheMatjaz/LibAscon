@@ -42,6 +42,15 @@ extern "C"
 #include <string.h> /* For memset() */
 #include <stdbool.h> /* For bool, true, false */
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
+#define ASCON_WINDOWS
+    #include <malloc.h>  /* For _malloca(), _freea() */
+    #define ASCON_WINDOWS
+    #define ASCON_API __declspec(dllexport)
+#else
+    #define ASCON_API
+#endif
+
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 1
 /** Minor version of this API conforming to semantic versioning. */
@@ -224,7 +233,7 @@ typedef struct
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
  */
-void ascon_aead128_encrypt(uint8_t* ciphertext,
+ASCON_API void ascon_aead128_encrypt(uint8_t* ciphertext,
                            uint8_t* tag,
                            const uint8_t key[ASCON_AEAD128_KEY_LEN],
                            const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
@@ -274,7 +283,7 @@ void ascon_aead128_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead128_init(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead128_init(ascon_aead_ctx_t* ctx,
                         const uint8_t key[ASCON_AEAD128_KEY_LEN],
                         const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
@@ -315,7 +324,7 @@ void ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
                                      const uint8_t* assoc_data,
                                      size_t assoc_data_len);
 
@@ -359,7 +368,7 @@ void ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
-size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* ciphertext,
                                     const uint8_t* plaintext,
                                     size_t plaintext_len);
@@ -408,7 +417,7 @@ size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* ciphertext,
                                    uint8_t* tag,
                                    uint8_t tag_len);
@@ -495,7 +504,7 @@ bool ascon_aead128_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
  */
-size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
                                     uint8_t* plaintext,
                                     const uint8_t* ciphertext,
                                     size_t ciphertext_len);
@@ -543,7 +552,7 @@ size_t ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                                    uint8_t* plaintext,
                                    bool* is_tag_valid,
                                    const uint8_t* tag,
@@ -565,7 +574,7 @@ size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  *
  * @param[in, out] ctx to erase.
  */
-void ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
+ASCON_API void ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
 
 /**
  * Offline symmetric encryption using Ascon128a, which uses a double data rate
@@ -611,7 +620,7 @@ void ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
 * @param[in] tag_len length of the tag to generate in bytes. At least
 *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
 */
-void ascon_aead128a_encrypt(uint8_t* ciphertext,
+ASCON_API void ascon_aead128a_encrypt(uint8_t* ciphertext,
                             uint8_t* tag,
                             const uint8_t key[ASCON_AEAD128_KEY_LEN],
                             const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
@@ -663,7 +672,7 @@ void ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD128a_KEY_LEN],
                          const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
@@ -705,7 +714,7 @@ void ascon_aead128a_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
                                       const uint8_t* assoc_data,
                                       size_t assoc_data_len);
 
@@ -749,7 +758,7 @@ void ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_DOUBLE_RATE[.
  */
-size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
                                      uint8_t* ciphertext,
                                      const uint8_t* plaintext,
                                      size_t plaintext_len);
@@ -799,7 +808,7 @@ size_t ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
                                     uint8_t* ciphertext,
                                     uint8_t* tag,
                                     uint8_t tag_len);
@@ -887,7 +896,7 @@ bool ascon_aead128a_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_DOUBLE_RATE in [0, \p ciphertext_len + #ASCON_DOUBLE_RATE[.
  */
-size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
                                      uint8_t* plaintext,
                                      const uint8_t* ciphertext,
                                      size_t ciphertext_len);
@@ -936,7 +945,7 @@ size_t ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
                                     uint8_t* plaintext,
                                     bool* is_tag_valid,
                                     const uint8_t* tag,
@@ -986,7 +995,7 @@ size_t ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
 * @param[in] tag_len length of the tag to generate in bytes. At least
 *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
 */
-void ascon_aead80pq_encrypt(uint8_t* ciphertext,
+ASCON_API void ascon_aead80pq_encrypt(uint8_t* ciphertext,
                             uint8_t* tag,
                             const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
                             const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
@@ -1039,7 +1048,7 @@ void ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * @param[in] nonce public unique nonce of #ASCON_AEAD_NONCE_LEN bytes. Not
  *       NULL.
  */
-void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
                          const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
                          const uint8_t nonce[ASCON_AEAD_NONCE_LEN]);
 
@@ -1081,7 +1090,7 @@ void ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
  *        bytes. May be 0.
  */
-void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
+ASCON_API void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
                                       const uint8_t* assoc_data,
                                       size_t assoc_data_len);
 
@@ -1125,7 +1134,7 @@ void ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @returns number of bytes written into \p ciphertext. The value is a multiple
  *        of #ASCON_RATE in [0, \p plaintext_len + #ASCON_RATE[.
  */
-size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
                                      uint8_t* ciphertext,
                                      const uint8_t* plaintext,
                                      size_t plaintext_len);
@@ -1175,7 +1184,7 @@ size_t ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
                                     uint8_t* ciphertext,
                                     uint8_t* tag,
                                     uint8_t tag_len);
@@ -1263,7 +1272,7 @@ bool ascon_aead80pq_decrypt(uint8_t* plaintext,
  * @returns number of bytes written into \p plaintext. The value is a multiple
  *        of #ASCON_RATE in [0, \p ciphertext_len + #ASCON_RATE[.
  */
-size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
                                      uint8_t* plaintext,
                                      const uint8_t* ciphertext,
                                      size_t ciphertext_len);
@@ -1311,7 +1320,7 @@ size_t ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
  */
-size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
+ASCON_API size_t  ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
                                     uint8_t* plaintext,
                                     bool* is_tag_valid,
                                     const uint8_t* tag,
@@ -1336,7 +1345,7 @@ size_t ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] data message fed into the hash function.
  * @param[in] data_len length of \p data in bytes.
  */
-void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
+ASCON_API void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
                 const uint8_t* data,
                 size_t data_len);
 
@@ -1360,7 +1369,7 @@ void ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
  */
-void ascon_hash_init(ascon_hash_ctx_t* ctx);
+ASCON_API void ascon_hash_init(ascon_hash_ctx_t* ctx);
 
 /**
  * Online Ascon Hash with fixed digest length, feeding data to hash.
@@ -1376,7 +1385,7 @@ void ascon_hash_init(ascon_hash_ctx_t* ctx);
  * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
  * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
  */
-void ascon_hash_update(ascon_hash_ctx_t* ctx,
+ASCON_API void ascon_hash_update(ascon_hash_ctx_t* ctx,
                        const uint8_t* data,
                        size_t data_len);
 
@@ -1392,7 +1401,7 @@ void ascon_hash_update(ascon_hash_ctx_t* ctx,
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of #ASCON_HASH_DIGEST_LEN bytes.
  */
-void ascon_hash_final(ascon_hash_ctx_t* ctx,
+ASCON_API void ascon_hash_final(ascon_hash_ctx_t* ctx,
                       uint8_t digest[ASCON_HASH_DIGEST_LEN]);
 
 /**
@@ -1428,7 +1437,7 @@ void ascon_hash_final(ascon_hash_ctx_t* ctx,
  * @param[in] digest_len desired length of the \p digest in bytes.
  * @param[in] data_len length of \p data in bytes.
  */
-void ascon_hash_xof(uint8_t* digest,
+ASCON_API void ascon_hash_xof(uint8_t* digest,
                     const uint8_t* data,
                     size_t digest_len,
                     size_t data_len);
@@ -1453,7 +1462,7 @@ void ascon_hash_xof(uint8_t* digest,
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
  */
-void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
+ASCON_API void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1470,7 +1479,7 @@ void ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
  * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
  * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
  */
-void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
+ASCON_API void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
                            const uint8_t* data,
                            size_t data_len);
 
@@ -1499,7 +1508,7 @@ void ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
  *       of \p digest_size bytes.
  * @param[in] digest_len desired length of the \p digest in bytes.
  */
-void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
+ASCON_API void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                           uint8_t* digest,
                           size_t digest_len);
 
@@ -1518,7 +1527,7 @@ void ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
  *
  * @param[in, out] ctx to erase.
  */
-void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
+ASCON_API void ascon_hash_cleanup(ascon_hash_ctx_t* ctx);
 
 #ifdef __cplusplus
 }
