@@ -54,7 +54,6 @@ extern "C"
  * the stack.
  */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
-    #define ASCON_WINDOWS
     #include <malloc.h>  /* For _malloca(), _freea() */
     #define ASCON_WINDOWS 1
     #define ASCON_API __declspec(dllexport)
