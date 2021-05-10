@@ -166,7 +166,7 @@ typedef struct
      *
      * This struct has anyway some padding at the end.
      */
-    uint8_t assoc_data_state;
+    uint8_t flow_state; // TODO doxygen update
 
     /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0). */
     uint8_t pad[6];

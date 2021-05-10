@@ -18,7 +18,7 @@ static void test_hash_cleanup(void)
 {
     ascon_hash_ctx_t ctx = {
             .sponge.x0 = 13,
-            .assoc_data_state = 42,
+            .flow_state = 42,
             .buffer[3] = 20,
     };
     ascon_hash_cleanup(&ctx);

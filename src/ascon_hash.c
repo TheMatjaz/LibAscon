@@ -56,7 +56,7 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->buffer[0] = 0U;
     *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
-    ((volatile ascon_hash_ctx_t*) ctx)->assoc_data_state = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->flow_state = ASCON_FLOW_CLEANED;
 }
 
 static void
@@ -68,6 +68,7 @@ init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
     ctx->sponge.x3 = 0;
     ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
+    ctx->flow_state = ASCON_FLOW_HASH_INITIALISED;
     ascon_permutation_a12(&ctx->sponge);
 }
 
@@ -104,20 +105,6 @@ absorb_hash_data(ascon_sponge_t* const sponge,
 }
 
 ASCON_API void
-ascon_hash_update(ascon_hash_ctx_t* const ctx,
-                  const uint8_t* data,
-                  size_t data_len)
-{
-#ifdef DEBUG
-    assert(ctx != NULL);
-    assert(data_len == 0 || data != NULL);
-#endif
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
-                          ASCON_RATE);
-}
-
-
-ASCON_API void
 ascon_hash_xof_update(ascon_hash_ctx_t* const ctx,
                       const uint8_t* data,
                       size_t data_len)
@@ -125,9 +112,19 @@ ascon_hash_xof_update(ascon_hash_ctx_t* const ctx,
 #ifdef DEBUG
     assert(ctx != NULL);
     assert(data_len == 0 || data != NULL);
+    assert(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED ||
+           ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
 #endif
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
-                          ASCON_RATE);
+    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len, ASCON_RATE);
+    ctx->flow_state = ASCON_FLOW_HASH_UPDATED;
+}
+
+ASCON_API void
+ascon_hash_update(ascon_hash_ctx_t* const ctx,
+                  const uint8_t* data,
+                  size_t data_len)
+{
+    ascon_hash_xof_update(ctx, data, data_len);
 }
 
 ASCON_API void
@@ -138,6 +135,8 @@ ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
 #ifdef DEBUG
     assert(ctx != NULL);
     assert(digest_len == 0 || digest != NULL);
+    assert(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED
+           || ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
 #endif
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
@@ -161,9 +160,5 @@ ASCON_API void
 ascon_hash_final(ascon_hash_ctx_t* const ctx,
                  uint8_t digest[ASCON_HASH_DIGEST_LEN])
 {
-#ifdef DEBUG
-    assert(ctx != NULL);
-    assert(digest != NULL);
-#endif
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }

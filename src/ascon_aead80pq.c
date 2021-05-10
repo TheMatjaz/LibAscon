@@ -94,7 +94,7 @@ ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     ctx->bufstate.buffer_len = 0;
-    ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
+    ctx->bufstate.flow_state = ASCON_FLOW_INITIALISED;
 }
 
 ASCON_API void
@@ -135,7 +135,7 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     assert(ciphertext != NULL);
     assert(tag_len == 0 || tag != NULL);
 #endif
-    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);
@@ -192,7 +192,7 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     assert(tag_len == 0 || tag != NULL);
     assert(is_tag_valid != NULL);
 #endif
-    if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);

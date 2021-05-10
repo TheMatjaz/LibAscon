@@ -27,7 +27,7 @@ ascon_aead_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
-    ctx->bufstate.assoc_data_state = ASCON_FLOW_NO_ASSOC_DATA;
+    ctx->bufstate.flow_state = ASCON_FLOW_INITIALISED;
 }
 
 void
@@ -38,7 +38,7 @@ ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // Note: this step is performed even if the buffer is now empty because
     // a state permutation is required if there was at least some associated
     // data absorbed beforehand.
-    if (ctx->bufstate.assoc_data_state == ASCON_FLOW_SOME_ASSOC_DATA)
+    if (ctx->bufstate.flow_state == ASCON_FLOW_SOME_ASSOC_DATA)
     {
         ctx->bufstate.sponge.x0 ^= bigendian_decode_varlen(ctx->bufstate.buffer,
                                                            ctx->bufstate.buffer_len);
@@ -50,7 +50,7 @@ ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
     // data or not.
     ctx->bufstate.sponge.x4 ^= 1U;
     ctx->bufstate.buffer_len = 0;
-    ctx->bufstate.assoc_data_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
+    ctx->bufstate.flow_state = ASCON_FLOW_ASSOC_DATA_FINALISED;
 }
 
 void
@@ -141,7 +141,7 @@ ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->bufstate.buffer[0] = 0U;
     *(volatile uint64_t*) &ctx->bufstate.buffer[ASCON_RATE] = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
-    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.assoc_data_state = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.flow_state = ASCON_FLOW_CLEANED;
     ((volatile ascon_aead_ctx_t*) ctx)->k0 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k1 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k2 = 0U;

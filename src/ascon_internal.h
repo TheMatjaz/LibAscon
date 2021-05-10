@@ -90,9 +90,12 @@ extern "C"
  */
 typedef enum
 {
-    ASCON_FLOW_NO_ASSOC_DATA = 0,
-    ASCON_FLOW_SOME_ASSOC_DATA = 1,
-    ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
+    ASCON_FLOW_CLEANED = 0,
+    ASCON_FLOW_INITIALISED,
+    ASCON_FLOW_SOME_ASSOC_DATA,
+    ASCON_FLOW_ASSOC_DATA_FINALISED,
+    ASCON_FLOW_HASH_INITIALISED,
+    ASCON_FLOW_HASH_UPDATED,
 } ascon_flow_t;
 
 /** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */
@@ -103,7 +106,7 @@ bigendian_decode_u64(const uint8_t* bytes);
  * The N bytes are interpreted as the N most significant bytes of the integer,
  * the unspecified bytes are set to 0. */
 uint64_t
-bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n);
+bigendian_decode_varlen(const uint8_t* bytes, uint_fast8_t n);
 
 /** @internal Encodes an uint64_t into a big-endian encoded array of 8 bytes. */
 void
@@ -113,7 +116,7 @@ bigendian_encode_u64(uint8_t* bytes, uint64_t value);
  * The N most significant bytes of the integer are written into the first N
  * bytes of the array, the unspecified bytes are not written. */
 void
-bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n);
+bigendian_encode_varlen(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 
 /**
  * @internal
