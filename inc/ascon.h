@@ -41,6 +41,7 @@ extern "C"
 #include <stddef.h> /* For size_t, NULL */
 #include <stdbool.h> /* For bool, true, false */
 
+#if defined(ASCON_INPUT_ASSERTS) && !defined(ASCON_ASSERT)
 /**
  * @def ASCON_INPUT_ASSERTS
  * When defined, enables the runtime assertions on the parameters of all
@@ -57,7 +58,6 @@ extern "C"
  * #ASCON_INPUT_ASSERTS is defined, but #ASCON_ASSERT is not.
  * Redefine it to something else if required.
  */
-#if defined(ASCON_INPUT_ASSERTS) && !defined(ASCON_ASSERT)
 #include <assert.h> /* For assert() */
 #define ASCON_ASSERT(expr) assert(expr)
 #endif
