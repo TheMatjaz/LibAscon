@@ -81,6 +81,7 @@ ascon_aead128_init(ascon_aead_ctx_t* const ctx,
     assert(nonce != NULL);
 #endif
     ascon_aead_init(ctx, key, nonce, AEAD128_IV);
+    ctx->bufstate.flow_state = ASCON_FLOW_AEAD128_80pq_INITIALISED;
 }
 
 /**
@@ -143,10 +144,12 @@ ascon_aead128_assoc_data_update(ascon_aead_ctx_t* const ctx,
 #ifdef DEBUG
     assert(ctx != NULL);
     assert(assoc_data_len == 0 || assoc_data != NULL);
+    assert(ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_INITIALISED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED);
 #endif
     if (assoc_data_len > 0)
     {
-        ctx->bufstate.flow_state = ASCON_FLOW_SOME_ASSOC_DATA;
+        ctx->bufstate.flow_state = ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED;
         buffered_accumulation(&ctx->bufstate, NULL, assoc_data,
                               absorb_assoc_data, assoc_data_len, ASCON_RATE);
     }
@@ -162,12 +165,16 @@ ascon_aead128_encrypt_update(ascon_aead_ctx_t* const ctx,
     assert(ctx != NULL);
     assert(plaintext_len == 0 || plaintext != NULL);
     assert(plaintext_len == 0 || ciphertext != NULL);
+    assert(ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_INITIALISED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED);
 #endif
-    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);
     }
+    ctx->bufstate.flow_state = ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED;
     // Start absorbing plaintext and simultaneously squeezing out ciphertext
     return buffered_accumulation(&ctx->bufstate, ciphertext, plaintext,
                                  absorb_plaintext, plaintext_len, ASCON_RATE);
@@ -183,8 +190,11 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     assert(ctx != NULL);
     assert(ciphertext != NULL);
     assert(tag_len == 0 || tag != NULL);
+    assert(ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_INITIALISED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED);
 #endif
-    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);
@@ -222,12 +232,16 @@ ascon_aead128_decrypt_update(ascon_aead_ctx_t* const ctx,
     assert(ctx != NULL);
     assert(ciphertext_len == 0 || ciphertext != NULL);
     assert(ciphertext_len == 0 || plaintext != NULL);
+    assert(ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_INITIALISED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED
+           || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED);
 #endif
-    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);
     }
+    ctx->bufstate.flow_state = ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED;
     // Start absorbing ciphertext and simultaneously squeezing out plaintext
     return buffered_accumulation(&ctx->bufstate, plaintext, ciphertext,
                                  absorb_ciphertext, ciphertext_len, ASCON_RATE);
@@ -246,7 +260,7 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     assert(tag_len == 0 || tag != NULL);
     assert(is_tag_valid != NULL);
 #endif
-    if (ctx->bufstate.flow_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
+    if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
         ascon_aead128_80pq_finalise_assoc_data(ctx);
