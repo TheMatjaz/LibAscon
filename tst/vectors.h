@@ -20,6 +20,7 @@ extern "C"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ascon.h"
 
 // The awk commands retrieve the longest line of a given type in the file.

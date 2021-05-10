@@ -55,7 +55,7 @@ void test_readme_example(void)
     uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
     ciphertext_len += ascon_aead128_encrypt_final(
             &ctx, buffer + ciphertext_len,
-            tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+            tag, sizeof(tag));
     // Now the buffer contains our ciphertext, long ciphertext_len
 
     // Now we can decrypt
@@ -75,7 +75,7 @@ void test_readme_example(void)
     bool is_tag_valid = false;
     plaintext_len += ascon_aead128_decrypt_final(
             &ctx, buffer + plaintext_len,
-            &is_tag_valid, tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+            &is_tag_valid, tag, sizeof(tag));
     buffer[plaintext_len] = '\0'; // Null terminated, because it's text
     printf("Decrypted msg: %s, tag is valid: %d\n", buffer, is_tag_valid);
     // The macros ASCON_TAG_OK=true and ASCON_TAG_INVALID=false are also

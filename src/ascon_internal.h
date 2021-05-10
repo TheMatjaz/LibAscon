@@ -30,29 +30,6 @@ extern "C"
 #define ASCON_INLINE inline
 #endif
 
-/**
- * @internal
- * @def ASCON_U8ARR_STACK_ALLOC allocates an `uint8_t` array of `len` bytes
- * on the stack. Wrapped to generalise as declaring an array of unknown length
- * on the stack at compile time does not work with the MSVC toolchain,
- * which requires `malloc.h`. Free the array with #ASCON_U8ARR_STACK_FREE.
- * Also ensures a positive array length, assuming `len` is an unsigned integer,
- * to avoid problems with zero-length arrays.
- */
-/**
- * @internal
- * @def ASCON_U8ARR_STACK_FREE frees the `uint8_t` array declared
- * with #ASCON_U8ARR_STACK_ALLOC. Does nothing unless the MSVC toolchain is
- * used: the void casting is just to avoid warnings about empty statements.
- */
-#ifdef ASCON_WINDOWS
-#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t* name = _malloca((len) + 1U)
-#define ASCON_U8ARR_STACK_FREE(name) _freea(name)
-#else
-#define ASCON_U8ARR_STACK_ALLOC(name, len) uint8_t name[(len) + 1U]
-#define ASCON_U8ARR_STACK_FREE(name) (void)(name)
-#endif
-
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
 #define PERMUTATION_12_ROUNDS 12U
@@ -101,6 +78,12 @@ extern "C"
 
 /**
  * @internal
+ * Simple inequality comparison of arrays of 8 bytes.
+ */
+#define NOT_EQUAL_U64(a, b) ((*(uint64_t*) (a)) != (*(uint64_t*) (b)))
+
+/**
+ * @internal
  * States used to understand when to finalise the associated data.
  */
 typedef enum
@@ -110,24 +93,25 @@ typedef enum
     ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
 } ascon_flow_t;
 
-/**
- * @internal
- * Converts an array of 8 bytes, out of which the first n are used, to a
- * uint64_t value.
- *
- * Big endian encoding.
- */
+/** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */
 uint64_t
-bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
+bigendian_decode_u64(const uint8_t* bytes);
 
-/**
- * Converts a uint64_t value to an array of n bytes, truncating the result
- * if n < 8.
- *
- * Big endian encoding.
- */
+/** @internal Decodes an uint64_t from a big-endian encoded array of N bytes.
+ * The N bytes are interpreted as the N most significant bytes of the integer,
+ * the unspecified bytes are set to 0. */
+uint64_t
+bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n);
+
+/** @internal Encodes an uint64_t into a big-endian encoded array of 8 bytes. */
 void
-u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
+bigendian_encode_u64(uint8_t* bytes, uint64_t value);
+
+/** @internal Encodes an uint64_t into a big-endian encoded array of N bytes.
+ * The N most significant bytes of the integer are written into the first N
+ * bytes of the array, the unspecified bytes are not written. */
+void
+bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n);
 
 /**
  * @internal
@@ -212,6 +196,19 @@ ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* ctx);
 void
 ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
                         uint8_t* tag,
+                        size_t tag_len);
+
+/**
+ * @internal
+ * Generates the arbitrary-length tag one chunk at the time and compares
+ * it to the obtained tag from the user.
+ *
+ * MUST be called ONLY when all AD and PT/CT is absorbed and the state is
+ * prepared for tag generation. Consumes a fixed amount of stack memory.
+ */
+bool
+ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
+                        const uint8_t* obtained_tag,
                         size_t tag_len);
 
 /**
