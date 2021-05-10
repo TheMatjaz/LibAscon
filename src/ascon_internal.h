@@ -19,10 +19,6 @@ extern "C"
 
 #include "ascon.h"
 
-#ifdef DEBUG
-#include <assert.h>
-#endif
-
 #if defined(DEBUG) || defined(MINSIZEREL) || defined(ASCON_WINDOWS)
 // Do not inline in debug mode or when sparing space.
 // Inlining on MSVC creates linking issues: some inlined functions cannot
@@ -86,7 +82,10 @@ extern "C"
 
 /**
  * @internal
- * States used to understand when to finalise the associated data.
+ * States used to understand which function of the API was called before
+ * for the input assertions and to known if the associated data has been
+ * updated or not.
+ * @see #ASCON_INPUT_ASSERTS
  */
 typedef enum
 {

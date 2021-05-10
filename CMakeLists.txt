@@ -23,6 +23,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Compiler flags
 # -----------------------------------------------------------------------------
 include(compiler_flags.cmake)
+# Enable runtime assertions verifying the library API inputs using assert.h
+# but only in debug mode.
+string(APPEND CMAKE_C_FLAGS_DEBUG " -DASCON_INPUT_ASSERTS")
 
 # -----------------------------------------------------------------------------
 # Source files

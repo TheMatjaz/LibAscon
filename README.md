@@ -76,6 +76,10 @@ Only the C standard library, mostly C99 features:
 - `stdint.h`: `uint8_t`, `uint_fast8_t`, `uint64_t`
 - `stddef.h`: `size_t`, `NULL`
 - `stdbool.h`: `bool`, `true`, `false` (duh)
+- (Optional) `assert.h`: for  `assert()`, not required by default.
+  Can be enabled by defining `ASCON_INPUT_ASSERTS` at compile time
+  to add checks of the Ascon library input for debugging (e.g. NULL pointers).
+  The assertion function can also be changed.
 
 
 FAQ

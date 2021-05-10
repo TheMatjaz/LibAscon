@@ -6,15 +6,11 @@
  * @authors see AUTHORS.md file
  */
 
-#include <stdint.h>
 #include "ascon.h"
 /* Linter warnings about #include "ascon_internal.h" being unused are WRONG.
  * If you do not include the header, the linker cannot find the references. */
 #include "ascon_internal.h"
 
-#ifdef DEBUG_PERMUTATIONS
-#include <stdio.h>
-#endif
 
 // 12-round permutation starts here
 #define ROUND_CONSTANT_01 0xF0
