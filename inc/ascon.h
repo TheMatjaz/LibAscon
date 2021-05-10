@@ -239,9 +239,6 @@ typedef struct
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  */
 ASCON_API void
 ascon_aead128_encrypt(uint8_t* ciphertext,
@@ -427,9 +424,6 @@ ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack during
- *       decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -570,8 +564,6 @@ ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -645,9 +637,6 @@ ascon_aead_cleanup(ascon_aead_ctx_t* vctx);
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
 */
 ASCON_API void
 ascon_aead128a_encrypt(uint8_t* ciphertext,
@@ -837,9 +826,6 @@ ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -886,8 +872,6 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -984,8 +968,6 @@ ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -1040,8 +1022,6 @@ ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
 */
 ASCON_API void
 ascon_aead80pq_encrypt(uint8_t* ciphertext,
@@ -1232,9 +1212,6 @@ ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -1281,8 +1258,6 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -1378,8 +1353,6 @@ ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  * @param[in] tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
