@@ -35,14 +35,17 @@ ascon_hash_xof(uint8_t* const digest,
 inline void
 ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
 {
-    // Prefer memset_s over memset if the compiler provides it
-    // Reason: memset() may be optimised out by the compiler, but not memset_s.
-    // https://www.daemonology.net/blog/2014-09-04-how-to-zero-a-buffer.html
-#if defined(memset_s)
-    memset_s(ctx, sizeof(ascon_hash_ctx_t), 0, sizeof(ascon_hash_ctx_t));
-#else
-    memset(ctx, 0, sizeof(ascon_hash_ctx_t));
-#endif
+    // Manual cleanup using volatile pointers to have more assurance the
+    // cleanup will not be removed by the optimiser.
+    ((volatile ascon_hash_ctx_t*) ctx)->sponge.x0 = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->sponge.x1 = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->sponge.x2 = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->sponge.x3 = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->sponge.x4 = 0U;
+    *(volatile uint64_t*) &ctx->buffer[0] = 0U;
+    *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->assoc_data_state = 0U;
 }
 
 static void

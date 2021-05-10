@@ -73,9 +73,8 @@ Dependencies
 
 Only the C standard library, mostly C99 features:
 
-- `stdint.h`: `uint8_t`, `uint_fast8_t`, uint64_t`
+- `stdint.h`: `uint8_t`, `uint_fast8_t`, `uint64_t`
 - `stddef.h`: `size_t`, `NULL`
-- `string.h`: `memset()`, `memset_s()` - if available
 - `stdbool.h`: `bool`, `true`, `false` (duh)
 
 

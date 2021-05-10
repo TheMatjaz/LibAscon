@@ -16,7 +16,12 @@
 
 static void test_aead_cleanup(void)
 {
-    ascon_aead_ctx_t ctx = {.k0 = 42};
+    ascon_aead_ctx_t ctx = {
+            .bufstate.sponge.x0 = 13,
+            .bufstate.buffer[3] = 3,
+            .k0 = 42,
+            .k2 = 44
+    };
     ascon_aead_cleanup(&ctx);
     atto_zeros(&ctx, sizeof(ascon_aead_ctx_t));
 }

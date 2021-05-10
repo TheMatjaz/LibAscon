@@ -128,12 +128,18 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
 inline void
 ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
-    // Prefer memset_s over memset if the compiler provides it
-    // Reason: memset() may be optimised out by the compiler, but not memset_s.
-    // https://www.daemonology.net/blog/2014-09-04-how-to-zero-a-buffer.html
-#if defined(memset_s)
-    memset_s(ctx, sizeof(ascon_aead_ctx_t), 0, sizeof(ascon_aead_ctx_t));
-#else
-    memset(ctx, 0, sizeof(ascon_aead_ctx_t));
-#endif
+    // Manual cleanup using volatile pointers to have more assurance the
+    // cleanup will not be removed by the optimiser.
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x0 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x1 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x2 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x3 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x4 = 0U;
+    *(volatile uint64_t*) &ctx->bufstate.buffer[0] = 0U;
+    *(volatile uint64_t*) &ctx->bufstate.buffer[ASCON_RATE] = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.assoc_data_state = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->k0 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->k1 = 0U;
+    ((volatile ascon_aead_ctx_t*) ctx)->k2 = 0U;
 }

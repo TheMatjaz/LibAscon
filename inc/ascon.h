@@ -39,7 +39,6 @@ extern "C"
 
 #include <stdint.h> /* For uint8_t, uint_fast8_t, uint64_t */
 #include <stddef.h> /* For size_t, NULL */
-#include <string.h> /* For memset(), memset_s() - if available */
 #include <stdbool.h> /* For bool, true, false */
 
 /**
@@ -51,8 +50,7 @@ extern "C"
     /**
      * @def ASCON_WINDOWS
      * Indicator simplifying the check for the Windows platform (undefined on other platforms).
-     * Used for internal decisions on how to inline functions and declare arrays of variable length
-     * on the stack.
+     * Used for internal decisions on how to inline functions.
      */
     #define ASCON_WINDOWS 1
     #define ASCON_API __declspec(dllexport)
@@ -170,7 +168,7 @@ typedef struct
      */
     uint8_t assoc_data_state;
 
-    /** Unused padding to the next uint64_t (sponge.x0). */
+    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0). */
     uint8_t pad[6];
 } ascon_bufstate_t;
 
@@ -599,10 +597,10 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  * context in case an encryption/decryption transaction is rolled back/abruptly
  * terminated.
  *
- * @param[in, out] ctx to erase.
+ * @param[in, out] vctx to erase.
  */
 ASCON_API void
-ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
+ascon_aead_cleanup(ascon_aead_ctx_t* vctx);
 
 /**
  * Offline symmetric encryption using Ascon128a, which uses a double data rate
