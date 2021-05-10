@@ -142,6 +142,7 @@ ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->bufstate.buffer[ASCON_RATE] = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.flow_state = ASCON_FLOW_CLEANED;
+    // Padding untouched.
     ((volatile ascon_aead_ctx_t*) ctx)->k0 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k1 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k2 = 0U;

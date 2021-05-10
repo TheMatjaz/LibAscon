@@ -57,6 +57,7 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->flow_state = ASCON_FLOW_CLEANED;
+    // Padding untouched.
 }
 
 static void
@@ -68,8 +69,10 @@ init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
     ctx->sponge.x3 = 0;
     ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
-    ctx->flow_state = ASCON_FLOW_HASH_INITIALISED;
     ascon_permutation_a12(&ctx->sponge);
+#ifdef DEBUG
+    ctx->flow_state = ASCON_FLOW_HASH_INITIALISED;
+#endif
 }
 
 ASCON_API void
@@ -116,7 +119,9 @@ ascon_hash_xof_update(ascon_hash_ctx_t* const ctx,
            ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
 #endif
     buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len, ASCON_RATE);
+#ifdef DEBUG
     ctx->flow_state = ASCON_FLOW_HASH_UPDATED;
+#endif
 }
 
 ASCON_API void
