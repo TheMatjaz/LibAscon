@@ -28,9 +28,9 @@ Features
 LibAscon provides:
 
 - 3 AEAD ciphers:
-  - Ascon128 v1.2 (128 b key, 64 b rate)
-  - Ascon128a v1.2 (128 b key, 128 b rate)
-  - Ascon80pq v1.2 (160 b key, 64 b rate)
+  - Ascon128 v1.2 (128 bit key, 64 bit rate)
+  - Ascon128a v1.2 (128 bit key, 128 bit rate)
+  - Ascon80pq v1.2 (160 bit key, 64 bit rate)
 
 - 2 hashing functions
   - Ascon-Hash v1.2 (fixed-length output)
@@ -42,27 +42,30 @@ LibAscon provides:
   not available contiguously in memory, e.g. a too-large file or data in
   transmission.
 
-- Naturally offline processing (whole data contiguous in memory) is also
+- Offline processing (whole data contiguous in memory) is also
   available with a simple wrapper.
 
 - **Variable tag length** for authenticated encryption: can generate any tag
-  length **from 0 to 255 bytes**. Of course at least 16 bytes (128 bits) is
-  recommended.
+  length. Of course at least 16 bytes (128 bits) is recommended.
 
-  Note: the tag bytes above 16 bytes are an extension of the original Ascon
+  Note: the tag bytes above 16 bytes are an **extension** of the original Ascon
   algorithm using the same sponge squeezing technique as for the XOF;
 
 - Encryption/decryption can be performed in-place, without the need of a
   second output buffer.
 
-- Same performance as the original implementation in _Release_ mode,
+- AEAD tag may be provided to a separate location, i.e. not concatenated to
+  the ciphertext.
+
+- Same performance as the original C implementation in _Release_ mode,
   about 2x slower in _MinSizeRel_ mode.
 
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
   developer-friendly API**, making it easier to compile and add to your project,
   both through static and dynamic inclusion.
 
-- Tested with **100% code coverage**!
+- Tested with **100% line coverage**, with CI running on Linux, macOS and
+  Windows with GCC, Clang and CL (MSVC).
 
 
 Dependencies
@@ -177,7 +180,7 @@ ciphertext_len += ascon_aead128_encrypt_update(
 uint8_t tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
 ciphertext_len += ascon_aead128_encrypt_final(
         &ctx, buffer + ciphertext_len,
-        tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        tag, sizeof(tag));
 // Now the buffer contains our ciphertext, long ciphertext_len
 
 // Now we can decrypt
@@ -197,7 +200,7 @@ plaintext_len += ascon_aead128_decrypt_update(
 bool is_tag_valid = false;
 plaintext_len += ascon_aead128_decrypt_final(
         &ctx, buffer + plaintext_len,
-        &is_tag_valid, tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        &is_tag_valid, tag, sizeof(tag));
 buffer[plaintext_len] = '\0'; // Null terminated, because it's text
 printf("Decrypted msg: %s, tag is valid: %d\n", buffer, is_tag_valid);
 // The macros ASCON_TAG_OK=true and ASCON_TAG_INVALID=false are also
