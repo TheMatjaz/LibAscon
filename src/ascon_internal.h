@@ -93,29 +93,25 @@ typedef enum
     ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
 } ascon_flow_t;
 
-/**
- * @internal
- * Converts an array of 8 bytes, out of which the first n are used, to a
- * uint64_t value.
- *
- * Big endian encoding.
- */
+/** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */
 uint64_t
-bytes_to_u64(const uint8_t* bytes, uint_fast8_t n);
+bigendian_decode_u64(const uint8_t* bytes);
 
+/** @internal Decodes an uint64_t from a big-endian encoded array of N bytes.
+ * The N bytes are interpreted as the N most significant bytes of the integer,
+ * the unspecified bytes are set to 0. */
 uint64_t
-u64be_decode(const uint8_t* bytes);
-void
-u64be_encode(uint8_t* bytes, uint64_t value);
+bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n);
 
-/**
- * Converts a uint64_t value to an array of n bytes, truncating the result
- * if n < 8.
- *
- * Big endian encoding.
- */
+/** @internal Encodes an uint64_t into a big-endian encoded array of 8 bytes. */
 void
-u64_to_bytes(uint8_t* bytes, uint64_t x, uint_fast8_t n);
+bigendian_encode_u64(uint8_t* bytes, uint64_t value);
+
+/** @internal Encodes an uint64_t into a big-endian encoded array of N bytes.
+ * The N most significant bytes of the integer are written into the first N
+ * bytes of the array, the unspecified bytes are not written. */
+void
+bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n);
 
 /**
  * @internal

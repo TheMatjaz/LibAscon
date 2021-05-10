@@ -79,7 +79,7 @@ absorb_hash_data(ascon_sponge_t* const sponge,
                  const uint8_t* const data)
 {
     (void) data_out;
-    sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
+    sponge->x0 ^= bigendian_decode_u64(data);
     ascon_permutation_a12(sponge);
 }
 
@@ -109,18 +109,18 @@ ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    ctx->sponge.x0 ^= bytes_to_u64(ctx->buffer, ctx->buffer_len);
+    ctx->sponge.x0 ^= bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
     ctx->sponge.x0 ^= PADDING(ctx->buffer_len);
     // Squeeze the digest from the inner state.
     while (digest_len > ASCON_RATE)
     {
         ascon_permutation_a12(&ctx->sponge);
-        u64_to_bytes(digest, ctx->sponge.x0, ASCON_RATE);
+        bigendian_encode_u64(digest, ctx->sponge.x0);
         digest_len -= ASCON_RATE;
         digest += ASCON_RATE;
     }
     ascon_permutation_a12(&ctx->sponge);
-    u64_to_bytes(digest, ctx->sponge.x0, (uint_fast8_t) digest_len);
+    bigendian_encode_varlen(digest, ctx->sponge.x0, (uint_fast8_t) digest_len);
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
 }

@@ -20,7 +20,7 @@
  * the reduced overhead.
  */
 inline static void
-smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount) // TODO fast8
+small_cpy(uint8_t* dst, const uint8_t* src, uint_fast8_t amount)
 {
     while (amount--)
     {
@@ -28,31 +28,55 @@ smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount) // TODO fast8
     }
 }
 
-uint64_t
-bytes_to_u64(const uint8_t* const bytes, const uint_fast8_t n)
+ASCON_INLINE uint64_t
+bigendian_decode_u64(const uint8_t* const bytes)
+{
+    uint64_t value = 0;
+    value |= ((uint64_t) bytes[0]) << 56U;
+    value |= ((uint64_t) bytes[1]) << 48U;
+    value |= ((uint64_t) bytes[2]) << 40U;
+    value |= ((uint64_t) bytes[3]) << 32U;
+    value |= ((uint64_t) bytes[4]) << 24U;
+    value |= ((uint64_t) bytes[5]) << 16U;
+    value |= ((uint64_t) bytes[6]) << 8U;
+    value |= ((uint64_t) bytes[7]);
+    return value;
+}
+
+ASCON_INLINE void
+bigendian_encode_u64(uint8_t* const bytes, const uint64_t value)
+{
+    bytes[0] = (uint8_t) (value >> 56U);
+    bytes[1] = (uint8_t) (value >> 48U);
+    bytes[2] = (uint8_t) (value >> 40U);
+    bytes[3] = (uint8_t) (value >> 32U);
+    bytes[4] = (uint8_t) (value >> 24U);
+    bytes[5] = (uint8_t) (value >> 16U);
+    bytes[6] = (uint8_t) (value >> 8U);
+    bytes[7] = (uint8_t) (value);
+}
+
+ASCON_INLINE uint64_t
+bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n)
 {
     uint64_t x = 0;
-    for (uint_fast8_t i = 0; i < n; i++)
+    // Unsigned int should be the fastest unsigned on the machine.
+    // Using it to avoid warnings about <<-operator with signed value.
+    for (unsigned int i = n; i >= 0; i--)
     {
-        // Cast to unsigned int to remove warning about <<-operator with signed
-        // value. uint_fast8_t does not work, so unsigned int should be the
-        // fastest unsigned type on a machine.
-        x |= ((uint64_t) bytes[i]) << (56 - 8 * (unsigned int) i); // TODO better operations?
-        // TODO unsigned constants?
+        x |= ((uint64_t) bytes[i]) << (56U - 8U * i);
     }
     return x;
 }
 
-void
-u64_to_bytes(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
+ASCON_INLINE void
+bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
 {
-    for (uint_fast8_t i = 0; i < n; i++)
+    // Unsigned int should be the fastest unsigned on the machine.
+    // Using it to avoid warnings about <<-operator with signed value.
+    for (unsigned int i = 0; i < n; i++)
     {
-        // Cast to unsigned int to remove warning about <<-operator with signed
-        // value. uint_fast8_t does not work, so unsigned int should be the
-        // fastest unsigned type on a machine.
-        bytes[i] = (uint8_t) (x >> (56 - 8 * (unsigned int) i));
-        // TODO unsigned constants
+        bytes[i] = (uint8_t) (x >> (56U - 8U * i));
     }
 }
 
@@ -60,13 +84,11 @@ uint64_t
 byte_mask(const uint_fast8_t n)
 {
     uint64_t x = 0;
-    for (uint_fast8_t i = 0; i < n; i++)
+    // Unsigned int should be the fastest unsigned on the machine.
+    // Using it to avoid warnings about <<-operator with signed value.
+    for (unsigned int i = 0; i < n; i++)
     {
-        // Cast to unsigned int to remove warning about <<-operator with signed
-        // value. uint_fast8_t does not work, so unsigned int should be the
-        // fastest unsigned type on a machine.
-        x |= 0xFFULL << (56 - 8 * (unsigned int) i);
-        // TODO unsigned constants
+        x |= 0xFFULL << (56U - 8U * i);
     }
     return x;
 }
@@ -84,9 +106,9 @@ buffered_accumulation(ascon_bufstate_t* const ctx,
     {
         // There is associated data in the buffer already.
         // Place as much as possible of the new associated data into the buffer.
-        const uint8_t space_in_buf = (uint8_t) (rate - ctx->buffer_len);
-        const uint8_t into_buffer = (uint8_t) MIN(space_in_buf, data_in_len);
-        smallcpy(&ctx->buffer[ctx->buffer_len], data_in, into_buffer);
+        const uint_fast8_t space_in_buf = (uint_fast8_t) (rate - ctx->buffer_len);
+        const uint_fast8_t into_buffer = (uint_fast8_t) MIN(space_in_buf, data_in_len);
+        small_cpy(&ctx->buffer[ctx->buffer_len], data_in, into_buffer);
         ctx->buffer_len = (uint8_t) (ctx->buffer_len + into_buffer);
         data_in += into_buffer;
         data_in_len -= into_buffer;
@@ -125,7 +147,7 @@ buffered_accumulation(ascon_bufstate_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_in_len > 0)
     {
-        smallcpy(ctx->buffer, data_in, (uint8_t) data_in_len);
+        small_cpy(ctx->buffer, data_in, (uint_fast8_t) data_in_len);
         ctx->buffer_len = (uint8_t) data_in_len;
     }
     return fresh_out_bytes;

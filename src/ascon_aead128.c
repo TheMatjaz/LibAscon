@@ -73,7 +73,7 @@ absorb_assoc_data(ascon_sponge_t* sponge,
                   const uint8_t* const data)
 {
     (void) data_out;
-    sponge->x0 ^= bytes_to_u64(data, ASCON_RATE);
+    sponge->x0 ^= bigendian_decode_u64(data);
     ascon_permutation_b6(sponge);
 }
 
@@ -88,9 +88,9 @@ absorb_ciphertext(ascon_sponge_t* const sponge,
                   const uint8_t* const ciphertext)
 {
     // Absorb the ciphertext.
-    const uint64_t c_0 = bytes_to_u64(ciphertext, ASCON_RATE);
+    const uint64_t c_0 = bigendian_decode_u64(ciphertext);
     // Squeeze out some plaintext
-    u64_to_bytes(plaintext, sponge->x0 ^ c_0, ASCON_RATE);
+    bigendian_encode_u64(plaintext, sponge->x0 ^ c_0);
     sponge->x0 = c_0;
     // Permute the state
     ascon_permutation_b6(sponge);
@@ -107,9 +107,9 @@ absorb_plaintext(ascon_sponge_t* const sponge,
                  const uint8_t* const plaintext)
 {
     // Absorb the plaintext.
-    sponge->x0 ^= bytes_to_u64(plaintext, ASCON_RATE);
+    sponge->x0 ^= bigendian_decode_u64(plaintext);
     // Squeeze out some ciphertext
-    u64_to_bytes(ciphertext, sponge->x0, ASCON_RATE);
+    bigendian_encode_u64(ciphertext, sponge->x0);
     // Permute the state
     ascon_permutation_b6(sponge);
 }
@@ -157,11 +157,11 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* const ctx,
     size_t freshly_generated_ciphertext_len = 0;
     // If there is any remaining less-than-a-block plaintext to be absorbed
     // cached in the buffer, pad it and absorb it.
-    ctx->bufstate.sponge.x0 ^= bytes_to_u64(ctx->bufstate.buffer,
-                                            ctx->bufstate.buffer_len);
+    ctx->bufstate.sponge.x0 ^= bigendian_decode_varlen(ctx->bufstate.buffer,
+                                                       ctx->bufstate.buffer_len);
     ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
     // Squeeze out last ciphertext bytes, if any.
-    u64_to_bytes(ciphertext, ctx->bufstate.sponge.x0, ctx->bufstate.buffer_len);
+    bigendian_encode_varlen(ciphertext, ctx->bufstate.sponge.x0, ctx->bufstate.buffer_len);
     freshly_generated_ciphertext_len += ctx->bufstate.buffer_len;
     // End of encryption, start of tag generation.
     // Apply key twice more with a permutation to set the state for the tag.
@@ -208,11 +208,11 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     size_t freshly_generated_plaintext_len = 0;
     // If there is any remaining less-than-a-block ciphertext to be absorbed
     // cached in the buffer, pad it and absorb it.
-    const uint64_t c_0 = bytes_to_u64(ctx->bufstate.buffer,
-                                      ctx->bufstate.buffer_len);
+    const uint64_t c_0 = bigendian_decode_varlen(ctx->bufstate.buffer,
+                                                 ctx->bufstate.buffer_len);
     // Squeeze out last plaintext bytes, if any.
-    u64_to_bytes(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
-                 ctx->bufstate.buffer_len);
+    bigendian_encode_varlen(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
+                            ctx->bufstate.buffer_len);
     freshly_generated_plaintext_len += ctx->bufstate.buffer_len;
     // Final state changes at decryption's end
     ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
