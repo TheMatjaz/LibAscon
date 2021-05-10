@@ -20,6 +20,14 @@ ascon_aead128a_encrypt(uint8_t* ciphertext,
                        size_t plaintext_len,
                        size_t tag_len)
 {
+#ifdef DEBUG
+    assert(plaintext_len == 0 || ciphertext != NULL);
+    assert(tag_len != 0 || tag != NULL);
+    assert(key != NULL);
+    assert(nonce != NULL);
+    assert(assoc_data_len == 0 || assoc_data != NULL);
+    assert(plaintext_len == 0 || plaintext != NULL);
+#endif
     ascon_aead_ctx_t ctx;
     ascon_aead128a_init(&ctx, key, nonce);
     ascon_aead128a_assoc_data_update(&ctx, assoc_data, assoc_data_len);
@@ -41,6 +49,14 @@ ascon_aead128a_decrypt(uint8_t* plaintext,
                        size_t ciphertext_len,
                        size_t tag_len)
 {
+#ifdef DEBUG
+    assert(ciphertext_len == 0 || plaintext != NULL);
+    assert(key != NULL);
+    assert(nonce != NULL);
+    assert(assoc_data_len == 0 || assoc_data != NULL);
+    assert(ciphertext_len == 0 || ciphertext != NULL);
+    assert(tag_len != 0 || tag != NULL);
+#endif
     ascon_aead_ctx_t ctx;
     bool is_tag_valid;
     ascon_aead128a_init(&ctx, key, nonce);
@@ -59,6 +75,11 @@ ascon_aead128a_init(ascon_aead_ctx_t* const ctx,
                     const uint8_t* const key,
                     const uint8_t* const nonce)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(key != NULL);
+    assert(nonce != NULL);
+#endif
     ascon_aead_init(ctx, key, nonce, AEAD128a_IV);
 }
 
@@ -126,6 +147,10 @@ ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* const ctx,
                                  const uint8_t* assoc_data,
                                  size_t assoc_data_len)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(assoc_data_len == 0 || assoc_data != NULL);
+#endif
     if (assoc_data_len > 0)
     {
         ctx->bufstate.assoc_data_state = ASCON_FLOW_SOME_ASSOC_DATA;
@@ -187,6 +212,11 @@ ascon_aead128a_encrypt_update(ascon_aead_ctx_t* const ctx,
                               const uint8_t* plaintext,
                               size_t plaintext_len)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(plaintext_len == 0 || plaintext != NULL);
+    assert(plaintext_len == 0 || ciphertext != NULL);
+#endif
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
@@ -204,6 +234,11 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
                              uint8_t* tag,
                              size_t tag_len)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(ciphertext != NULL);
+    assert(tag_len == 0 || tag != NULL);
+#endif
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
@@ -257,6 +292,11 @@ ascon_aead128a_decrypt_update(ascon_aead_ctx_t* const ctx,
                               const uint8_t* ciphertext,
                               size_t ciphertext_len)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(ciphertext_len == 0 || ciphertext != NULL);
+    assert(ciphertext_len == 0 || plaintext != NULL);
+#endif
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.
@@ -275,6 +315,12 @@ ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
                              const uint8_t* const tag,
                              const size_t tag_len)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+    assert(plaintext != NULL);
+    assert(tag_len == 0 || tag != NULL);
+    assert(is_tag_valid != NULL);
+#endif
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
         // Finalise the associated data if not already done sos.

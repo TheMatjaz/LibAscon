@@ -17,9 +17,11 @@ extern "C"
 {
 #endif
 
-#include <stddef.h>
-#include <stdint.h>
 #include "ascon.h"
+
+#ifdef DEBUG
+#include <assert.h>
+#endif
 
 #if defined(DEBUG) || defined(MINSIZEREL) || defined(ASCON_WINDOWS)
 // Do not inline in debug mode or when sparing space.
