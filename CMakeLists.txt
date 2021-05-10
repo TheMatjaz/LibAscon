@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 project(LibAscon
-        VERSION 1.0.3
+        VERSION 1.0.4
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \

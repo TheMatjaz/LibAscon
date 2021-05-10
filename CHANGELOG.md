@@ -10,6 +10,42 @@ and this project adheres to
 
 *******************************************************************************
 
+[1.0.4] - 2021-05-10
+----------------------------------------
+
+Support for virtually unlimited tag sizes, removed dependencies `malloc.h`
+and `string.h`, better context cleanup.
+
+
+### Changed
+
+- The AEAD tag validation is not performed one chunk of 8 bytes at the time
+  rather than generating the whole contiguous tag from the user-given data and
+  comparing it in its entirety (`memcmp()`) with the user-given tag.
+  - This implies that tag lengths don't have a physical limitation anymore
+    (previously tag lengths > 64 bytes were discouraged).
+
+
+### Removed
+
+- Dependency `malloc.h`: is not required on Windows anymore, as we don't
+  allocate the whole expected tag on the stack anymore: a small 8 byte buffer
+  is used instead.
+
+- Dependency `string.h`: due to `memcmp()` (see Changed section) and
+  `memset()`/`memset_s()` (see Fixed section) not being used anymore, the
+  library is not used.
+
+
+### Fixed
+
+- The clearing of the context, both for AEAD and hash functions is performed
+  without loops or `memset()`/`memset_s()`, but by setting the (not so many)
+  context fields one by one to 0 using volatile pointer dereferencing to
+  improve the chances of the optimiser not removing the cleanup section.
+
+
+
 [1.0.3] - 2021-05-08
 ----------------------------------------
 
