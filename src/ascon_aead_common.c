@@ -125,9 +125,12 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
     return ASCON_TAG_OK;
 }
 
-inline void
+ASCON_API inline void
 ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
+#ifdef DEBUG
+    assert(ctx != NULL);
+#endif
     // Manual cleanup using volatile pointers to have more assurance the
     // cleanup will not be removed by the optimiser.
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x0 = 0U;
