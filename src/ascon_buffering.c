@@ -62,7 +62,7 @@ bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n)
     uint64_t x = 0;
     // Unsigned int should be the fastest unsigned on the machine.
     // Using it to avoid warnings about <<-operator with signed value.
-    for (unsigned int i = n; i >= 0; i--)
+    for (unsigned int i = 0; i < n; i++)
     {
         x |= ((uint64_t) bytes[i]) << (56U - 8U * i);
     }
