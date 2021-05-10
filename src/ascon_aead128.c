@@ -198,7 +198,7 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
                             uint8_t* plaintext,
                             bool* const is_tag_valid,
                             const uint8_t* const tag,
-                            const size_t tag_len)
+                            size_t tag_len)
 {
     if (ctx->bufstate.assoc_data_state != ASCON_FLOW_ASSOC_DATA_FINALISED)
     {
@@ -226,20 +226,8 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     // Validate tag with variable len
-    ASCON_U8ARR_STACK_ALLOC(expected_tag, tag_len);
-    ascon_aead_generate_tag(ctx, expected_tag, tag_len);
-    const int tags_differ = memcmp(tag, expected_tag, tag_len);
-    if (tags_differ)
-    {
-        *is_tag_valid = ASCON_TAG_INVALID;
-    }
-    else
-    {
-        *is_tag_valid = ASCON_TAG_OK;
-    }
-    // Final security cleanup of the internal state, key and buffer.
-    memset(expected_tag, 0, tag_len);
-    ASCON_U8ARR_STACK_FREE(expected_tag);
+    *is_tag_valid = ascon_aead_is_tag_valid(ctx, tag, tag_len);
+    // Final security cleanup of the internal state and key.
     ascon_aead_cleanup(ctx);
     return freshly_generated_plaintext_len;
 }

@@ -20,7 +20,7 @@
  * the reduced overhead.
  */
 inline static void
-smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount)
+smallcpy(uint8_t* dst, const uint8_t* src, uint8_t amount) // TODO fast8
 {
     while (amount--)
     {
@@ -37,7 +37,8 @@ bytes_to_u64(const uint8_t* const bytes, const uint_fast8_t n)
         // Cast to unsigned int to remove warning about <<-operator with signed
         // value. uint_fast8_t does not work, so unsigned int should be the
         // fastest unsigned type on a machine.
-        x |= ((uint64_t) bytes[i]) << (56 - 8 * (unsigned int) i);
+        x |= ((uint64_t) bytes[i]) << (56 - 8 * (unsigned int) i); // TODO better operations?
+        // TODO unsigned constants?
     }
     return x;
 }
@@ -51,6 +52,7 @@ u64_to_bytes(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n)
         // value. uint_fast8_t does not work, so unsigned int should be the
         // fastest unsigned type on a machine.
         bytes[i] = (uint8_t) (x >> (56 - 8 * (unsigned int) i));
+        // TODO unsigned constants
     }
 }
 
@@ -64,6 +66,7 @@ byte_mask(const uint_fast8_t n)
         // value. uint_fast8_t does not work, so unsigned int should be the
         // fastest unsigned type on a machine.
         x |= 0xFFULL << (56 - 8 * (unsigned int) i);
+        // TODO unsigned constants
     }
     return x;
 }

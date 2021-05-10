@@ -61,19 +61,70 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
 {
     while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
+        // All bytes before the last 16
+        // Note: converting the sponge uint64_t to bytes to then check them as
+        // uint64_t is required, as the conversion to bytes ensures the
+        // proper byte order regardless of the platform native endianness.
         u64_to_bytes(tag, ctx->bufstate.sponge.x3, sizeof(uint64_t));
         u64_to_bytes(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4,
                      sizeof(uint64_t));
         ascon_permutation_a12(&ctx->bufstate.sponge);
-        tag_len = (uint8_t) (tag_len - ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        tag_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
         tag += ASCON_AEAD_TAG_MIN_SECURE_LEN;
     }
-    uint8_t remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
+    // The last 16 or less bytes (also 0)
+    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x3, remaining);
-    tag += sizeof(uint64_t);
-    tag_len = (uint8_t) (tag_len - remaining);
+    tag += remaining; // TODO changed
+    // The last 8 or less bytes (also 0)
+    tag_len -= remaining;
     remaining = (uint8_t) MIN(sizeof(uint64_t), tag_len);
     u64_to_bytes(tag, ctx->bufstate.sponge.x4, remaining);
+}
+
+inline static bool
+small_neq(const uint8_t* a, const uint8_t* b, uint_fast8_t amount)
+{
+    while (amount--)
+    {
+        if (*(a++) != *(b++)) { return true; }
+    }
+    return false;
+}
+
+bool
+ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
+                        const uint8_t* obtained_tag,
+                        size_t tag_len)
+{
+    uint8_t expected_tag_chunk[sizeof(uint64_t)];
+    while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
+    {
+        // All bytes before the last 16
+        // Note: converting the sponge uint64_t to bytes to then check them as
+        // uint64_t is required, as the conversion to bytes ensures the
+        // proper tag's byte order regardless of the platform's endianness.
+        u64_to_bytes(expected_tag_chunk, ctx->bufstate.sponge.x3, sizeof(uint64_t));
+        if (NOT_EQUAL_U64(expected_tag_chunk, obtained_tag)) { return ASCON_TAG_INVALID; }
+        obtained_tag += sizeof(uint64_t);
+        tag_len -= sizeof(uint64_t);
+        u64_to_bytes(expected_tag_chunk, ctx->bufstate.sponge.x4, sizeof(uint64_t));
+        if (NOT_EQUAL_U64(expected_tag_chunk, obtained_tag)) { return ASCON_TAG_INVALID; }
+        obtained_tag += sizeof(uint64_t);
+        tag_len -= sizeof(uint64_t);
+        ascon_permutation_a12(&ctx->bufstate.sponge);
+    }
+    // The last 16 or less bytes (also 0)
+    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
+    u64_to_bytes(expected_tag_chunk, ctx->bufstate.sponge.x3, remaining);
+    if (small_neq(expected_tag_chunk, obtained_tag, remaining)) { return ASCON_TAG_INVALID; }
+    obtained_tag += remaining;
+    // The last 8 or less bytes (also 0)
+    tag_len -= remaining;
+    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
+    u64_to_bytes(expected_tag_chunk, ctx->bufstate.sponge.x4, remaining);
+    if (small_neq(expected_tag_chunk, obtained_tag, remaining)) { return ASCON_TAG_INVALID; }
+    return ASCON_TAG_OK;
 }
 
 inline void

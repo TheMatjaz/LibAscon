@@ -48,7 +48,6 @@ extern "C"
  * indicators for DLL on Windows, empty on other platforms.
  */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
-    #include <malloc.h>  /* For _malloca(), _freea() */
     /**
      * @def ASCON_WINDOWS
      * Indicator simplifying the check for the Windows platform (undefined on other platforms).
