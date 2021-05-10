@@ -6,7 +6,7 @@ LibAscon - Lightweight Authenticated Encryption & Hashing
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/releases/latest)
 [![GitHub](https://img.shields.io/github/license/TheMatjaz/LibAscon)](https://github.com/TheMatjaz/LibAscon/blob/master/LICENSE.md)
 
-LibAscon is an ISO C11 cryptographic library wrapping the
+LibAscon is an ISO C99/C11 cryptographic library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
 of the Ascon family of lightweight authenticated encryption schemes with
 associated data (AEAD) and hashing functions, but it also includes
@@ -70,15 +70,10 @@ Dependencies
 
 Only the C standard library, mostly C99 features:
 
-- `stdint.h`
-- `stddef.h`
-- `string.h`
-- `stdbool.h`
-
-On Windows, there is also `malloc.h`, used for `_malloca()` and  `_freea()`,
-as the CL compiler does not support arrays on the stack without a constant
-size at compile-time.
-
+- `stdint.h`: `uint8_t`, `uint_fast8_t`, uint64_t`
+- `stddef.h`: `size_t`, `NULL`
+- `string.h`: `memset()`, `memset_s()` - if available
+- `stdbool.h`: `bool`, `true`, `false` (duh)
 
 
 FAQ

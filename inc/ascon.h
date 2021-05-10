@@ -37,9 +37,9 @@ extern "C"
 {
 #endif
 
-#include <stdint.h> /* For uint8_t, uint64_t */
+#include <stdint.h> /* For uint8_t, uint_fast8_t, uint64_t */
 #include <stddef.h> /* For size_t, NULL */
-#include <string.h> /* For memset() */
+#include <string.h> /* For memset(), memset_s() - if available */
 #include <stdbool.h> /* For bool, true, false */
 
 /**
