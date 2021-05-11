@@ -232,20 +232,28 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
         // proper tag's byte order regardless of the platform's endianness.
         ascon_permutation_a12(&ctx->sponge);
         bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
-        if (NOT_EQUAL_U64(computed_digest_chunk, expected_digest)) { return ASCON_TAG_INVALID; }
+        if (NOT_EQUAL_U64(computed_digest_chunk, expected_digest))
+        {
+            ascon_hash_cleanup(ctx);
+            return ASCON_TAG_INVALID;
+        }
         expected_digest_len -= ASCON_RATE;
         expected_digest += ASCON_RATE;
     }
     ascon_permutation_a12(&ctx->sponge);
     bigendian_encode_varlen(computed_digest_chunk, ctx->sponge.x0,
                             (uint_fast8_t) expected_digest_len);
-    // Final security cleanup of the internal state and buffer.
-    ascon_hash_cleanup(ctx);
     // Check the remaining bytes in the chunk, potentially less than ASCON_RATE
     for (uint_fast8_t i = 0; i < (uint_fast8_t) expected_digest_len; i++)
     {
-        if (computed_digest_chunk[i] != expected_digest[i]) { return ASCON_TAG_INVALID; }
+        if (computed_digest_chunk[i] != expected_digest[i])
+        {
+            ascon_hash_cleanup(ctx);
+            return ASCON_TAG_INVALID;
+        }
     }
+    // Final security cleanup of the internal state and buffer.
+    ascon_hash_cleanup(ctx);
     return ASCON_TAG_OK;
 }
 
