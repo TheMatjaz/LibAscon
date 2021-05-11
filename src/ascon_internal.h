@@ -17,8 +17,6 @@ extern "C"
 {
 #endif
 
-#include <stddef.h>
-#include <stdint.h>
 #include "ascon.h"
 
 #if defined(DEBUG) || defined(MINSIZEREL) || defined(ASCON_WINDOWS)
@@ -84,13 +82,24 @@ extern "C"
 
 /**
  * @internal
- * States used to understand when to finalise the associated data.
+ * States used to understand which function of the API was called before
+ * for the input assertions and to known if the associated data has been
+ * updated or not.
+ * @see #ASCON_INPUT_ASSERTS
  */
 typedef enum
 {
-    ASCON_FLOW_NO_ASSOC_DATA = 0,
-    ASCON_FLOW_SOME_ASSOC_DATA = 1,
-    ASCON_FLOW_ASSOC_DATA_FINALISED = 2,
+    ASCON_FLOW_CLEANED = 0,
+    ASCON_FLOW_HASH_INITIALISED,
+    ASCON_FLOW_HASH_UPDATED,
+    ASCON_FLOW_AEAD128_80pq_INITIALISED,
+    ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED,
+    ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED,
+    ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED,
+    ASCON_FLOW_AEAD128a_INITIALISED,
+    ASCON_FLOW_AEAD128a_ASSOC_DATA_UPDATED,
+    ASCON_FLOW_AEAD128a_ENCRYPT_UPDATED,
+    ASCON_FLOW_AEAD128a_DECRYPT_UPDATED,
 } ascon_flow_t;
 
 /** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */
@@ -101,7 +110,7 @@ bigendian_decode_u64(const uint8_t* bytes);
  * The N bytes are interpreted as the N most significant bytes of the integer,
  * the unspecified bytes are set to 0. */
 uint64_t
-bigendian_decode_varlen(const uint8_t* const bytes, const uint_fast8_t n);
+bigendian_decode_varlen(const uint8_t* bytes, uint_fast8_t n);
 
 /** @internal Encodes an uint64_t into a big-endian encoded array of 8 bytes. */
 void
@@ -111,7 +120,7 @@ bigendian_encode_u64(uint8_t* bytes, uint64_t value);
  * The N most significant bytes of the integer are written into the first N
  * bytes of the array, the unspecified bytes are not written. */
 void
-bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8_t n);
+bigendian_encode_varlen(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 
 /**
  * @internal

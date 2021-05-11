@@ -41,21 +41,46 @@ extern "C"
 #include <stddef.h> /* For size_t, NULL */
 #include <stdbool.h> /* For bool, true, false */
 
+#if defined(ASCON_INPUT_ASSERTS) && !defined(ASCON_ASSERT)
+/**
+ * @def ASCON_INPUT_ASSERTS
+ * When defined, enables the runtime assertions on the parameters of all
+ * functions of the library API using #ASCON_ASSERT - undefined (disabled)
+ * by default.
+ * The check is mostly against NULL pointers, for the correct order of calling
+ * of the many Init-Update-Final functions and against mixing functions from
+ * different AEAD algorithms (128 vs 128a vs 80pq). It's generally useful
+ * for debugging only.
+ * @see ASCON_ASSERT
+ */
+// Redefining ASCON_INPUT_ASSERTS otherwise Doxygen does not find it
+#undef ASCON_INPUT_ASSERTS
+#define ASCON_INPUT_ASSERTS 1
+/**
+ * @def ASCON_ASSERT
+ * Assertion macro, defaulting to `assert` from `assert.h`, when
+ * #ASCON_INPUT_ASSERTS is defined, but #ASCON_ASSERT is not.
+ * Redefine it to something else if required.
+ */
+#include <assert.h> /* For assert() */
+#define ASCON_ASSERT(expr) assert(expr)
+#endif
+
 /**
  * @def ASCON_API
  * Marker of all the library's public API functions. Used to add exporting
  * indicators for DLL on Windows, empty on other platforms.
  */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
-    /**
-     * @def ASCON_WINDOWS
-     * Indicator simplifying the check for the Windows platform (undefined on other platforms).
-     * Used for internal decisions on how to inline functions.
-     */
-    #define ASCON_WINDOWS 1
-    #define ASCON_API __declspec(dllexport)
+/**
+ * @def ASCON_WINDOWS
+ * Indicator simplifying the check for the Windows platform (undefined on other platforms).
+ * Used for internal decisions on how to inline functions.
+ */
+#define ASCON_WINDOWS 1
+#define ASCON_API __declspec(dllexport)
 #else
-    #define ASCON_API
+#define ASCON_API
 #endif
 
 /** Major version of this API conforming to semantic versioning. */
@@ -156,19 +181,22 @@ typedef struct
     uint8_t buffer_len;
 
     /**
-     * State of the processing of the associated data.
+     * State of the order of Init-Update-Final function calls, checked to
+     * know when to finalise the associated data processing and for the
+     * runtime assertions on the correct order of the functions.
+     *
+     * @see #ASCON_INPUT_ASSERTS
      *
      * Note: this variable is not semantically relevant in THIS struct,
      * as it should belong in the struct ascon_aead_ctx_t, but by having it
-     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit)
-     * at the end of the struct ascon_aead_ctx_t, by using the padding space
-     * this struct anyway has.
-     *
-     * This struct has anyway some padding at the end.
+     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit,
+     * 1 on 16-bit) at the end of the struct ascon_aead_ctx_t, by using some
+     * of the padding space this struct anyway has.
      */
-    uint8_t assoc_data_state;
+    uint8_t flow_state;
 
-    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0). */
+    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0)
+     * to avoid errors when compiling with `-Wpadding` on any platform. */
     uint8_t pad[6];
 } ascon_bufstate_t;
 

@@ -68,14 +68,23 @@ LibAscon provides:
   Windows with GCC, Clang and CL (MSVC).
 
 
-Dependencies
+Dependencies of the library
 ----------------------------------------
 
 Only the C standard library, mostly C99 features:
 
 - `stdint.h`: `uint8_t`, `uint_fast8_t`, `uint64_t`
 - `stddef.h`: `size_t`, `NULL`
-- `stdbool.h`: `bool`, `true`, `false` (duh)
+- `stdbool.h`: `bool`, `true`, `false`
+
+Optional dependency: `assert.h`, for  `assert()`. Used to add runtime checks of
+the Ascon API input for debugging (NULL pointers and incorrect order of
+function calling). The CMake script uses it only if `assert.h` is found
+and only in the debug build type (`CMAKE_BUILD_TYPE=Debug`).
+If compiled without the included `CMakeLists.txt`, it's not used unless
+`ASCON_INPUT_ASSERTS` is defined at compile time. The assertion function
+`ASCON_ASSERT` can also be changed, if `assert()` is not available.
+
 
 
 FAQ

@@ -24,6 +24,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # -----------------------------------------------------------------------------
 include(compiler_flags.cmake)
 
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE("assert.h" ASSERT_H_EXISTS)
+if (ASSERT_H_EXISTS)
+    message(STATUS "assert.h found. Enabling runtime assertions verifying "
+            "the library API inputs using assert() but only in debug mode "
+            "for all targets.")
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -DASCON_INPUT_ASSERTS")
+endif ()
+
+
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
@@ -44,7 +54,7 @@ set(LIB_SRC_FILES_128a
 set(LIB_SRC_FILES_80pq
         ${LIB_SRC_FILES_COMMON}
         src/ascon_aead_common.c
-        src/ascon_aead128.c
+        src/ascon_aead128.c  # AEAD-80pq reuses many AEAD-128 functions
         src/ascon_aead80pq.c
         )
 set(LIB_SRC_FILES_HASH
@@ -187,6 +197,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/images)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    set(DOXYGEN_PREDEFINED WIN32 ASCON_INPUT_ASSERTS)
     doxygen_add_docs(doxygen
             # Do NOT build doxygen on make-all, to avoid polluting the stdout
             # List of input files for Doxygen

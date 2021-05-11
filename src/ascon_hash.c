@@ -14,6 +14,10 @@ ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
            const uint8_t* const data,
            const size_t data_len)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(digest != NULL);
+    ASCON_ASSERT(data_len == 0 || data != NULL);
+#endif
     ascon_hash_ctx_t ctx;
     ascon_hash_init(&ctx);
     ascon_hash_update(&ctx, data, data_len);
@@ -26,15 +30,22 @@ ascon_hash_xof(uint8_t* const digest,
                const size_t digest_len,
                const size_t data_len)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(digest_len == 0 || digest != NULL);
+    ASCON_ASSERT(data_len == 0 || data != NULL);
+#endif
     ascon_hash_ctx_t ctx;
     ascon_hash_xof_init(&ctx);
     ascon_hash_update(&ctx, data, data_len);
     ascon_hash_xof_final(&ctx, digest, digest_len);
 }
 
-inline void
+ASCON_API inline void
 ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(ctx != NULL);
+#endif
     // Manual cleanup using volatile pointers to have more assurance the
     // cleanup will not be removed by the optimiser.
     ((volatile ascon_hash_ctx_t*) ctx)->sponge.x0 = 0U;
@@ -45,7 +56,8 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->buffer[0] = 0U;
     *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
-    ((volatile ascon_hash_ctx_t*) ctx)->assoc_data_state = 0U;
+    ((volatile ascon_hash_ctx_t*) ctx)->flow_state = ASCON_FLOW_CLEANED;
+    // Padding untouched.
 }
 
 static void
@@ -58,17 +70,26 @@ init(ascon_hash_ctx_t* const ctx, const uint64_t iv)
     ctx->sponge.x4 = 0;
     ctx->buffer_len = 0;
     ascon_permutation_a12(&ctx->sponge);
+#ifdef ASCON_INPUT_ASSERTS
+    ctx->flow_state = ASCON_FLOW_HASH_INITIALISED;
+#endif
 }
 
 ASCON_API void
 ascon_hash_init(ascon_hash_ctx_t* const ctx)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(ctx != NULL);
+#endif
     init(ctx, HASH_IV);
 }
 
 ASCON_API void
 ascon_hash_xof_init(ascon_hash_ctx_t* const ctx)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(ctx != NULL);
+#endif
     init(ctx, XOF_IV);
 }
 
@@ -87,22 +108,28 @@ absorb_hash_data(ascon_sponge_t* const sponge,
 }
 
 ASCON_API void
-ascon_hash_update(ascon_hash_ctx_t* const ctx,
-                  const uint8_t* data,
-                  size_t data_len)
-{
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
-                          ASCON_RATE);
-}
-
-
-ASCON_API void
 ascon_hash_xof_update(ascon_hash_ctx_t* const ctx,
                       const uint8_t* data,
                       size_t data_len)
 {
-    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len,
-                          ASCON_RATE);
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(ctx != NULL);
+    ASCON_ASSERT(data_len == 0 || data != NULL);
+    ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED ||
+                 ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
+#endif
+    buffered_accumulation(ctx, NULL, data, absorb_hash_data, data_len, ASCON_RATE);
+#ifdef ASCON_INPUT_ASSERTS
+    ctx->flow_state = ASCON_FLOW_HASH_UPDATED;
+#endif
+}
+
+ASCON_API void
+ascon_hash_update(ascon_hash_ctx_t* const ctx,
+                  const uint8_t* data,
+                  size_t data_len)
+{
+    ascon_hash_xof_update(ctx, data, data_len);
 }
 
 ASCON_API void
@@ -110,6 +137,12 @@ ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
                      uint8_t* digest,
                      size_t digest_len)
 {
+#ifdef ASCON_INPUT_ASSERTS
+    ASCON_ASSERT(ctx != NULL);
+    ASCON_ASSERT(digest_len == 0 || digest != NULL);
+    ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED
+                 || ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
+#endif
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
     ctx->sponge.x0 ^= bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
