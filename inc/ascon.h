@@ -617,10 +617,10 @@ ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
  * context in case an encryption/decryption transaction is rolled back/abruptly
  * terminated.
  *
- * @param[in, out] vctx to erase.
+ * @param[in, out] ctx to erase.
  */
 ASCON_API void
-ascon_aead_cleanup(ascon_aead_ctx_t* vctx);
+ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
 
 /**
  * Offline symmetric encryption using Ascon128a, which uses a double data rate
