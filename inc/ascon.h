@@ -1598,8 +1598,6 @@ ascon_hash_xof(uint8_t* digest,
  *       of \p expected_digest_len bytes.
  *       This is the digest that comes with the message and will be compared
  *       with the internally-generated one by this function.
- * @param[in] expected_digest_len desired length of the \p expected_digest in
- *       bytes.
  * @param[in] data message fed into the hash function.
  * @param[in] expected_digest_len desired length of the \p expected_digest
  *       in bytes.

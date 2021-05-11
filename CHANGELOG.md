@@ -100,7 +100,7 @@ library input.
 
 Support for compilation on Windows with MSVC, other CMake improvements.
 
-Thanks to [@mataron](https://github.com/mataron) for providing the initial
+Thanks to [mataron](https://github.com/mataron) for providing the initial
 fixes for MSVC!
 
 
