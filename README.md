@@ -205,6 +205,7 @@ if (is_tag_valid == ASCON_TAG_OK) {
 ### Keyed hashing using Ascon-XOF's Init-Update-Final API
 
 ```c
+// We want to authenticate a message with a keyed hash and transmit it.
 const uint8_t secret_key[] = {
         1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6
 };
@@ -233,6 +234,22 @@ ascon_hash_xof_update(&ctx, (uint8_t*) message_pt3, strlen(message_pt3));
 uint8_t digest[21];  // Choose any length from 0 to SIZE_MAX
 ascon_hash_xof_final(&ctx, digest, sizeof(digest));
 // The final function zeroes out the context automatically.
+
+// Now let's imagine we transmit the message alongside with the digest.
+// The receiver also has the secret key and can easily verify the keyed hash.
+ascon_hash_xof_init(&ctx);
+ascon_hash_xof_update(&ctx, (uint8_t*) secret_key, sizeof(secret_key));
+ascon_hash_xof_update(&ctx, (uint8_t*) message_pt1, strlen(message_pt1));
+ascon_hash_xof_update(&ctx, (uint8_t*) message_pt2, strlen(message_pt2));
+ascon_hash_xof_update(&ctx, (uint8_t*) message_pt3, strlen(message_pt3));
+// A handy function computing the obtained digest and validating it
+// against the obtained.
+bool is_tag_valid = ascon_hash_xof_final_matches(&ctx, digest, sizeof(digest));
+if (is_tag_valid == ASCON_TAG_OK) {
+    puts("Correct decryption!");
+} else { // ASCON_TAG_INVALID
+    puts("Something went wrong!");
+}
 ```
 
 For more examples, check the test suite and how the Ascon API is used in there.
