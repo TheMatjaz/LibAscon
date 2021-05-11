@@ -51,6 +51,12 @@ static void test_xof_empty(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_1_byte(void)
@@ -78,6 +84,12 @@ static void test_xof_1_byte(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 
@@ -120,6 +132,12 @@ static void test_xof_2_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_7_bytes(void)
@@ -162,6 +180,12 @@ static void test_xof_7_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 
@@ -208,6 +232,12 @@ static void test_xof_8_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_9_bytes(void)
@@ -253,6 +283,12 @@ static void test_xof_9_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_15_bytes(void)
@@ -298,6 +334,12 @@ static void test_xof_15_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_16_bytes(void)
@@ -343,6 +385,12 @@ static void test_xof_16_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 
@@ -392,6 +440,12 @@ static void test_xof_33_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+
+    // With the final_matches validation
+    ascon_hash_xof_init(&xof_ctx);
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                     ASCON_HASH_DIGEST_LEN);
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 static void test_xof_batch(void)
@@ -416,6 +470,11 @@ static void test_xof_batch(void)
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
                    ASCON_HASH_DIGEST_LEN);
+
+        // With the final_matches validation
+        bool is_tag_valid = ascon_hash_xof_matches(testcase.expected_digest, testcase.message,
+                                                   ASCON_HASH_DIGEST_LEN, testcase.message_len);
+        atto_eq(is_tag_valid, ASCON_TAG_OK);
     }
 }
 
@@ -448,6 +507,18 @@ static void test_xof_update_single_byte(void)
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
                    ASCON_HASH_DIGEST_LEN);
+
+        // Many 1-byte update calls with digest matching check
+        ascon_hash_xof_init(&xof_ctx);
+        for (size_t i = 0; i < testcase.message_len; i++)
+        {
+            ascon_hash_xof_update(&xof_ctx, &testcase.message[i], 1);
+            atto_eq(xof_ctx.buffer_len, (i + 1) % ASCON_RATE);
+        }
+        bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
+                                                         ASCON_HASH_DIGEST_LEN);
+        atto_eq(is_tag_valid, ASCON_TAG_OK);
+        vecs_hash_log(&testcase, obtained_digest);
     }
 }
 
@@ -476,7 +547,41 @@ static void test_xof_batch_custom_digest_len(void)
                    digest_len);
         atto_eq(obtained_digest[30], 0);
         atto_eq(obtained_digest[31], 0);
+
+        // With a single-call validation
+        bool is_tag_valid = ascon_hash_xof_matches(testcase.expected_digest,
+                                                   testcase.message,
+                                                   digest_len,
+                                                   testcase.message_len);
+        atto_eq(is_tag_valid, ASCON_TAG_OK);
     }
+}
+
+void test_xof_matches_failing_on_wrong_input(void)
+{
+    ascon_hash_ctx_t hash_ctx;
+    uint8_t dummy_data[] = "abcde";
+    uint8_t expected_digest[13];
+
+    // Generate the digest
+    ascon_hash_xof_init(&hash_ctx);
+    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
+    ascon_hash_xof_final(&hash_ctx, expected_digest, sizeof(expected_digest));
+
+    // Digest matches when done the same way
+    ascon_hash_xof_init(&hash_ctx);
+    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
+    bool is_tag_valid = ascon_hash_xof_final_matches(&hash_ctx, expected_digest,
+                                                     sizeof(expected_digest));
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
+
+    // Digest does NOT match when data is altered
+    dummy_data[1] = 'X';
+    ascon_hash_xof_init(&hash_ctx);
+    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
+    is_tag_valid = ascon_hash_xof_final_matches(&hash_ctx, expected_digest,
+                                                sizeof(expected_digest));
+    atto_eq(is_tag_valid, ASCON_TAG_INVALID);
 }
 
 void test_xof(void)
@@ -493,4 +598,5 @@ void test_xof(void)
     test_xof_batch();
     test_xof_update_single_byte();
     test_xof_batch_custom_digest_len();
+    test_xof_matches_failing_on_wrong_input();
 }

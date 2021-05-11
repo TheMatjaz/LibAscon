@@ -1445,8 +1445,8 @@ ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
  */
 ASCON_API bool
 ascon_hash_matches(const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN],
-           const uint8_t* data,
-           size_t data_len);
+                   const uint8_t* data,
+                   size_t data_len);
 
 /**
  * Online Ascon Hash with fixed digest length, initialisation.
