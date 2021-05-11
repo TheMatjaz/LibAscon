@@ -53,6 +53,9 @@ extern "C"
  * for debugging only.
  * @see ASCON_ASSERT
  */
+// Redefining ASCON_INPUT_ASSERTS otherwise Doxygen does not find it
+#undef ASCON_INPUT_ASSERTS
+#define ASCON_INPUT_ASSERTS 1
 /**
  * @def ASCON_ASSERT
  * Assertion macro, defaulting to `assert` from `assert.h`, when
