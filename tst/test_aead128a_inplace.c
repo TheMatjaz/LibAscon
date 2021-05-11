@@ -138,6 +138,7 @@ static void test_inplace_update_single_byte(void)
                    testcase.ciphertext,
                    testcase.ciphertext_len);
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
         // Decrypt
         total_new_bytes = 0;
@@ -179,6 +180,7 @@ static void test_inplace_update_single_byte(void)
         atto_memeq(transformed,
                    testcase.plaintext,
                    testcase.plaintext_len);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 

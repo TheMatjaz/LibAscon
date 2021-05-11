@@ -190,9 +190,12 @@ static void test_readme_example_hashing_iuf(void)
     // A handy function computing the obtained digest and validating it
     // against the obtained.
     bool is_tag_valid = ascon_hash_xof_final_matches(&ctx, digest, sizeof(digest));
-    if (is_tag_valid == ASCON_TAG_OK) {
+    if (is_tag_valid == ASCON_TAG_OK)
+    {
         puts("Correct decryption!");
-    } else { // ASCON_TAG_INVALID
+    }
+    else
+    { // ASCON_TAG_INVALID
         puts("Something went wrong!");
     }
 

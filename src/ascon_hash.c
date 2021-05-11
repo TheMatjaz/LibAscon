@@ -57,7 +57,15 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->flow_state = ASCON_FLOW_CLEANED;
-    // Padding untouched.
+    // Clearing also the padding to set the whole context to be all-zeros.
+    // Makes it easier to check for initialisation and provides a known
+    // state after cleanup, initialising all memory.
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[0] = 0;
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[1] = 0;
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[2] = 0;
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[3] = 0;
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[4] = 0;
+    ((volatile ascon_hash_ctx_t*) ctx)->pad[5] = 0;
 }
 
 static void

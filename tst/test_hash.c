@@ -16,11 +16,8 @@
 
 static void test_hash_cleanup(void)
 {
-    ascon_hash_ctx_t ctx = {
-            .sponge.x0 = 13,
-            .flow_state = 42,
-            .buffer[3] = 20,
-    };
+    ascon_hash_ctx_t ctx;
+    memset(&ctx, 0xFF, sizeof(ascon_hash_ctx_t));
     ascon_hash_cleanup(&ctx);
     atto_zeros(&ctx, sizeof(ascon_hash_ctx_t));
 }
@@ -62,6 +59,7 @@ static void test_hash_empty(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_1_byte(void)
@@ -89,6 +87,7 @@ static void test_hash_1_byte(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 
@@ -118,6 +117,7 @@ static void test_hash_2_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -131,6 +131,7 @@ static void test_hash_2_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_7_bytes(void)
@@ -159,6 +160,7 @@ static void test_hash_7_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -173,6 +175,7 @@ static void test_hash_7_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 
@@ -205,6 +208,7 @@ static void test_hash_8_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -219,6 +223,7 @@ static void test_hash_8_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_9_bytes(void)
@@ -250,6 +255,7 @@ static void test_hash_9_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -264,6 +270,7 @@ static void test_hash_9_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_15_bytes(void)
@@ -295,6 +302,7 @@ static void test_hash_15_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -309,6 +317,7 @@ static void test_hash_15_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_16_bytes(void)
@@ -340,6 +349,7 @@ static void test_hash_16_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -354,6 +364,7 @@ static void test_hash_16_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 
@@ -389,6 +400,7 @@ static void test_hash_33_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 
     // Many 1-byte update calls
     ascon_hash_init(&hash_ctx);
@@ -403,6 +415,7 @@ static void test_hash_33_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&hash_ctx, sizeof(hash_ctx));
 }
 
 static void test_hash_batch(void)
