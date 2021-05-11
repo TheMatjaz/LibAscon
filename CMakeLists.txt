@@ -129,6 +129,20 @@ set_target_properties(ascon PROPERTIES
         POSITION_INDEPENDENT_CODE ON
         INTERPROCEDURAL_OPTIMISATION TRUE)
 
+# Copy test vectors files to build directory.
+# They are used by the test runner
+add_custom_target(copytestvectors ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
+        ${CMAKE_CURRENT_BINARY_DIR}/vectors)
+# On make clean (cmake --build . --target clean) also remove the copied
+# vectors and the copied header file copied by `configure_file()`.
+# Given that configure file is not a target, by adding the file here, we
+# have a guarantee it will be cleaned.
+set_target_properties(copytestvectors PROPERTIES
+        ADDITIONAL_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/vectors
+        ADDITIONAL_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/ascon.h)
+
 # Test runner executable testing the static library
 add_executable(testascon
         ${TEST_FRAMEWORK}
@@ -137,12 +151,11 @@ target_include_directories(testascon
         PUBLIC inc/
         PRIVATE tst/
         PRIVATE tst/atto/)
-add_dependencies(testascon asconfull)
+add_dependencies(testascon asconfull copytestvectors)
 target_link_libraries(testascon PUBLIC asconfull)
 set_target_properties(testascon PROPERTIES
         POSITION_INDEPENDENT_CODE ON
-        INTERPROCEDURAL_OPTIMISATION TRUE
-        ADDITIONAL_CLEAN_FILES ${CMAKE_BINARY_DIR}/vectors)
+        INTERPROCEDURAL_OPTIMISATION TRUE)
 
 # Test runner executable testing the shared library
 add_executable(testasconshared
@@ -152,25 +165,11 @@ target_include_directories(testasconshared
         PUBLIC inc/
         PRIVATE tst/
         PRIVATE tst/atto/)
-add_dependencies(testasconshared ascon)
+add_dependencies(testasconshared ascon copytestvectors)
 target_link_libraries(testasconshared PUBLIC ascon)
 set_target_properties(testasconshared PROPERTIES
         POSITION_INDEPENDENT_CODE ON
-        INTERPROCEDURAL_OPTIMISATION TRUE
-        ADDITIONAL_CLEAN_FILES ${CMAKE_BINARY_DIR}/vectors)
-
-# Copy test vectors files to build directory after the make-build.
-# They are used by the test runner
-add_custom_command(
-        TARGET testascon POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
-        ${CMAKE_CURRENT_BINARY_DIR}/vectors)
-add_custom_command(
-        TARGET testasconshared POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
-        ${CMAKE_CURRENT_BINARY_DIR}/vectors)
+        INTERPROCEDURAL_OPTIMISATION TRUE)
 
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
