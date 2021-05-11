@@ -39,6 +39,7 @@ static void test_xof_empty(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With update calls of zero length
     ascon_hash_xof_init(&xof_ctx);
@@ -51,12 +52,14 @@ static void test_xof_empty(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_1_byte(void)
@@ -84,6 +87,7 @@ static void test_xof_1_byte(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -91,6 +95,7 @@ static void test_xof_1_byte(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_2_bytes(void)
@@ -119,6 +124,7 @@ static void test_xof_2_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -132,6 +138,7 @@ static void test_xof_2_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -139,6 +146,7 @@ static void test_xof_2_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_7_bytes(void)
@@ -167,6 +175,7 @@ static void test_xof_7_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -181,6 +190,7 @@ static void test_xof_7_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -188,6 +198,7 @@ static void test_xof_7_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 
@@ -220,6 +231,7 @@ static void test_xof_8_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -234,6 +246,7 @@ static void test_xof_8_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -241,6 +254,7 @@ static void test_xof_8_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_9_bytes(void)
@@ -272,6 +286,7 @@ static void test_xof_9_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -286,6 +301,7 @@ static void test_xof_9_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -293,6 +309,7 @@ static void test_xof_9_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_15_bytes(void)
@@ -324,6 +341,7 @@ static void test_xof_15_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -338,6 +356,7 @@ static void test_xof_15_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -345,6 +364,7 @@ static void test_xof_15_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_16_bytes(void)
@@ -376,6 +396,7 @@ static void test_xof_16_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -390,6 +411,7 @@ static void test_xof_16_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -397,6 +419,7 @@ static void test_xof_16_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 
@@ -432,6 +455,7 @@ static void test_xof_33_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Many 1-byte update calls
     ascon_hash_xof_init(&xof_ctx);
@@ -446,6 +470,7 @@ static void test_xof_33_bytes(void)
     atto_memeq(obtained_digest,
                testcase.expected_digest,
                ASCON_HASH_DIGEST_LEN);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // With the final_matches validation
     ascon_hash_xof_init(&xof_ctx);
@@ -453,6 +478,7 @@ static void test_xof_33_bytes(void)
     bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, testcase.expected_digest,
                                                      ASCON_HASH_DIGEST_LEN);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_xof_batch(void)
@@ -514,6 +540,7 @@ static void test_xof_update_single_byte(void)
         atto_memeq(obtained_digest,
                    testcase.expected_digest,
                    ASCON_HASH_DIGEST_LEN);
+        atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
         // Many 1-byte update calls with digest matching check
         ascon_hash_xof_init(&xof_ctx);
@@ -526,6 +553,7 @@ static void test_xof_update_single_byte(void)
                                                          ASCON_HASH_DIGEST_LEN);
         atto_eq(is_tag_valid, ASCON_TAG_OK);
         vecs_hash_log(&testcase, obtained_digest);
+        atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
     }
 }
 
@@ -566,29 +594,31 @@ static void test_xof_batch_custom_digest_len(void)
 
 void test_xof_matches_failing_on_wrong_input(void)
 {
-    ascon_hash_ctx_t hash_ctx;
+    ascon_hash_ctx_t xof_ctx;
     uint8_t dummy_data[] = "abcde";
     uint8_t expected_digest[13];
 
     // Generate the digest
-    ascon_hash_xof_init(&hash_ctx);
-    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
-    ascon_hash_xof_final(&hash_ctx, expected_digest, sizeof(expected_digest));
+    ascon_hash_xof_init(&xof_ctx);
+    ascon_hash_xof_update(&xof_ctx, dummy_data, sizeof(dummy_data));
+    ascon_hash_xof_final(&xof_ctx, expected_digest, sizeof(expected_digest));
 
     // Digest matches when done the same way
-    ascon_hash_xof_init(&hash_ctx);
-    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
-    bool is_tag_valid = ascon_hash_xof_final_matches(&hash_ctx, expected_digest,
+    ascon_hash_xof_init(&xof_ctx);
+    ascon_hash_xof_update(&xof_ctx, dummy_data, sizeof(dummy_data));
+    bool is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, expected_digest,
                                                      sizeof(expected_digest));
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 
     // Digest does NOT match when data is altered
     dummy_data[1] = 'X';
-    ascon_hash_xof_init(&hash_ctx);
-    ascon_hash_xof_update(&hash_ctx, dummy_data, sizeof(dummy_data));
-    is_tag_valid = ascon_hash_xof_final_matches(&hash_ctx, expected_digest,
+    ascon_hash_xof_init(&xof_ctx);
+    ascon_hash_xof_update(&xof_ctx, dummy_data, sizeof(dummy_data));
+    is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, expected_digest,
                                                 sizeof(expected_digest));
     atto_eq(is_tag_valid, ASCON_TAG_INVALID);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 void test_xof(void)

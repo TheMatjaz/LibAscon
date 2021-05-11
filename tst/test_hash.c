@@ -65,6 +65,7 @@ static void test_hash_empty(void)
     ascon_hash_init(&hash_ctx);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_1_byte(void)
@@ -99,6 +100,7 @@ static void test_hash_1_byte(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 
@@ -149,6 +151,7 @@ static void test_hash_2_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_7_bytes(void)
@@ -199,6 +202,7 @@ static void test_hash_7_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 
@@ -253,6 +257,7 @@ static void test_hash_8_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_9_bytes(void)
@@ -306,6 +311,7 @@ static void test_hash_9_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_15_bytes(void)
@@ -359,6 +365,7 @@ static void test_hash_15_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_16_bytes(void)
@@ -412,6 +419,7 @@ static void test_hash_16_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 
@@ -469,6 +477,7 @@ static void test_hash_33_bytes(void)
     ascon_hash_update(&hash_ctx, testcase.message, testcase.message_len);
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 static void test_hash_batch(void)
@@ -541,6 +550,7 @@ static void test_hash_update_single_byte(void)
         bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, testcase.expected_digest);
         atto_eq(is_tag_valid, ASCON_TAG_OK);
         vecs_hash_log(&testcase, obtained_digest);
+        atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
     }
 }
 
@@ -560,6 +570,7 @@ void test_hash_matches_failing_on_wrong_input(void)
     ascon_hash_update(&hash_ctx, dummy_data, sizeof(dummy_data));
     bool is_tag_valid = ascon_hash_final_matches(&hash_ctx, expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_OK);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 
     // Digest does NOT match when data is altered
     dummy_data[1] = 'X';
@@ -567,6 +578,7 @@ void test_hash_matches_failing_on_wrong_input(void)
     ascon_hash_update(&hash_ctx, dummy_data, sizeof(dummy_data));
     is_tag_valid = ascon_hash_final_matches(&hash_ctx, expected_digest);
     atto_eq(is_tag_valid, ASCON_TAG_INVALID);
+    atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 void test_hash(void)
