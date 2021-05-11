@@ -44,10 +44,10 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
                        const uint8_t* nonce,
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
-                       const uint8_t* tag,
+                       const uint8_t* expected_tag,
                        size_t assoc_data_len,
                        size_t ciphertext_len,
-                       size_t tag_len)
+                       size_t expected_tag_len)
 {
 #ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ciphertext_len == 0 || plaintext != NULL);
@@ -55,7 +55,7 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
     ASCON_ASSERT(nonce != NULL);
     ASCON_ASSERT(assoc_data_len == 0 || assoc_data != NULL);
     ASCON_ASSERT(ciphertext_len == 0 || ciphertext != NULL);
-    ASCON_ASSERT(tag_len != 0 || tag != NULL);
+    ASCON_ASSERT(expected_tag_len != 0 || expected_tag != NULL);
 #endif
     ascon_aead_ctx_t ctx;
     bool is_tag_valid;
@@ -66,7 +66,7 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
                                                               ciphertext,
                                                               ciphertext_len);
     ascon_aead80pq_decrypt_final(&ctx, plaintext + new_pt_bytes,
-                                 &is_tag_valid, tag, tag_len);
+                                 &is_tag_valid, expected_tag, expected_tag_len);
     return is_tag_valid;
 }
 
@@ -175,13 +175,13 @@ ASCON_API size_t
 ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
                              uint8_t* plaintext,
                              bool* const is_tag_valid,
-                             const uint8_t* const tag,
-                             const size_t tag_len)
+                             const uint8_t* const expected_tag,
+                             const size_t expected_tag_len)
 {
 #ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(plaintext != NULL);
-    ASCON_ASSERT(tag_len == 0 || tag != NULL);
+    ASCON_ASSERT(expected_tag_len == 0 || expected_tag != NULL);
     ASCON_ASSERT(is_tag_valid != NULL);
 #endif
     if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED)
@@ -212,7 +212,7 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     // Validate tag with variable len
-    *is_tag_valid = ascon_aead_is_tag_valid(ctx, tag, tag_len);
+    *is_tag_valid = ascon_aead_is_tag_valid(ctx, expected_tag, expected_tag_len);
     // Final security cleanup of the internal state and key.
     ascon_aead_cleanup(ctx);
     return freshly_generated_plaintext_len;

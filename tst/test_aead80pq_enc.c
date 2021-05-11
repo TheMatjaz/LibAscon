@@ -16,12 +16,8 @@
 
 static void test_aead_cleanup(void)
 {
-    ascon_aead_ctx_t ctx = {
-            .bufstate.sponge.x0 = 13,
-            .bufstate.buffer[3] = 3,
-            .k0 = 42,
-            .k2 = 44
-    };
+    ascon_aead_ctx_t ctx;
+    memset(&ctx, 0xFF, sizeof(ascon_aead_ctx_t));
     ascon_aead_cleanup(&ctx);
     atto_zeros(&ctx, sizeof(ascon_aead_ctx_t));
 }
@@ -106,6 +102,7 @@ static void test_encrypt_empty(void)
                testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With PT update calls of zero length
     memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
@@ -131,6 +128,7 @@ static void test_encrypt_empty(void)
     atto_memeq(obtained_ciphertext, testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With AD and PT update calls of zero length
     memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
@@ -159,6 +157,7 @@ static void test_encrypt_empty(void)
     atto_memeq(obtained_ciphertext, testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 
@@ -206,6 +205,7 @@ static void test_encrypt_1_byte_ad_empty_pt(void)
     atto_memeq(obtained_ciphertext, testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With PT call
     memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
@@ -227,6 +227,7 @@ static void test_encrypt_1_byte_ad_empty_pt(void)
                testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_encrypt_1_byte_pt_empty_ad(void)
@@ -277,6 +278,7 @@ static void test_encrypt_1_byte_pt_empty_ad(void)
                testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With AD call
     memset(obtained_ciphertext, 0, sizeof(obtained_ciphertext));
@@ -298,6 +300,7 @@ static void test_encrypt_1_byte_pt_empty_ad(void)
                testcase.ciphertext,
                testcase.ciphertext_len);
     atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_encrypt_1_byte_pt_1_byte_ad(void)
@@ -349,6 +352,7 @@ static void test_encrypt_1_byte_pt_1_byte_ad(void)
     atto_memeq(obtained_ciphertext,
                testcase.ciphertext,
                testcase.ciphertext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_encrypt_offline(void)
@@ -455,6 +459,7 @@ static void test_encrypt_update_single_byte(void)
                    testcase.ciphertext,
                    testcase.ciphertext_len);
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 
@@ -537,6 +542,7 @@ static void test_encrypt_update_three_bytes(void)
                    testcase.ciphertext,
                    testcase.ciphertext_len);
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 
@@ -613,6 +619,7 @@ static void test_encrypt_update_var_bytes(void)
                    testcase.ciphertext,
                    testcase.ciphertext_len);
         atto_memeq(obtained_tag, testcase.tag, ASCON_AEAD_TAG_MIN_SECURE_LEN);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 

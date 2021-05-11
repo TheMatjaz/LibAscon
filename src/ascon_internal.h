@@ -210,15 +210,15 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
 /**
  * @internal
  * Generates the arbitrary-length tag one chunk at the time and compares
- * it to the obtained tag from the user.
+ * it to the tag that came with the ciphertext.
  *
  * MUST be called ONLY when all AD and PT/CT is absorbed and the state is
  * prepared for tag generation. Consumes a fixed amount of stack memory.
  */
 bool
 ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
-                        const uint8_t* obtained_tag,
-                        size_t tag_len);
+                        const uint8_t* expected_tag,
+                        size_t expected_tag_len);
 
 /**
  * @internal

@@ -179,6 +179,27 @@ static void test_readme_example_hashing_iuf(void)
     uint8_t digest[21];  // Choose any length from 0 to SIZE_MAX
     ascon_hash_xof_final(&ctx, digest, sizeof(digest));
     // The final function zeroes out the context automatically.
+
+    // Now let's imagine we transmit the message alongside with the digest.
+    // The receiver also has the secret key and can easily verify the keyed hash.
+    ascon_hash_xof_init(&ctx);
+    ascon_hash_xof_update(&ctx, (uint8_t*) secret_key, sizeof(secret_key));
+    ascon_hash_xof_update(&ctx, (uint8_t*) message_pt1, strlen(message_pt1));
+    ascon_hash_xof_update(&ctx, (uint8_t*) message_pt2, strlen(message_pt2));
+    ascon_hash_xof_update(&ctx, (uint8_t*) message_pt3, strlen(message_pt3));
+    // A handy function computing the obtained digest and validating it
+    // against the obtained.
+    bool is_tag_valid = ascon_hash_xof_final_matches(&ctx, digest, sizeof(digest));
+    if (is_tag_valid == ASCON_TAG_OK)
+    {
+        puts("Correct decryption!");
+    }
+    else
+    { // ASCON_TAG_INVALID
+        puts("Something went wrong!");
+    }
+
+    atto_eq(is_tag_valid, ASCON_TAG_OK);
 }
 
 void test_readme_example(void)

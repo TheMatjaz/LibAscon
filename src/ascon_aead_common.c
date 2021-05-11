@@ -90,36 +90,36 @@ small_neq(const uint8_t* a, const uint8_t* b, uint_fast8_t amount)
 
 bool
 ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
-                        const uint8_t* obtained_tag,
-                        size_t tag_len)
+                        const uint8_t* expected_tag,
+                        size_t expected_tag_len)
 {
-    uint8_t expected_tag_chunk[sizeof(uint64_t)];
-    while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
+    uint8_t computed_tag_chunk[sizeof(uint64_t)];
+    while (expected_tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
         // All bytes before the last 16
         // Note: converting the sponge uint64_t to bytes to then check them as
         // uint64_t is required, as the conversion to bytes ensures the
         // proper tag's byte order regardless of the platform's endianness.
-        bigendian_encode_u64(expected_tag_chunk, ctx->bufstate.sponge.x3);
-        if (NOT_EQUAL_U64(expected_tag_chunk, obtained_tag)) { return ASCON_TAG_INVALID; }
-        obtained_tag += sizeof(uint64_t);
-        tag_len -= sizeof(uint64_t);
-        bigendian_encode_u64(expected_tag_chunk, ctx->bufstate.sponge.x4);
-        if (NOT_EQUAL_U64(expected_tag_chunk, obtained_tag)) { return ASCON_TAG_INVALID; }
-        obtained_tag += sizeof(uint64_t);
-        tag_len -= sizeof(uint64_t);
+        bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x3);
+        if (NOT_EQUAL_U64(computed_tag_chunk, expected_tag)) { return ASCON_TAG_INVALID; }
+        expected_tag += sizeof(uint64_t);
+        expected_tag_len -= sizeof(uint64_t);
+        bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x4);
+        if (NOT_EQUAL_U64(computed_tag_chunk, expected_tag)) { return ASCON_TAG_INVALID; }
+        expected_tag += sizeof(uint64_t);
+        expected_tag_len -= sizeof(uint64_t);
         ascon_permutation_a12(&ctx->bufstate.sponge);
     }
     // The last 16 or less bytes (also 0)
-    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
-    bigendian_encode_varlen(expected_tag_chunk, ctx->bufstate.sponge.x3, remaining);
-    if (small_neq(expected_tag_chunk, obtained_tag, remaining)) { return ASCON_TAG_INVALID; }
-    obtained_tag += remaining;
+    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), expected_tag_len);
+    bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x3, remaining);
+    if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
+    expected_tag += remaining;
     // The last 8 or less bytes (also 0)
-    tag_len -= remaining;
-    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
-    bigendian_encode_varlen(expected_tag_chunk, ctx->bufstate.sponge.x4, remaining);
-    if (small_neq(expected_tag_chunk, obtained_tag, remaining)) { return ASCON_TAG_INVALID; }
+    expected_tag_len -= remaining;
+    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), expected_tag_len);
+    bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x4, remaining);
+    if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
     return ASCON_TAG_OK;
 }
 
@@ -140,7 +140,15 @@ ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
     *(volatile uint64_t*) &ctx->bufstate.buffer[ASCON_RATE] = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.flow_state = ASCON_FLOW_CLEANED;
-    // Padding untouched.
+    // Clearing also the padding to set the whole context to be all-zeros.
+    // Makes it easier to check for initialisation and provides a known
+    // state after cleanup, initialising all memory.
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[0] = 0;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[1] = 0;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[2] = 0;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[3] = 0;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[4] = 0;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[5] = 0;
     ((volatile ascon_aead_ctx_t*) ctx)->k0 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k1 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k2 = 0U;
