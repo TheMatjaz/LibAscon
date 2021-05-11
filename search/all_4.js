@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['libascon_20_2d_20lightweight_20authenticated_20encryption_20_26_20hashing_63',['LibAscon - Lightweight Authenticated Encryption &amp; Hashing',['../index.html',1,'']]],
-  ['license_20_2d_20cc0_201_2e0_20universal_64',['License - CC0 1.0 Universal',['../md__l_i_c_e_n_s_e.html',1,'']]]
+  ['k0_67',['k0',['../structascon__aead__ctx__t.html#aef605192f06df1725cc7586157a1c53c',1,'ascon_aead_ctx_t']]],
+  ['k1_68',['k1',['../structascon__aead__ctx__t.html#afc45bbb720eb5d764c5a4950063970ef',1,'ascon_aead_ctx_t']]],
+  ['k2_69',['k2',['../structascon__aead__ctx__t.html#a22f794d147debd747449dca8be1a7db5',1,'ascon_aead_ctx_t']]]
 ];

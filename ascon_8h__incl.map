@@ -1,7 +1,7 @@
 <map id="inc/ascon.h" name="inc/ascon.h">
-<area shape="rect" id="node1" title="Ascon cipher &#45; Lightweight Authenticated Encryption &amp; Hashing, also with Init&#45;Update&#45;Final paradigm." alt="" coords="131,5,220,32"/>
+<area shape="rect" id="node1" title="Ascon cipher &#45; Lightweight Authenticated Encryption &amp; Hashing, also with Init&#45;Update&#45;Final paradigm." alt="" coords="133,5,223,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,71,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="95,80,165,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="189,80,255,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="279,80,354,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="189,80,263,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="287,80,357,107"/>
 </map>

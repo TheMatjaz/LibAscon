@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['x0_67',['x0',['../structascon__sponge__t.html#a02262f323ba4bb67409c6f743dc492e3',1,'ascon_sponge_t']]],
-  ['x1_68',['x1',['../structascon__sponge__t.html#ac15b656d590bec630a6afd0150f1f5da',1,'ascon_sponge_t']]],
-  ['x2_69',['x2',['../structascon__sponge__t.html#a8058e74bf7551a556047964eada79919',1,'ascon_sponge_t']]],
-  ['x3_70',['x3',['../structascon__sponge__t.html#a1bc3b5263ff65677f701c07dcb8a07ce',1,'ascon_sponge_t']]],
-  ['x4_71',['x4',['../structascon__sponge__t.html#a6f03adbb89979833f4fd4e5eb1c2e53f',1,'ascon_sponge_t']]]
+  ['sponge_73',['sponge',['../structascon__bufstate__t.html#a5a0966931e87d1bd970acbc8f49bc90a',1,'ascon_bufstate_t']]]
 ];

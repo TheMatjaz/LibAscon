@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['pad_65',['pad',['../structascon__bufstate__t.html#a1d25497cb01ce74b8030dc10bb793724',1,'ascon_bufstate_t']]]
+  ['libascon_20_2d_20lightweight_20authenticated_20encryption_20_26_20hashing_70',['LibAscon - Lightweight Authenticated Encryption &amp; Hashing',['../index.html',1,'']]],
+  ['license_20_2d_20cc0_201_2e0_20universal_71',['License - CC0 1.0 Universal',['../md__l_i_c_e_n_s_e.html',1,'']]]
 ];

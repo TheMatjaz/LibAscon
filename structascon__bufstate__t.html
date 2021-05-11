@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">1.0.3</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -98,33 +98,33 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="s
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#a208b93279ac3d1c5753c52933414aea3">buffer_len</a></td></tr>
 <tr class="memdesc:a208b93279ac3d1c5753c52933414aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Currently used bytes of the buffer. <br /></td></tr>
 <tr class="separator:a208b93279ac3d1c5753c52933414aea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0e8143f9ffcdaf69c9bec1409ea82c4"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#ab0e8143f9ffcdaf69c9bec1409ea82c4">assoc_data_state</a></td></tr>
-<tr class="memdesc:ab0e8143f9ffcdaf69c9bec1409ea82c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the processing of the associated data.  <a href="structascon__bufstate__t.html#ab0e8143f9ffcdaf69c9bec1409ea82c4">More...</a><br /></td></tr>
-<tr class="separator:ab0e8143f9ffcdaf69c9bec1409ea82c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab02d1bd0c13ec4554d25e91ebe013b36"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#ab02d1bd0c13ec4554d25e91ebe013b36">flow_state</a></td></tr>
+<tr class="memdesc:ab02d1bd0c13ec4554d25e91ebe013b36"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the order of Init-Update-Final function calls, checked to know when to finalise the associated data processing and for the runtime assertions on the correct order of the functions.  <a href="structascon__bufstate__t.html#ab02d1bd0c13ec4554d25e91ebe013b36">More...</a><br /></td></tr>
+<tr class="separator:ab02d1bd0c13ec4554d25e91ebe013b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d25497cb01ce74b8030dc10bb793724"><td class="memItemLeft" align="right" valign="top"><a id="a1d25497cb01ce74b8030dc10bb793724"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html#a1d25497cb01ce74b8030dc10bb793724">pad</a> [6]</td></tr>
-<tr class="memdesc:a1d25497cb01ce74b8030dc10bb793724"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unused padding to the next uint64_t (sponge.x0). <br /></td></tr>
+<tr class="memdesc:a1d25497cb01ce74b8030dc10bb793724"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unused padding to the next uint64_t (sponge.x0 or ctx.k0) to avoid errors when compiling with <code>-Wpadding</code> on any platform. <br /></td></tr>
 <tr class="separator:a1d25497cb01ce74b8030dc10bb793724"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal cipher sponge state associated with a buffer holding for less-than-rate updates. </p>
 <p>Used for the Init-Update-Final implementation. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a id="ab0e8143f9ffcdaf69c9bec1409ea82c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0e8143f9ffcdaf69c9bec1409ea82c4">&#9670;&nbsp;</a></span>assoc_data_state</h2>
+<a id="ab02d1bd0c13ec4554d25e91ebe013b36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab02d1bd0c13ec4554d25e91ebe013b36">&#9670;&nbsp;</a></span>flow_state</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t ascon_bufstate_t::assoc_data_state</td>
+          <td class="memname">uint8_t ascon_bufstate_t::flow_state</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>State of the processing of the associated data. </p>
-<p>Note: this variable is not semantically relevant in THIS struct, as it should belong in the struct <a class="el" href="structascon__aead__ctx__t.html" title="Cipher context for authenticated encryption and validated decryption.">ascon_aead_ctx_t</a>, but by having it here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit) at the end of the struct <a class="el" href="structascon__aead__ctx__t.html" title="Cipher context for authenticated encryption and validated decryption.">ascon_aead_ctx_t</a>, by using the padding space this struct anyway has.</p>
-<p>This struct has anyway some padding at the end. </p>
+<p>State of the order of Init-Update-Final function calls, checked to know when to finalise the associated data processing and for the runtime assertions on the correct order of the functions. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="ascon_8h.html#a4d9e7874efcfe5c4789385bf580f5d14" title="When defined, enables the runtime assertions on the parameters of all functions of the library API us...">ASCON_INPUT_ASSERTS</a></dd></dl>
+<p>Note: this variable is not semantically relevant in THIS struct, as it should belong in the struct <a class="el" href="structascon__aead__ctx__t.html" title="Cipher context for authenticated encryption and validated decryption.">ascon_aead_ctx_t</a>, but by having it here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit, 1 on 16-bit) at the end of the struct <a class="el" href="structascon__aead__ctx__t.html" title="Cipher context for authenticated encryption and validated decryption.">ascon_aead_ctx_t</a>, by using some of the padding space this struct anyway has. </p>
 
 </div>
 </div>

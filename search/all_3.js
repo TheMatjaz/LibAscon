@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['k0_60',['k0',['../structascon__aead__ctx__t.html#aef605192f06df1725cc7586157a1c53c',1,'ascon_aead_ctx_t']]],
-  ['k1_61',['k1',['../structascon__aead__ctx__t.html#afc45bbb720eb5d764c5a4950063970ef',1,'ascon_aead_ctx_t']]],
-  ['k2_62',['k2',['../structascon__aead__ctx__t.html#a22f794d147debd747449dca8be1a7db5',1,'ascon_aead_ctx_t']]]
+  ['flow_5fstate_66',['flow_state',['../structascon__bufstate__t.html#ab02d1bd0c13ec4554d25e91ebe013b36',1,'ascon_bufstate_t']]]
 ];
