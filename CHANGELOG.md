@@ -10,10 +10,98 @@ and this project adheres to
 
 *******************************************************************************
 
+[1.1.0] - 2021-05-11
+----------------------------------------
+
+New hashing functions comparing the expected and computed digest,
+support for virtually any tag and digest size, removed dependencies `malloc.h`
+and `string.h`, better context cleanup, optional asserts validating the
+library input.
+
+
+### Added
+
+- 4 new hash functions that compute the digest of a message and compare it with
+  the expected one, informing the user if they match. This is done with
+  constant stack memory usage, like the AEAD functions now validate the tags
+  too. The functions need the data and the expected digest as input,
+  providing a boolean as output, indicating whether the digest matches or not.
+  - `ascon_hash_matches()` and `ascon_hash_xof_matches()` to validate the
+    digest of a contiguous message.
+  - `ascon_hash_final_matches()` and `ascon_hash_xof_final_matches()` to
+    validate the digest as a last step of the Init-Update-Final process,
+    removing the need from the user to call `ascon_hash_final()` or
+    `ascon_hash_xof_final()` and run `memcmp()` on the just calculated digest.
+
+- **Optional** runtime asserts to validate the argument of the
+  library API functions, mostly checking for NULL pointers and correct
+  order of calling of the Init-Update-Final functions.
+  - Suggested use only in Debug mode.
+  - Uses `assert.h` by default, but can be overridden by defining
+    `ASCON_ASSERT` at compile time too.
+  - In CMake script it's enabled **only** for Debug builds and **only**
+    if `assert.h`  is available.
+  - **Disabled** by default if compiling the library by other means
+    (e.g. custom makefile).
+
+- 2 new example usages in the Readme:
+  - Offline encryption/decryption of contiguous data.
+  - Hashing functions, including new digest-comparison functions.
+
+
+### Changed
+
+- Library internals (not impacting API):
+  - The AEAD tag validation is not performed one chunk of 8 bytes at the time
+    rather than generating the whole contiguous tag from the user-given data and
+    comparing it in its entirety (`memcmp()`) with the user-given tag.
+    This implies that tag lengths don't have a physical limitation anymore
+    (previously tag lengths > 64 bytes were discouraged).
+  - Renamed state variable `ascon_bufstate_t.assoc_data_state`
+    to `ascon_bufstate_t.flow_state`.
+  - Enlarged state enum `ascon_flow_t`.
+  - Renamed `const uint8_t* tag` parameter in AEAD function to `expected_tag`
+    to emphasise that is the one that comes next to the ciphertext.
+    It's length is now similarly `expected_tag_len`.
+
+
+### Removed
+
+- Dependency `malloc.h`: is not required on Windows anymore, as we don't
+  allocate the whole expected tag on the stack anymore: a small 8 byte buffer
+  is used instead.
+
+- Dependency `string.h`: due to `memcmp()` (see Changed section) and
+  `memset()`/`memset_s()` (see Fixed section) not being used anymore, the
+  library is not used.
+
+
+### Fixed
+
+- The clearing of the context, both for AEAD and hash functions is performed
+  without loops or `memset()`/`memset_s()`, but by setting the (not so many)
+  context fields one by one to 0 using volatile pointer dereferencing to
+  improve the chances of the optimiser not removing the cleanup section.
+
+- CMake fixes:
+  - `clean` target now removes `ascon.h` from the build directory.
+  - Better copying of the test vectors to the build directory: use a custom
+    target, set it as a dependency to `testascon` and `testasconshared` to
+    avoid issues on some systems.
+  - Building with CMake should now work properly when using LibAscon in a
+    Git Submodule.
+
+- Small fixes in the hash/XOF function tests.
+
+
+
 [1.0.3] - 2021-05-08
 ----------------------------------------
 
 Support for compilation on Windows with MSVC, other CMake improvements.
+
+Thanks to [mataron](https://github.com/mataron) for providing the initial
+fixes for MSVC!
 
 
 ### Added

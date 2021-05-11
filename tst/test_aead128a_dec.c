@@ -70,6 +70,7 @@ static void test_decrypt_empty(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With AD update calls of zero length
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
@@ -85,6 +86,7 @@ static void test_decrypt_empty(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With PT update calls of zero length
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
@@ -108,6 +110,7 @@ static void test_decrypt_empty(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With AD and PT update calls of zero length
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
@@ -134,6 +137,7 @@ static void test_decrypt_empty(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 
@@ -178,6 +182,7 @@ static void test_decrypt_1_byte_ad_empty_pt(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With PT call
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
@@ -196,6 +201,7 @@ static void test_decrypt_1_byte_ad_empty_pt(void)
     atto_eq(new_pt_len, 0);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_decrypt_1_byte_pt_empty_ad(void)
@@ -242,6 +248,7 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
     atto_eq(new_pt_len, 1);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 
     // With AD call
     memset(obtained_plaintext, 0, sizeof(obtained_plaintext));
@@ -260,6 +267,7 @@ static void test_decrypt_1_byte_pt_empty_ad(void)
     atto_eq(new_pt_len, 1);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_decrypt_1_byte_pt_1_byte_ad(void)
@@ -307,6 +315,7 @@ static void test_decrypt_1_byte_pt_1_byte_ad(void)
     atto_eq(new_pt_len, 1);
     atto_eq(is_valid, ASCON_TAG_OK);
     atto_memeq(obtained_plaintext, testcase.plaintext, testcase.plaintext_len);
+    atto_zeros(&aead_ctx, sizeof(aead_ctx));
 }
 
 static void test_decrypt_offline(void)
@@ -412,6 +421,7 @@ static void test_decrypt_update_single_byte(void)
         atto_memeq(obtained_plaintext,
                    testcase.plaintext,
                    testcase.plaintext_len);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 
@@ -554,6 +564,7 @@ static void test_decrypt_update_three_bytes(void)
         atto_memeq(obtained_plaintext,
                    testcase.plaintext,
                    testcase.plaintext_len);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 
@@ -631,6 +642,7 @@ static void test_decrypt_update_var_bytes(void)
         atto_memeq(obtained_plaintext,
                    testcase.plaintext,
                    testcase.plaintext_len);
+        atto_zeros(&aead_ctx, sizeof(aead_ctx));
     }
 }
 

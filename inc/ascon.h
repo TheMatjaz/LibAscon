@@ -37,10 +37,34 @@ extern "C"
 {
 #endif
 
-#include <stdint.h> /* For uint8_t, uint64_t */
+#include <stdint.h> /* For uint8_t, uint_fast8_t, uint64_t */
 #include <stddef.h> /* For size_t, NULL */
-#include <string.h> /* For memset() */
 #include <stdbool.h> /* For bool, true, false */
+
+#if defined(ASCON_INPUT_ASSERTS) && !defined(ASCON_ASSERT)
+/**
+ * @def ASCON_INPUT_ASSERTS
+ * When defined, enables the runtime assertions on the parameters of all
+ * functions of the library API using #ASCON_ASSERT - undefined (disabled)
+ * by default.
+ * The check is mostly against NULL pointers, for the correct order of calling
+ * of the many Init-Update-Final functions and against mixing functions from
+ * different AEAD algorithms (128 vs 128a vs 80pq). It's generally useful
+ * for debugging only.
+ * @see ASCON_ASSERT
+ */
+// Redefining ASCON_INPUT_ASSERTS otherwise Doxygen does not find it
+#undef ASCON_INPUT_ASSERTS
+#define ASCON_INPUT_ASSERTS 1
+/**
+ * @def ASCON_ASSERT
+ * Assertion macro, defaulting to `assert` from `assert.h`, when
+ * #ASCON_INPUT_ASSERTS is defined, but #ASCON_ASSERT is not.
+ * Redefine it to something else if required.
+ */
+#include <assert.h> /* For assert() */
+#define ASCON_ASSERT(expr) assert(expr)
+#endif
 
 /**
  * @def ASCON_API
@@ -48,27 +72,25 @@ extern "C"
  * indicators for DLL on Windows, empty on other platforms.
  */
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__)
-    #include <malloc.h>  /* For _malloca(), _freea() */
-    /**
-     * @def ASCON_WINDOWS
-     * Indicator simplifying the check for the Windows platform (undefined on other platforms).
-     * Used for internal decisions on how to inline functions and declare arrays of variable length
-     * on the stack.
-     */
-    #define ASCON_WINDOWS 1
-    #define ASCON_API __declspec(dllexport)
+/**
+ * @def ASCON_WINDOWS
+ * Indicator simplifying the check for the Windows platform (undefined on other platforms).
+ * Used for internal decisions on how to inline functions.
+ */
+#define ASCON_WINDOWS 1
+#define ASCON_API __declspec(dllexport)
 #else
-    #define ASCON_API
+#define ASCON_API
 #endif
 
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 1
 /** Minor version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_MINOR 0
+#define ASCON_API_VERSION_MINOR 1
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 3
+#define ASCON_API_VERSION_BUGFIX 0
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.0.3"
+#define ASCON_API_VERSION "1.1.0"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
@@ -159,19 +181,22 @@ typedef struct
     uint8_t buffer_len;
 
     /**
-     * State of the processing of the associated data.
+     * State of the order of Init-Update-Final function calls, checked to
+     * know when to finalise the associated data processing and for the
+     * runtime assertions on the correct order of the functions.
+     *
+     * @see #ASCON_INPUT_ASSERTS
      *
      * Note: this variable is not semantically relevant in THIS struct,
      * as it should belong in the struct ascon_aead_ctx_t, but by having it
-     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit)
-     * at the end of the struct ascon_aead_ctx_t, by using the padding space
-     * this struct anyway has.
-     *
-     * This struct has anyway some padding at the end.
+     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit,
+     * 1 on 16-bit) at the end of the struct ascon_aead_ctx_t, by using some
+     * of the padding space this struct anyway has.
      */
-    uint8_t assoc_data_state;
+    uint8_t flow_state;
 
-    /** Unused padding to the next uint64_t (sponge.x0). */
+    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0)
+     * to avoid errors when compiling with `-Wpadding` on any platform. */
     uint8_t pad[6];
 } ascon_bufstate_t;
 
@@ -242,9 +267,6 @@ typedef struct
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  */
 ASCON_API void
 ascon_aead128_encrypt(uint8_t* ciphertext,
@@ -430,9 +452,6 @@ ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack during
- *       decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -467,7 +486,7 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -475,7 +494,7 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns the answer to the question "is tha tag valid?", thus
@@ -489,10 +508,10 @@ ascon_aead128_decrypt(uint8_t* plaintext,
                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                       const uint8_t* assoc_data,
                       const uint8_t* ciphertext,
-                      const uint8_t* tag,
+                      const uint8_t* expected_tag,
                       size_t assoc_data_len,
                       size_t ciphertext_len,
-                      size_t tag_len);
+                      size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -567,14 +586,12 @@ ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -583,8 +600,8 @@ ASCON_API size_t
 ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                             uint8_t* plaintext,
                             bool* is_tag_valid,
-                            const uint8_t* tag,
-                            size_t tag_len);
+                            const uint8_t* expected_tag,
+                            size_t expected_tag_len);
 
 /**
  * Security cleanup of the AEAD context, in case the online processing
@@ -648,9 +665,6 @@ ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
 */
 ASCON_API void
 ascon_aead128a_encrypt(uint8_t* ciphertext,
@@ -840,9 +854,6 @@ ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -878,7 +889,7 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -886,11 +897,9 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -902,10 +911,10 @@ ascon_aead128a_decrypt(uint8_t* plaintext,
                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
-                       const uint8_t* tag,
+                       const uint8_t* expected_tag,
                        size_t assoc_data_len,
                        size_t ciphertext_len,
-                       size_t tag_len);
+                       size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon128a, feeding ciphertext and getting
@@ -981,14 +990,12 @@ ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_DOUBLE_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -997,8 +1004,8 @@ ASCON_API size_t
 ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
                              uint8_t* plaintext,
                              bool* is_tag_valid,
-                             const uint8_t* tag,
-                             size_t tag_len);
+                             const uint8_t* expected_tag,
+                             size_t expected_tag_len);
 
 
 /**
@@ -1043,8 +1050,6 @@ ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
  *        bytes. Can be 0 (not recommended, see warning).
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
 */
 ASCON_API void
 ascon_aead80pq_encrypt(uint8_t* ciphertext,
@@ -1235,9 +1240,6 @@ ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] tag_len length of the tag to generate in bytes. At least
  *       #ASCON_AEAD_TAG_MIN_SECURE_LEN is recommended for security.
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack
- *       during decryption.
  * @returns number of bytes written into \p ciphertext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -1273,7 +1275,7 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -1281,11 +1283,9 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns the answer to the question "is tha tag valid?", thus
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
@@ -1297,10 +1297,10 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
-                       const uint8_t* tag,
+                       const uint8_t* expected_tag,
                        size_t assoc_data_len,
                        size_t ciphertext_len,
-                       size_t tag_len);
+                       size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon80pq, feeding ciphertext and getting
@@ -1375,14 +1375,12 @@ ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
- *       Avoid too large tag lengths (say > 64 B) as the generated value
- *       to compare to the user-given one is allocated on the stack.
  * @returns number of bytes written into \p plaintext. The value is in the
  *        interval [0, #ASCON_RATE[, i.e. whatever remained in the buffer
  *        after the last update call.
@@ -1391,8 +1389,8 @@ ASCON_API size_t
 ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
                              uint8_t* plaintext,
                              bool* is_tag_valid,
-                             const uint8_t* tag,
-                             size_t tag_len);
+                             const uint8_t* expected_tag,
+                             size_t expected_tag_len);
 
 /**
  * Offline Ascon Hash with fixed digest length.
@@ -1417,6 +1415,38 @@ ASCON_API void
 ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
            const uint8_t* data,
            size_t data_len);
+
+/**
+ * Offline Ascon Hash with fixed digest length, finalisation and digest
+ * validation of the expected one.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash(key || msg)`. There
+ * is **no need to build an HMAC** construct around it, as it does not suffer
+ * from length-extension vulnerabilities.
+ *
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_final() or ascon_hash() function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] data message fed into the hash function.
+ * @param[in] data_len length of \p data in bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
+ASCON_API bool
+ascon_hash_matches(const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN],
+                   const uint8_t* data,
+                   size_t data_len);
 
 /**
  * Online Ascon Hash with fixed digest length, initialisation.
@@ -1466,6 +1496,12 @@ ascon_hash_update(ascon_hash_ctx_t* ctx,
  *
  * Finalises the hashing by returning the digest of the message.
  *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. It will be erased
  *       securely before this function returns. Not NULL.
@@ -1477,7 +1513,34 @@ ascon_hash_final(ascon_hash_ctx_t* ctx,
                  uint8_t digest[ASCON_HASH_DIGEST_LEN]);
 
 /**
- * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * Online Ascon Hash with fixed digest length, finalisation and digest
+ * validation of the expected one.
+ *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_final() or ascon_hash() function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
+ASCON_API bool
+ascon_hash_final_matches(ascon_hash_ctx_t* ctx,
+                         const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN]);
+
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
  * XOF).
  *
  * Hashes the data, which is already available as a whole in a contiguous
@@ -1497,12 +1560,6 @@ ascon_hash_final(ascon_hash_ctx_t* ctx,
  * quantum computers, the hash size should be double the amount of wanted
  * security bits.
  *
- * @warning
- * In case the hashing session is interrupted and never finalised (this function
- * is never called), clear the context with ascon_hash_cleanup() to erase any
- * information about the hashed content, especially in case keyed hashing is
- * performed.
- *
  * @param[out] digest fingerprint of the message, output of the hash function,
  *       of \p digest_len bytes.
  * @param[in] data message fed into the hash function.
@@ -1514,6 +1571,47 @@ ascon_hash_xof(uint8_t* digest,
                const uint8_t* data,
                size_t digest_len,
                size_t data_len);
+
+/**
+ * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF) and validation of the expected one.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it of the desired length.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash_xof(key || msg)`.
+ * There is **no need to build an HMAC** construct around it, as it does not
+ * suffer from length-extension vulnerabilities.
+ *
+ * @warning
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
+ *
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_xof_final() or ascon_hash_xof() function,
+ *       of \p expected_digest_len bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] data message fed into the hash function.
+ * @param[in] expected_digest_len desired length of the \p expected_digest
+ *       in bytes.
+ * @param[in] data_len length of \p data in bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
+ASCON_API bool
+ascon_hash_xof_matches(const uint8_t* expected_digest,
+                       const uint8_t* data,
+                       size_t expected_digest_len,
+                       size_t data_len);
 
 /**
  * Online Ascon Hash with custom digest length (eXtendable Output Function,
@@ -1587,6 +1685,30 @@ ASCON_API void
 ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                      uint8_t* digest,
                      size_t digest_len);
+
+/**
+ * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * XOF), finalisation and digest validation of the expected one.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_xof_final() or ascon_hash_xof() function,
+ *       of \p expected_digest_len bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] expected_digest_len desired length of the \p expected_digest in
+ *       bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
+ASCON_API bool
+ascon_hash_xof_final_matches(ascon_hash_ctx_t* ctx,
+                             const uint8_t* expected_digest,
+                             size_t expected_digest_len);
 
 /**
  * Security cleanup of the hashing context, in case the online
