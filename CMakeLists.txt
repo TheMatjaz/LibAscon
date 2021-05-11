@@ -23,9 +23,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Compiler flags
 # -----------------------------------------------------------------------------
 include(compiler_flags.cmake)
-# Enable runtime assertions verifying the library API inputs using assert.h
-# but only in debug mode.
-string(APPEND CMAKE_C_FLAGS_DEBUG " -DASCON_INPUT_ASSERTS")
+
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE("assert.h" ASSERT_H_EXISTS)
+if (ASSERT_H_EXISTS)
+    message(STATUS "assert.h found. Enabling runtime assertions verifying "
+            "the library API inputs using assert() but only in debug mode "
+            "for all targets.")
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -DASCON_INPUT_ASSERTS")
+endif ()
+
 
 # -----------------------------------------------------------------------------
 # Source files
@@ -190,6 +197,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/images)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    set(DOXYGEN_PREDEFINED ASCON_INPUT_ASSERTS WIN32)
     doxygen_add_docs(doxygen
             # Do NOT build doxygen on make-all, to avoid polluting the stdout
             # List of input files for Doxygen
