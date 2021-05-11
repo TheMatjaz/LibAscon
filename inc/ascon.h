@@ -86,11 +86,11 @@ extern "C"
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 1
 /** Minor version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_MINOR 0
+#define ASCON_API_VERSION_MINOR 1
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 4
+#define ASCON_API_VERSION_BUGFIX 0
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.0.4"
+#define ASCON_API_VERSION "1.1.0"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
