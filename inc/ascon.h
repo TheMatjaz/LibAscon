@@ -51,6 +51,7 @@ extern "C"
  * of the many Init-Update-Final functions and against mixing functions from
  * different AEAD algorithms (128 vs 128a vs 80pq). It's generally useful
  * for debugging only.
+ * @see ASCON_ASSERT
  */
 /**
  * @def ASCON_ASSERT
@@ -177,19 +178,22 @@ typedef struct
     uint8_t buffer_len;
 
     /**
-     * State of the processing of the associated data.
+     * State of the order of Init-Update-Final function calls, checked to
+     * know when to finalise the associated data processing and for the
+     * runtime assertions on the correct order of the functions.
+     *
+     * @see #ASCON_INPUT_ASSERTS
      *
      * Note: this variable is not semantically relevant in THIS struct,
      * as it should belong in the struct ascon_aead_ctx_t, but by having it
-     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit)
-     * at the end of the struct ascon_aead_ctx_t, by using the padding space
-     * this struct anyway has.
-     *
-     * This struct has anyway some padding at the end.
+     * here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit,
+     * 1 on 16-bit) at the end of the struct ascon_aead_ctx_t, by using some
+     * of the padding space this struct anyway has.
      */
-    uint8_t flow_state; // TODO doxygen update
+    uint8_t flow_state;
 
-    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0). */
+    /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0)
+     * to avoid errors when compiling with `-Wpadding` on any platform. */
     uint8_t pad[6];
 } ascon_bufstate_t;
 
