@@ -123,7 +123,7 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
     return ASCON_TAG_OK;
 }
 
-ASCON_API inline void
+ASCON_API void
 ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
 #ifdef ASCON_INPUT_ASSERTS

@@ -71,7 +71,7 @@ ascon_hash_xof_matches(const uint8_t* const expected_digest,
     return ascon_hash_xof_final_matches(&ctx, expected_digest, expected_digest_len);
 }
 
-ASCON_API inline void
+ASCON_API void
 ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
 {
 #ifdef ASCON_INPUT_ASSERTS
