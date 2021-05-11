@@ -554,7 +554,7 @@ static void test_hash_update_single_byte(void)
     }
 }
 
-void test_hash_matches_failing_on_wrong_input(void)
+static void test_hash_matches_failing_on_wrong_input(void)
 {
     ascon_hash_ctx_t hash_ctx;
     uint8_t dummy_data[] = "abcde";

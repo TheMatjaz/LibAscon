@@ -592,7 +592,7 @@ static void test_xof_batch_custom_digest_len(void)
     }
 }
 
-void test_xof_matches_failing_on_wrong_input(void)
+static void test_xof_matches_failing_on_wrong_input(void)
 {
     ascon_hash_ctx_t xof_ctx;
     uint8_t dummy_data[] = "abcde";
