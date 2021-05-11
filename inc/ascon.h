@@ -486,7 +486,7 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -494,7 +494,7 @@ ascon_aead128_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns the answer to the question "is tha tag valid?", thus
@@ -508,10 +508,10 @@ ascon_aead128_decrypt(uint8_t* plaintext,
                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                       const uint8_t* assoc_data,
                       const uint8_t* ciphertext,
-                      const uint8_t* tag,
+                      const uint8_t* expected_tag,
                       size_t assoc_data_len,
                       size_t ciphertext_len,
-                      size_t tag_len);
+                      size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon128, feeding ciphertext and getting
@@ -586,10 +586,10 @@ ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns number of bytes written into \p plaintext. The value is in the
@@ -600,8 +600,8 @@ ASCON_API size_t
 ascon_aead128_decrypt_final(ascon_aead_ctx_t* ctx,
                             uint8_t* plaintext,
                             bool* is_tag_valid,
-                            const uint8_t* tag,
-                            size_t tag_len);
+                            const uint8_t* expected_tag,
+                            size_t expected_tag_len);
 
 /**
  * Security cleanup of the AEAD context, in case the online processing
@@ -889,7 +889,7 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -897,7 +897,7 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns the answer to the question "is tha tag valid?", thus
@@ -911,10 +911,10 @@ ascon_aead128a_decrypt(uint8_t* plaintext,
                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
-                       const uint8_t* tag,
+                       const uint8_t* expected_tag,
                        size_t assoc_data_len,
                        size_t ciphertext_len,
-                       size_t tag_len);
+                       size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon128a, feeding ciphertext and getting
@@ -990,10 +990,10 @@ ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns number of bytes written into \p plaintext. The value is in the
@@ -1004,8 +1004,8 @@ ASCON_API size_t
 ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
                              uint8_t* plaintext,
                              bool* is_tag_valid,
-                             const uint8_t* tag,
-                             size_t tag_len);
+                             const uint8_t* expected_tag,
+                             size_t expected_tag_len);
 
 
 /**
@@ -1275,7 +1275,7 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] assoc_data data to be validated with the same tag
  *        but not decrypted. Can be NULL iff \p assoc_data_len is 0.
  * @param[in] ciphertext data to be decrypted into \p plaintext.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
  * @param[in] assoc_data_len length of the data pointed by \p assoc_data in
@@ -1283,7 +1283,7 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* ctx,
  * @param[in] ciphertext_len length of the data pointed by \p ciphertext in
  *        bytes. Can be 0 (not recommended, see warning of
  *        ascon_aead128_encrypt()).
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns the answer to the question "is tha tag valid?", thus
@@ -1297,10 +1297,10 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
                        const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
-                       const uint8_t* tag,
+                       const uint8_t* expected_tag,
                        size_t assoc_data_len,
                        size_t ciphertext_len,
-                       size_t tag_len);
+                       size_t expected_tag_len);
 
 /**
  * Online symmetric decryption using Ascon80pq, feeding ciphertext and getting
@@ -1375,10 +1375,10 @@ ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  *        `true` (== #ASCON_TAG_OK) if the validation of the tag is correct,
  *        thus the associated data and ciphertext are intact and authentic.
  *        `false` (== #ASCON_TAG_INVALID) otherwise.
- * @param[in] tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
+ * @param[in] expected_tag Message Authentication Code (MAC, a.k.a. cryptographic tag,
  *       fingerprint), used to validate the integrity and authenticity of the
  *       associated data and ciphertext. Has \p tag_len bytes. Not NULL.
- * @param[in] tag_len length of the \p tag to check in bytes. It should be
+ * @param[in] expected_tag_len length of the \p tag to check in bytes. It should be
  *       the same length as generated during the encryption
  *       but it can be shorter (although it's not recommended).
  * @returns number of bytes written into \p plaintext. The value is in the
@@ -1389,8 +1389,8 @@ ASCON_API size_t
 ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
                              uint8_t* plaintext,
                              bool* is_tag_valid,
-                             const uint8_t* tag,
-                             size_t tag_len);
+                             const uint8_t* expected_tag,
+                             size_t expected_tag_len);
 
 /**
  * Offline Ascon Hash with fixed digest length.

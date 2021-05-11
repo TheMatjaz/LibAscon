@@ -91,10 +91,10 @@ small_neq(const uint8_t* a, const uint8_t* b, uint_fast8_t amount)
 bool
 ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
                         const uint8_t* expected_tag,
-                        size_t tag_len)
+                        size_t expected_tag_len)
 {
     uint8_t computed_tag_chunk[sizeof(uint64_t)];
-    while (tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
+    while (expected_tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
         // All bytes before the last 16
         // Note: converting the sponge uint64_t to bytes to then check them as
@@ -103,21 +103,21 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
         bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x3);
         if (NOT_EQUAL_U64(computed_tag_chunk, expected_tag)) { return ASCON_TAG_INVALID; }
         expected_tag += sizeof(uint64_t);
-        tag_len -= sizeof(uint64_t);
+        expected_tag_len -= sizeof(uint64_t);
         bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x4);
         if (NOT_EQUAL_U64(computed_tag_chunk, expected_tag)) { return ASCON_TAG_INVALID; }
         expected_tag += sizeof(uint64_t);
-        tag_len -= sizeof(uint64_t);
+        expected_tag_len -= sizeof(uint64_t);
         ascon_permutation_a12(&ctx->bufstate.sponge);
     }
     // The last 16 or less bytes (also 0)
-    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
+    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), expected_tag_len);
     bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x3, remaining);
     if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
     expected_tag += remaining;
     // The last 8 or less bytes (also 0)
-    tag_len -= remaining;
-    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
+    expected_tag_len -= remaining;
+    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), expected_tag_len);
     bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x4, remaining);
     if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
     return ASCON_TAG_OK;

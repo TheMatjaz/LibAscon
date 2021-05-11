@@ -218,7 +218,7 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* ctx,
 bool
 ascon_aead_is_tag_valid(ascon_aead_ctx_t* ctx,
                         const uint8_t* expected_tag,
-                        size_t tag_len);
+                        size_t expected_tag_len);
 
 /**
  * @internal
