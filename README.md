@@ -42,7 +42,7 @@ LibAscon provides:
   not available contiguously in memory, e.g. a too-large file or data in
   transmission.
 
-- Offline processing (whole data contiguous in memory) is also
+- **Offline processing** (whole data contiguous in memory) is also
   available with a simple wrapper.
 
 - **Variable tag length** for authenticated encryption: can generate any tag
@@ -51,10 +51,10 @@ LibAscon provides:
   Note: the tag bytes above 16 bytes are an **extension** of the original Ascon
   algorithm using the same sponge squeezing technique as for the XOF;
 
-- Encryption/decryption can be performed in-place, without the need of a
+- Encryption/decryption can be performed **in-place**, without the need of a
   second output buffer.
 
-- AEAD tag may be provided to a separate location, i.e. not concatenated to
+- AEAD tag may be provided to a **separate location**, i.e. not concatenated to
   the ciphertext.
 
 - Same performance as the original C implementation in _Release_ mode,
