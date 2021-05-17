@@ -143,18 +143,18 @@ ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x2 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x3 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x4 = 0U;
-    for (uint_fast8_t i = 0; i < ASCON_RATE; i++)
+    for (uint_fast8_t i = 0; i < ASCON_DOUBLE_RATE; i++)
     {
-        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer[0] = 0U;
+        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer[i] = 0U;
     }
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.flow_state = ASCON_FLOW_CLEANED;
     // Clearing also the padding to set the whole context to be all-zeros.
     // Makes it easier to check for initialisation and provides a known
     // state after cleanup, initialising all memory.
-    for (uint_fast8_t i = 0; i < 6; i++)
+    for (uint_fast8_t i = 0U; i < 6U; i++)
     {
-        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[0] = 0U;
+        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[i] = 0U;
     }
     ((volatile ascon_aead_ctx_t*) ctx)->k0 = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->k1 = 0U;
