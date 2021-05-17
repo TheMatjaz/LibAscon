@@ -10,6 +10,28 @@ and this project adheres to
 
 *******************************************************************************
 
+[1.1.1] - 2021-05-17
+----------------------------------------
+
+Compilation fixes for some GCC versions, added `ascon_` to some internal target
+names to avoid name clashing.
+
+
+### Fixed
+
+- Avoid type-punning when clearing the context and when comparing the
+  expected and computed tag/digest, which may cause compilation errors
+  with `-Werror=strict-aliasing` in some GCC versions.
+- Renamed some build targets to avoid name collisions when including the whole
+  LibAscon project into another CMake project with `add_subdirectory()`
+  - `doxygen` -> `ascon_doxygen`
+  - `benchmark` -> `ascon_benchmark`
+  - `copytestvectors` -> `ascon_copytestvectors`
+  As these are all internal targets, it should hopefully not affect the
+  library user.
+
+
+
 [1.1.0] - 2021-05-11
 ----------------------------------------
 
