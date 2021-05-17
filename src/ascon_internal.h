@@ -76,12 +76,6 @@ extern "C"
 
 /**
  * @internal
- * Simple inequality comparison of arrays of 8 bytes.
- */
-#define NOT_EQUAL_U64(a, b) ((*(uint64_t*) (a)) != (*(uint64_t*) (b)))
-
-/**
- * @internal
  * States used to understand which function of the API was called before
  * for the input assertions and to known if the associated data has been
  * updated or not.

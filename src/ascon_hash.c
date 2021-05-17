@@ -207,6 +207,17 @@ ascon_hash_final(ascon_hash_ctx_t* const ctx,
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
 
+/** @internal Simplistic clone of `memcmp() != 0`, true when NOT equal. */
+inline static bool
+small_neq(const uint8_t* restrict a, const uint8_t* restrict b, size_t amount)
+{
+    while (amount--)
+    {
+        if (*(a++) != *(b++)) { return true; }
+    }
+    return false;
+}
+
 ASCON_API bool
 ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
                              const uint8_t* expected_digest,
@@ -232,7 +243,7 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
         // proper tag's byte order regardless of the platform's endianness.
         ascon_permutation_a12(&ctx->sponge);
         bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
-        if (NOT_EQUAL_U64(computed_digest_chunk, expected_digest))
+        if (small_neq(computed_digest_chunk, expected_digest, ASCON_RATE))
         {
             ascon_hash_cleanup(ctx);
             return ASCON_TAG_INVALID;
@@ -244,13 +255,10 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
     bigendian_encode_varlen(computed_digest_chunk, ctx->sponge.x0,
                             (uint_fast8_t) expected_digest_len);
     // Check the remaining bytes in the chunk, potentially less than ASCON_RATE
-    for (uint_fast8_t i = 0; i < (uint_fast8_t) expected_digest_len; i++)
+    if (small_neq(computed_digest_chunk, expected_digest, expected_digest_len))
     {
-        if (computed_digest_chunk[i] != expected_digest[i])
-        {
-            ascon_hash_cleanup(ctx);
-            return ASCON_TAG_INVALID;
-        }
+        ascon_hash_cleanup(ctx);
+        return ASCON_TAG_INVALID;
     }
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
