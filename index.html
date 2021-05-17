@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LibAscon
-   &#160;<span id="projectnumber">1.1.0</span>
+   &#160;<span id="projectnumber">1.1.1</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -349,11 +349,11 @@ Compiling Ascon into all possible targets with CMake</h2>
 <p>A note if you are compiling on Windows from the command line:</p>
 <ul>
 <li>you will need <a href="https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160#developer_command_file_locations">the environment variables</a> to use the MSVC toolchain from the command line</li>
-<li>be sure to select the generator <code>CodeBlocks - NMake Makefiles</code> when configuring CMake</li>
+<li>be sure to select the generator <code>NMake Makefiles</code> when configuring CMake</li>
 </ul>
 <p>Compile an out of source build:</p>
 <div class="fragment"><div class="line">mkdir build &amp;&amp; cd build</div>
-<div class="line">cmake .. -DCMAKE_BUILD_TYPE=Release  # On Windows add: -G &quot;CodeBlocks - NMake Makefiles&quot;</div>
+<div class="line">cmake .. -DCMAKE_BUILD_TYPE=Release  # On Windows add: -G &quot;NMake Makefiles&quot;</div>
 <div class="line">cmake --build . --parallel 8</div>
 </div><!-- fragment --><p>This will build all useful targets:</p>
 <ul>
@@ -372,7 +372,7 @@ Compiling Ascon into all possible targets with CMake</h2>
 <li><code>testascon</code> a test runner executable , which test all features of the static library</li>
 <li><code>testasconshared</code> a test runner executable , which test all features of the shared library</li>
 </ul>
-<p>Doxygen (if installed) is built separately to avoid recompiling it for any library change: </p><div class="fragment"><div class="line">cmake --build . --target doxygen</div>
+<p>Doxygen (if installed) is built separately to avoid recompiling it for any library change: </p><div class="fragment"><div class="line">cmake --build . --target ascon_doxygen</div>
 </div><!-- fragment --><p>To compile only a single target, for example <code>ascon80pq</code>, run </p><div class="fragment"><div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line">cmake .. -DCMAKE_BUILD_TYPE=Release</div>
 <div class="line">cmake --build . --target ascon80pq</div>
