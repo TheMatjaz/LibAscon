@@ -84,19 +84,19 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     ((volatile ascon_hash_ctx_t*) ctx)->sponge.x2 = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->sponge.x3 = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->sponge.x4 = 0U;
-    *(volatile uint64_t*) &ctx->buffer[0] = 0U;
-    *(volatile uint64_t*) &ctx->buffer[ASCON_RATE] = 0U;
+    for (uint_fast8_t i = 0; i < ASCON_DOUBLE_RATE; i++)
+    {
+        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer[i] = 0U;
+    }
     ((volatile ascon_hash_ctx_t*) ctx)->buffer_len = 0U;
     ((volatile ascon_hash_ctx_t*) ctx)->flow_state = ASCON_FLOW_CLEANED;
     // Clearing also the padding to set the whole context to be all-zeros.
     // Makes it easier to check for initialisation and provides a known
     // state after cleanup, initialising all memory.
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[0] = 0;
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[1] = 0;
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[2] = 0;
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[3] = 0;
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[4] = 0;
-    ((volatile ascon_hash_ctx_t*) ctx)->pad[5] = 0;
+    for (uint_fast8_t i = 0U; i < 6U; i++)
+    {
+        ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[i] = 0U;
+    }
 }
 
 static void
@@ -207,6 +207,17 @@ ascon_hash_final(ascon_hash_ctx_t* const ctx,
     ascon_hash_xof_final(ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
 
+/** @internal Simplistic clone of `memcmp() != 0`, true when NOT equal. */
+inline static bool
+small_neq(const uint8_t* restrict a, const uint8_t* restrict b, size_t amount)
+{
+    while (amount--)
+    {
+        if (*(a++) != *(b++)) { return true; }
+    }
+    return false;
+}
+
 ASCON_API bool
 ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
                              const uint8_t* expected_digest,
@@ -232,25 +243,22 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
         // proper tag's byte order regardless of the platform's endianness.
         ascon_permutation_a12(&ctx->sponge);
         bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
-        if (NOT_EQUAL_U64(computed_digest_chunk, expected_digest))
+        if (small_neq(computed_digest_chunk, expected_digest, sizeof(computed_digest_chunk)))
         {
             ascon_hash_cleanup(ctx);
             return ASCON_TAG_INVALID;
         }
-        expected_digest_len -= ASCON_RATE;
-        expected_digest += ASCON_RATE;
+        expected_digest_len -= sizeof(computed_digest_chunk);
+        expected_digest += sizeof(computed_digest_chunk);
     }
     ascon_permutation_a12(&ctx->sponge);
     bigendian_encode_varlen(computed_digest_chunk, ctx->sponge.x0,
                             (uint_fast8_t) expected_digest_len);
     // Check the remaining bytes in the chunk, potentially less than ASCON_RATE
-    for (uint_fast8_t i = 0; i < (uint_fast8_t) expected_digest_len; i++)
+    if (small_neq(computed_digest_chunk, expected_digest, expected_digest_len))
     {
-        if (computed_digest_chunk[i] != expected_digest[i])
-        {
-            ascon_hash_cleanup(ctx);
-            return ASCON_TAG_INVALID;
-        }
+        ascon_hash_cleanup(ctx);
+        return ASCON_TAG_INVALID;
     }
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);

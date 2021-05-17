@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 project(LibAscon
-        VERSION 1.1.0
+        VERSION 1.1.1
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -131,7 +131,7 @@ set_target_properties(ascon PROPERTIES
 
 # Copy test vectors files to build directory.
 # They are used by the test runner
-add_custom_target(copytestvectors ALL
+add_custom_target(ascon_copytestvectors ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/tst/vectors
         ${CMAKE_CURRENT_BINARY_DIR}/vectors)
@@ -139,7 +139,7 @@ add_custom_target(copytestvectors ALL
 # vectors and the copied header file copied by `configure_file()`.
 # Given that configure file is not a target, by adding the file here, we
 # have a guarantee it will be cleaned.
-set_target_properties(copytestvectors PROPERTIES
+set_target_properties(ascon_copytestvectors PROPERTIES
         ADDITIONAL_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/vectors
         ADDITIONAL_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/ascon.h)
 
@@ -151,7 +151,7 @@ target_include_directories(testascon
         PUBLIC inc/
         PRIVATE tst/
         PRIVATE tst/atto/)
-add_dependencies(testascon asconfull copytestvectors)
+add_dependencies(testascon asconfull ascon_copytestvectors)
 target_link_libraries(testascon PUBLIC asconfull)
 set_target_properties(testascon PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -165,7 +165,7 @@ target_include_directories(testasconshared
         PUBLIC inc/
         PRIVATE tst/
         PRIVATE tst/atto/)
-add_dependencies(testasconshared ascon copytestvectors)
+add_dependencies(testasconshared ascon ascon_copytestvectors)
 target_link_libraries(testasconshared PUBLIC ascon)
 set_target_properties(testasconshared PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -173,12 +173,12 @@ set_target_properties(testasconshared PROPERTIES
 
 # Benchmark runner executable, reuse the static library instead of recompiling
 # the source files
-add_executable(benchmark
+add_executable(ascon_benchmark
         ${BENCHMARK_SRC_FILES})
-target_include_directories(benchmark PUBLIC inc/)
-add_dependencies(benchmark asconfull)
-target_link_libraries(benchmark PUBLIC asconfull)
-set_target_properties(benchmark PROPERTIES
+target_include_directories(ascon_benchmark PUBLIC inc/)
+add_dependencies(ascon_benchmark asconfull)
+target_link_libraries(ascon_benchmark PUBLIC asconfull)
+set_target_properties(ascon_benchmark PROPERTIES
         EXCLUDE_FROM_ALL TRUE  # Used just for development, not for deployment
         POSITION_INDEPENDENT_CODE ON
         INTERPROCEDURAL_OPTIMISATION TRUE)
@@ -197,7 +197,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
     set(DOXYGEN_PREDEFINED WIN32 ASCON_INPUT_ASSERTS)
-    doxygen_add_docs(doxygen
+    doxygen_add_docs(ascon_doxygen
             # Do NOT build doxygen on make-all, to avoid polluting the stdout
             # List of input files for Doxygen
             ${PROJECT_SOURCE_DIR}/inc/ascon.h

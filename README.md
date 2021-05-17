@@ -362,14 +362,13 @@ A note if you are compiling on Windows from the command line:
 - you will need
   [the environment variables](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160#developer_command_file_locations)
   to use the MSVC toolchain from the command line
-- be sure to select the generator `CodeBlocks - NMake Makefiles` when
-  configuring CMake
+- be sure to select the generator `NMake Makefiles` when configuring CMake
 
 Compile an out of source build:
 
 ```
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release  # On Windows add: -G "CodeBlocks - NMake Makefiles"
+cmake .. -DCMAKE_BUILD_TYPE=Release  # On Windows add: -G "NMake Makefiles"
 cmake --build . --parallel 8
 ```
 
@@ -395,7 +394,7 @@ This will build all useful targets:
 Doxygen (if installed) is built separately to avoid recompiling it for any
 library change:
 ```
-cmake --build . --target doxygen
+cmake --build . --target ascon_doxygen
 ```
 
 To compile only a single target, for example `ascon80pq`, run
