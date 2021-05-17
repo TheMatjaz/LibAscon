@@ -243,13 +243,13 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
         // proper tag's byte order regardless of the platform's endianness.
         ascon_permutation_a12(&ctx->sponge);
         bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
-        if (small_neq(computed_digest_chunk, expected_digest, ASCON_RATE))
+        if (small_neq(computed_digest_chunk, expected_digest, sizeof(computed_digest_chunk)))
         {
             ascon_hash_cleanup(ctx);
             return ASCON_TAG_INVALID;
         }
-        expected_digest_len -= ASCON_RATE;
-        expected_digest += ASCON_RATE;
+        expected_digest_len -= sizeof(computed_digest_chunk);
+        expected_digest += sizeof(computed_digest_chunk);
     }
     ascon_permutation_a12(&ctx->sponge);
     bigendian_encode_varlen(computed_digest_chunk, ctx->sponge.x0,

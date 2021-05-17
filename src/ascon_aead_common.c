@@ -94,7 +94,7 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
                         const uint8_t* expected_tag,
                         size_t expected_tag_len)
 {
-    uint8_t computed_tag_chunk[sizeof(uint64_t)];
+    uint8_t computed_tag_chunk[ASCON_RATE];
     while (expected_tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
         // All bytes before the last 16
@@ -106,25 +106,25 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
         {
             return ASCON_TAG_INVALID;
         }
-        expected_tag += sizeof(uint64_t);
-        expected_tag_len -= sizeof(uint64_t);
+        expected_tag += sizeof(computed_tag_chunk);
+        expected_tag_len -= sizeof(computed_tag_chunk);
         bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x4);
         if (small_neq(computed_tag_chunk, expected_tag, sizeof(computed_tag_chunk)))
         {
             return ASCON_TAG_INVALID;
         }
-        expected_tag += sizeof(uint64_t);
-        expected_tag_len -= sizeof(uint64_t);
+        expected_tag += sizeof(computed_tag_chunk);
+        expected_tag_len -= sizeof(computed_tag_chunk);
         ascon_permutation_a12(&ctx->bufstate.sponge);
     }
     // The last 16 or less bytes (also 0)
-    size_t remaining = MIN(sizeof(uint64_t), expected_tag_len);
+    size_t remaining = MIN(sizeof(computed_tag_chunk), expected_tag_len);
     bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x3, (uint_fast8_t) remaining);
     if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
     expected_tag += remaining;
     // The last 8 or less bytes (also 0)
     expected_tag_len -= remaining;
-    remaining = MIN(sizeof(uint64_t), expected_tag_len);
+    remaining = MIN(sizeof(computed_tag_chunk), expected_tag_len);
     bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x4, (uint_fast8_t) remaining);
     if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
     return ASCON_TAG_OK;
