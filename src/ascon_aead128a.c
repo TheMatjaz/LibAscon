@@ -12,8 +12,8 @@
 ASCON_API void
 ascon_aead128a_encrypt(uint8_t* ciphertext,
                        uint8_t* tag,
-                       const uint8_t* key,
-                       const uint8_t* nonce,
+                       const uint8_t key[ASCON_AEAD128a_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* plaintext,
                        size_t assoc_data_len,
@@ -40,8 +40,8 @@ ascon_aead128a_encrypt(uint8_t* ciphertext,
 
 ASCON_API bool
 ascon_aead128a_decrypt(uint8_t* plaintext,
-                       const uint8_t* key,
-                       const uint8_t* nonce,
+                       const uint8_t key[ASCON_AEAD128a_KEY_LEN],
+                       const uint8_t nonce[ASCON_AEAD_NONCE_LEN],
                        const uint8_t* assoc_data,
                        const uint8_t* ciphertext,
                        const uint8_t* expected_tag,
@@ -72,8 +72,8 @@ ascon_aead128a_decrypt(uint8_t* plaintext,
 
 ASCON_API void
 ascon_aead128a_init(ascon_aead_ctx_t* const ctx,
-                    const uint8_t* const key,
-                    const uint8_t* const nonce)
+                    const uint8_t key[ASCON_AEAD128a_KEY_LEN],
+                    const uint8_t nonce[ASCON_AEAD_NONCE_LEN])
 {
 #ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
