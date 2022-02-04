@@ -1,9 +1,9 @@
 /**
  * @file
+ * Code used in multiple AEAD versions of Ascon.
  *
- * @copyright Copyright © 2020, Matjaž Guštin <dev@matjaz.it>
- * <https://matjaz.it>. All rights reserved.
  * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #include "ascon.h"
