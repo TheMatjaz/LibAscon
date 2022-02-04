@@ -20,14 +20,12 @@ ascon_aead80pq_encrypt(uint8_t* ciphertext,
                        size_t plaintext_len,
                        size_t tag_len)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(plaintext_len == 0 || ciphertext != NULL);
     ASCON_ASSERT(tag_len != 0 || tag != NULL);
     ASCON_ASSERT(key != NULL);
     ASCON_ASSERT(nonce != NULL);
     ASCON_ASSERT(assoc_data_len == 0 || assoc_data != NULL);
     ASCON_ASSERT(plaintext_len == 0 || plaintext != NULL);
-#endif
     ascon_aead_ctx_t ctx;
     ascon_aead80pq_init(&ctx, key, nonce);
     ascon_aead80pq_assoc_data_update(&ctx, assoc_data, assoc_data_len);
@@ -49,14 +47,12 @@ ascon_aead80pq_decrypt(uint8_t* plaintext,
                        size_t ciphertext_len,
                        size_t expected_tag_len)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ciphertext_len == 0 || plaintext != NULL);
     ASCON_ASSERT(key != NULL);
     ASCON_ASSERT(nonce != NULL);
     ASCON_ASSERT(assoc_data_len == 0 || assoc_data != NULL);
     ASCON_ASSERT(ciphertext_len == 0 || ciphertext != NULL);
     ASCON_ASSERT(expected_tag_len != 0 || expected_tag != NULL);
-#endif
     ascon_aead_ctx_t ctx;
     bool is_tag_valid;
     ascon_aead80pq_init(&ctx, key, nonce);
@@ -75,11 +71,9 @@ ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
                     const uint8_t key[ASCON_AEAD80pq_KEY_LEN],
                     const uint8_t nonce[ASCON_AEAD_NONCE_LEN])
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(key != NULL);
     ASCON_ASSERT(nonce != NULL);
-#endif
     // Store the key in the context as it's required in the final step.
     ctx->k0 = bigendian_decode_u64(key) >> 32U;
     ctx->k1 = bigendian_decode_u64(key + 4U);
@@ -120,14 +114,12 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
                              uint8_t* tag,
                              size_t tag_len)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(ciphertext != NULL);
     ASCON_ASSERT(tag_len == 0 || tag != NULL);
     ASCON_ASSERT(ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_INITIALISED
                  || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ASSOC_DATA_UPDATED
                  || ctx->bufstate.flow_state == ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED);
-#endif
     if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_ENCRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
@@ -163,11 +155,9 @@ ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
                               const uint8_t* ciphertext,
                               size_t ciphertext_len)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(ciphertext_len == 0 || ciphertext != NULL);
     ASCON_ASSERT(ciphertext_len == 0 || plaintext != NULL);
-#endif
     return ascon_aead128_decrypt_update(ctx, plaintext, ciphertext, ciphertext_len);
 }
 
@@ -178,12 +168,10 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
                              const uint8_t* const expected_tag,
                              const size_t expected_tag_len)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(plaintext != NULL);
     ASCON_ASSERT(expected_tag_len == 0 || expected_tag != NULL);
     ASCON_ASSERT(is_tag_valid != NULL);
-#endif
     if (ctx->bufstate.flow_state != ASCON_FLOW_AEAD128_80pq_DECRYPT_UPDATED)
     {
         // Finalise the associated data if not already done sos.
