@@ -90,7 +90,7 @@ extern "C"
 /** Bugfix/patch version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_BUGFIX 1
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.1.1"
+#define ASCON_API_VERSION "1.1.2"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.

@@ -9,6 +9,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 *******************************************************************************
 
+[1.1.2] - 2022-02-04
+----------------------------------------
+
+Fix new compiler warnings appearing in GCC v11.
+
+### Fixed
+
+- Fix GCC v11 warnings about `uint8*` vs `uint8[]` data types differing in
+  signature of function declaration and definition. It was working fine so far,
+  apparently now the compiler wants them to be consistent, so they now are.
+  Arrays were chosen as data type (although they are just pointers behind the
+  scenes), so the known, constant length of the binary key/nonce can be
+  explicitly indicated for code clarity, following the recommended practice
+  from the MISRA-C standard.
+- Fixed GCC v11 warning appearing only in Release mode about the internal
+  `small_cpy()` function "writing 1 byte into a region of size 0"
+  `[-Werror=stringop-overflow=]`
+- Fixed `ascon_aead_common.c` file mentioning BSD license and full copyright
+  statement, when the project is CC0 (new-file-template error).
+- Auto-formatting `benchmark.c` and some markdown files, including this
+  changelog.
+
 [1.1.1] - 2021-05-17
 ----------------------------------------
 
