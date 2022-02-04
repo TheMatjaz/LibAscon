@@ -17,6 +17,11 @@ tab_width = 4
 max_line_length = 100
 trim_trailing_whitespace = true
 
+[{*.md, *.markdown}]
+max_line_length = 79
+trim_trailing_whitespace = false
+indent_size = 3
+tab_width = 3
 
 [{*.yml, *.yaml, *.json, *.md}]
 indent_size = 2
