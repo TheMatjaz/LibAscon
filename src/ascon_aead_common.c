@@ -3,7 +3,7 @@
  *
  * @copyright Copyright © 2020, Matjaž Guštin <dev@matjaz.it>
  * <https://matjaz.it>. All rights reserved.
- * @license BSD 3-clause license.
+ * @license Creative Commons Zero (CC0) 1.0
  */
 
 #include "ascon.h"
