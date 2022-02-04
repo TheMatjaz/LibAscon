@@ -99,7 +99,7 @@ extern "C"
 /** Minor version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MINOR 1
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 1
+#define ASCON_API_VERSION_BUGFIX 2
 /** Version of this API conforming to semantic versioning as a string. */
 #define ASCON_API_VERSION "1.1.2"
 

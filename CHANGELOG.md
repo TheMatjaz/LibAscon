@@ -30,6 +30,8 @@ Fix new compiler warnings appearing in GCC v11.
   statement, when the project is CC0 (new-file-template error).
 - Auto-formatting `benchmark.c` and some markdown files, including this
   changelog.
+- Simplify assert macro usage in the codebase: make it do nothing when off,
+  thus the `#ifdef ASCON_INPUT_ASSERTS ... #endif` condition can be removed.
 
 [1.1.1] - 2021-05-17
 ----------------------------------------
