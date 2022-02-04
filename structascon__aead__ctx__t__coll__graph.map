@@ -1,5 +1,5 @@
 <map id="ascon_aead_ctx_t" name="ascon_aead_ctx_t">
 <area shape="rect" id="node1" title="Cipher context for authenticated encryption and validated decryption." alt="" coords="5,184,133,211"/>
-<area shape="rect" id="node2" href="$structascon__bufstate__t.html" title="Internal cipher sponge state associated with a buffer holding for less&#45;than&#45;rate updates." alt="" coords="8,95,131,121"/>
+<area shape="rect" id="node2" href="$structascon__bufstate__t.html" title="Internal cipher sponge state associated with a buffer holding for less&#45;than&#45;rate updates." alt="" coords="9,95,130,121"/>
 <area shape="rect" id="node3" href="$structascon__sponge__t.html" title="Internal cipher sponge state (320 bits)." alt="" coords="11,5,128,32"/>
 </map>
