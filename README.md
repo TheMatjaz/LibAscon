@@ -31,9 +31,11 @@ LibAscon provides:
   - Ascon128a v1.2 (128 bit key, 128 bit rate)
   - Ascon80pq v1.2 (160 bit key, 64 bit rate)
 
-- 2 hashing functions
-  - Ascon-Hash v1.2 (fixed-length output)
-  - Ascon-XOF v1.2 (variable-length output)
+- 4 hashing functions
+  - Ascon-Hash v1.2 (fixed-length output, 12-rounds absorption/squeeze)
+  - Ascon-XOF v1.2 (variable-length output, 12-rounds absorption/squeeze)
+  - Ascon-Hasha v1.2 (fixed-length output, 8-rounds absorption/squeeze)
+  - Ascon-XOFa v1.2 (variable-length output, 8-rounds absorption/squeeze)
 
 - **Online processing** (**Init-Update-Final** paradigm) for hashing and
   encryption/decryption. This means that the data can be processed one chunk at
