@@ -18,13 +18,19 @@
  *
  * It should work faster than memcpy for very small amounts of bytes given
  * the reduced overhead.
+ *
+ * Initially implemented with a while-loop, but it triggers a
+ * `-Werror=stringop-overflow=` warning in GCC v11. Replaced it with a for-loop
+ * that does the exact same thing instead to make it work without deactivating
+ * the warning. We instead let the optimiser figure out the best way to make it
+ * as fast as possible.
  */
 inline static void
-small_cpy(uint8_t* dst, const uint8_t* src, uint_fast8_t amount)
+small_cpy(uint8_t* const dst, const uint8_t* const src, const size_t amount)
 {
-    while (amount--)
+    for (uint_fast8_t i = 0U; i < amount; i++)
     {
-        *(dst++) = *(src++);
+        dst[i] = src[i];
     }
 }
 
@@ -147,7 +153,7 @@ buffered_accumulation(ascon_bufstate_t* const ctx,
     // cache it into the buffer for the next update call or digest call.
     if (data_in_len > 0)
     {
-        small_cpy(ctx->buffer, data_in, (uint_fast8_t) data_in_len);
+        small_cpy(ctx->buffer, data_in, data_in_len);
         ctx->buffer_len = (uint8_t) data_in_len;
     }
     return fresh_out_bytes;

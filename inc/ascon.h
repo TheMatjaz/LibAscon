@@ -45,25 +45,36 @@ extern "C"
 /**
  * @def ASCON_INPUT_ASSERTS
  * When defined, enables the runtime assertions on the parameters of all
- * functions of the library API using #ASCON_ASSERT - undefined (disabled)
- * by default.
+ * functions of the library API using #ASCON_ASSERT.
+ *
  * The check is mostly against NULL pointers, for the correct order of calling
  * of the many Init-Update-Final functions and against mixing functions from
- * different AEAD algorithms (128 vs 128a vs 80pq). It's generally useful
- * for debugging only.
- * @see ASCON_ASSERT
+ * different AEAD algorithms (128 vs 128a vs 80pq). It's recommended to
+ * use it in debug mode, optionally also in release mode.
+ *
+ * If #ASCON_INPUT_ASSERTS is defined, the user can also pre-define
+ * #ASCON_ASSERT to any custom assertion macro or function.
+ *
+ * @see #ASCON_ASSERT
  */
 // Redefining ASCON_INPUT_ASSERTS otherwise Doxygen does not find it
 #undef ASCON_INPUT_ASSERTS
 #define ASCON_INPUT_ASSERTS 1
 /**
  * @def ASCON_ASSERT
- * Assertion macro, defaulting to `assert` from `assert.h`, when
- * #ASCON_INPUT_ASSERTS is defined, but #ASCON_ASSERT is not.
- * Redefine it to something else if required.
+ * Assertion macro, used to stop execution when a critical error is
+ * encountered.
+ *
+ * - Equal to `assert` from `assert.h` if #ASCON_INPUT_ASSERTS is defined.
+ * - Can also be pre-defined by the user to any custom assertion.
+ * - Otherwise does nothing.
  */
 #include <assert.h> /* For assert() */
 #define ASCON_ASSERT(expr) assert(expr)
+#elif !defined(ASCON_ASSERT)
+// Neither ASCON_INPUT_ASSERTS nor ASCON_ASSERT are defined,
+// so make the assert macro do nothing.
+#define ASCON_ASSERT(expr)
 #endif
 
 /**
@@ -88,9 +99,9 @@ extern "C"
 /** Minor version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MINOR 1
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 1
+#define ASCON_API_VERSION_BUGFIX 2
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.1.1"
+#define ASCON_API_VERSION "1.1.2"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.

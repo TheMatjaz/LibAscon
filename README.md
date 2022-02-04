@@ -10,16 +10,15 @@ LibAscon is an ISO C99/C11 cryptographic library wrapping the
 [reference C implementation](https://github.com/ascon/ascon-c)
 of the Ascon family of lightweight authenticated encryption schemes with
 associated data (AEAD) and hashing functions, but it also includes
-Init-Update-Final processing and variable tag length. Heavily tested
-and ready for embedded systems!
-
+Init-Update-Final processing and variable tag length. Heavily tested and ready
+for embedded systems!
 
 ### Disclaimer
 
 This is not a security-hardened implementation, just a simple one focused
-mostly on usability, portability and high(er) set of features
-There is no added protection against side-channel
-attacks other than what the Ascon algorithm itself provides by design.
+mostly on usability, portability and high(er) set of features There is no added
+protection against side-channel attacks other than what the Ascon algorithm
+itself provides by design.
 
 
 Features
@@ -37,13 +36,13 @@ LibAscon provides:
   - Ascon-XOF v1.2 (variable-length output)
 
 - **Online processing** (**Init-Update-Final** paradigm) for hashing and
-  encryption/decryption. This means that the data can be processed one
-  chunk at the time. Useful when operating on large amounts of data that are
-  not available contiguously in memory, e.g. a too-large file or data in
+  encryption/decryption. This means that the data can be processed one chunk at
+  the time. Useful when operating on large amounts of data that are not
+  available contiguously in memory, e.g. a too-large file or data in
   transmission.
 
-- **Offline processing** (whole data contiguous in memory) is also
-  available with a simple wrapper.
+- **Offline processing** (whole data contiguous in memory) is also available
+  with a simple wrapper.
 
 - **Variable tag length** for authenticated encryption: can generate any tag
   length. Of course at least 16 bytes (128 bits) is recommended.
@@ -57,16 +56,15 @@ LibAscon provides:
 - AEAD tag may be provided to a **separate location**, i.e. not concatenated to
   the ciphertext.
 
-- Same performance as the original C implementation in _Release_ mode,
-  about 2x slower in _MinSizeRel_ mode.
+- Same performance as the original C implementation in _Release_ mode, about 2x
+  slower in _MinSizeRel_ mode.
 
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
-  developer-friendly API**, making it easier to compile and add to your project,
-  both through static and dynamic inclusion.
+  developer-friendly API**, making it easier to compile and add to your
+  project, both through static and dynamic inclusion.
 
 - Tested with **100% line coverage**, with CI running on Linux, macOS and
   Windows with GCC, Clang and CL (MSVC).
-
 
 Usage example
 ----------------------------------------
@@ -266,9 +264,9 @@ Only the C standard library, mostly C99 features:
 
 Optional dependency: `assert.h`, for  `assert()`. Used to add runtime checks of
 the Ascon API input for debugging (NULL pointers and incorrect order of
-function calling). The CMake script uses it only if `assert.h` is found
-and only in the debug build type (`CMAKE_BUILD_TYPE=Debug`).
-If compiled without the included `CMakeLists.txt`, it's not used unless
+function calling). The CMake script uses it only if `assert.h` is found and
+only in the debug build type (`CMAKE_BUILD_TYPE=Debug`). If compiled without
+the included `CMakeLists.txt`, it's not used unless
 `ASCON_INPUT_ASSERTS` is defined at compile time. The assertion function
 `ASCON_ASSERT` can also be changed, if `assert()` is not available.
 
@@ -288,23 +286,23 @@ FAQ
 
 - **Q**: Where is the documentation?
 
-  **A**: The [library header file `inc/ascon.h`](inc/ascon.h) is documented with
-  Doxygen and you can find it
+  **A**: The [library header file `inc/ascon.h`](inc/ascon.h) is documented
+  with Doxygen and you can find it
   [compiled here](https://thematjaz.github.io/LibAscon/).
 
 - **Q**: Why should I use Ascon-AEAD instead of, say, AES?
 
   **A**: Ascon is designed to be lightweight (great for embedded systems) and
-  natively supports authenticated encryption of data of any length, while
-  AES must be wrapped in an AEAD mode such as AES-GCM, which is well-proven
-  but heavier.
+  natively supports authenticated encryption of data of any length, while AES
+  must be wrapped in an AEAD mode such as AES-GCM, which is well-proven but
+  heavier.
 
 - **Q**: Why should I use Ascon-Hash instead of, say, SHA-256?
 
   **A**: Ascon is designed to be lightweight (great for embedded systems)
   and does not suffer from length-extension attacks as SHA-256, given its
-  sponge construction (similarly to what SHA-3 does). Additionally Ascon
-  offers also the XOF hashing producing digests of variable length.
+  sponge construction (similarly to what SHA-3 does). Additionally Ascon offers
+  also the XOF hashing producing digests of variable length.
 
 - **Q**: Who designed Ascon? Who wrote this library?
 
@@ -312,21 +310,19 @@ FAQ
 
 - **Q**: I don't trust Ascon.
 
-  **A**: Good. You should not keep your guard up for everything, but Ascon
-  has been selected as the primary choice for lightweight authenticated
-  encryption in the final portfolio of the
+  **A**: Good. You should not keep your guard up for everything, but Ascon has
+  been selected as the primary choice for lightweight authenticated encryption
+  in the final portfolio of the
   [CAESAR competition (2014–2019)](https://competitions.cr.yp.to/caesar-submissions.html)
   and is currently competing in the
-  [NIST Lightweight Cryptography competition (2019–)](https://csrc.nist.gov/projects/lightweight-cryptography).
-  Cryptographers like it and that's a good sign, right?
+  [NIST Lightweight Cryptography competition (2019–)](https://csrc.nist.gov/projects/lightweight-cryptography)
+  . Cryptographers like it and that's a good sign, right?
 
 - **Q**: I don't trust this implementation.
 
-  **A**: Good, again. You can read the source code to see what it
-  does to be sure ;) If you find any bugs or possible improvements,
-  open a pull request or an issue. I would like to make as clear and as good
-  as possible.
-
+  **A**: Good, again. You can read the source code to see what it does to be
+  sure ;) If you find any bugs or possible improvements, open a pull request or
+  an issue. I would like to make as clear and as good as possible.
 
 Known limitations
 ----------------------------------------
@@ -334,26 +330,23 @@ Known limitations
 - There is no architecture-specific optimisation, only a generic portable
   implementation using mostly `uint64_t` data types.
 
-
 Compiling
 ----------------------------------------
 
-The project's compilation has been tested with GCC, Clang and CL (MSVC).
-Most compiler warnings have already been mitigated, so they hopefully don't
-occur on your platform.
-
+The project's compilation has been tested with GCC, Clang and CL (MSVC). Most
+compiler warnings have already been mitigated, so they hopefully don't occur on
+your platform.
 
 ### Static source inclusion
 
-The project is relatively small, so you can simply include it into yours
-as a Git Subtree, Git Submodule or by simply copy-pasting the `inc` and `src`
+The project is relatively small, so you can simply include it into yours as a
+Git Subtree, Git Submodule or by simply copy-pasting the `inc` and `src`
 folders. Be sure to:
 
 - Add `inc` and `src` to the include folders list
   (the internal header is in `src`).
 - Add `src` to the sources folders list.
 - Compile.
-
 
 ### Compiling Ascon into all possible targets with CMake
 
@@ -382,22 +375,24 @@ This will build all useful targets:
   - `asconhash` with only Ascon-hash and Ascon-XOF
   - `ascon128hash` with only Ascon128, Ascon-hash and Ascon-XOF
   - `ascon128ahash` with only Ascon128a, Ascon-hash and Ascon-XOF
-  - `ascon80pqhash` with only Ascon80pq, Ascon-hash and Ascon-XOF
-  for a smaller build result when not all features are needed
+  - `ascon80pqhash` with only Ascon80pq, Ascon-hash and Ascon-XOF for a smaller
+    build result when not all features are needed
 - `ascon` a shared library (`.dll` or `.dylib` or `.so`) with full feature set
   (like `asconfull`, but shared)
-- `testascon` a test runner executable , which test all features of the
-  static library
-- `testasconshared` a test runner executable , which test all features
-  of the shared library
+- `testascon` a test runner executable , which test all features of the static
+  library
+- `testasconshared` a test runner executable , which test all features of the
+  shared library
 
 Doxygen (if installed) is built separately to avoid recompiling it for any
 library change:
+
 ```
 cmake --build . --target ascon_doxygen
 ```
 
 To compile only a single target, for example `ascon80pq`, run
+
 ```
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release

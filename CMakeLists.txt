@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 project(LibAscon
-        VERSION 1.1.1
+        VERSION 1.1.2
         LANGUAGES C
         DESCRIPTION
         "Lightweight Authenticated Encryption & Hashing, \
@@ -197,6 +197,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_ALIASES license="**License:**")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
     set(DOXYGEN_PREDEFINED WIN32 ASCON_INPUT_ASSERTS)
+    set(DOXYGEN_DOT_PATH )  # Empty = find it in PATH
     doxygen_add_docs(ascon_doxygen
             # Do NOT build doxygen on make-all, to avoid polluting the stdout
             # List of input files for Doxygen

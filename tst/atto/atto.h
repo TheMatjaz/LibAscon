@@ -101,7 +101,7 @@ extern unsigned long long atto_counter;
  */
 #define atto_assert(expression) do { \
     if (!(expression)) { \
-        printf("FAIL | File: %s | Line: %4d | Test case: %s | Ctr: %llu\n", \
+        printf("FAIL | File: %s:%d | Test case: %s | Ctr: %llu\n", \
                __FILE__, __LINE__, __func__, atto_counter); \
         atto_at_least_one_fail = 1U; \
         return; \

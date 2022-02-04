@@ -1,9 +1,9 @@
 /**
  * @file
+ * Code used in multiple AEAD versions of Ascon.
  *
- * @copyright Copyright © 2020, Matjaž Guštin <dev@matjaz.it>
- * <https://matjaz.it>. All rights reserved.
- * @license BSD 3-clause license.
+ * @license Creative Commons Zero (CC0) 1.0
+ * @authors see AUTHORS.md file
  */
 
 #include "ascon.h"
@@ -133,9 +133,7 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
 ASCON_API void
 ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
 {
-#ifdef ASCON_INPUT_ASSERTS
     ASCON_ASSERT(ctx != NULL);
-#endif
     // Manual cleanup using volatile pointers to have more assurance the
     // cleanup will not be removed by the optimiser.
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge.x0 = 0U;
