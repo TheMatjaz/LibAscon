@@ -241,6 +241,14 @@ static vecs_err_t fscan_plaintext(vecs_ctx_t* const ctx,
 static vecs_err_t fscan_assoc_data(vecs_ctx_t* const ctx,
                                    vecs_aead_t* const testcase)
 {
+    // IMPORTANT!!!
+    // This function may crash if the underscores are removed from the test
+    // vector files, because "AD" is a valid hexadecimal string (value 173)
+    // and without the underscore in "_AD", the previous function would end
+    // up scanning the Plaintext (PT) until the "=" character of the "AD = "
+    // line. The underscores are basically field separators. This is required
+    // because fscanf skips EVERY type of whitespace when reading a regular
+    // whitespace in its format string, including newline characters.
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
