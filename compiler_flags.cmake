@@ -70,7 +70,7 @@ else ()
     if ("${CMAKE_C_COMPILER_ID}" STREQUAL "gcc")
         string(APPEND CMAKE_C_FLAGS " -Wduplicate-cond")  # Checking same thing twice
         string(APPEND CMAKE_C_FLAGS " -Wjump-misses-init")  # Switch/goto jump skips variable init
-    endif()
+    endif ()
 
     # Debug mode
     string(APPEND CMAKE_C_FLAGS_DEBUG " -g3")  # Max debug info
@@ -102,9 +102,11 @@ if (NOT WIN32 AND NOT CYGWIN AND NOT MSYS)
     if ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"
             OR "${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
         string(APPEND CMAKE_C_FLAGS_DEBUG " -static-libsan")  # Note: san, not Asan
-    else()  # GCC
+
+    else ()  # GCC
         string(APPEND CMAKE_C_FLAGS_DEBUG " -static-libasan")  # Note: Asan, not san
-    endif()
+
+    endif ()
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=address,undefined")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fno-omit-frame-pointer")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -mno-omit-leaf-frame-pointer")

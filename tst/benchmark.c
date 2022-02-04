@@ -36,8 +36,8 @@
 #endif
 
 #if defined(__ARM_ARCH_6__) \
-    || (defined(__ARM_ARCH_6__) && __ARM_ARCH == 6) \
-    || (defined(_M_ARM) && _M_ARM == 6)
+ || (defined(__ARM_ARCH_6__) && __ARM_ARCH == 6) \
+ || (defined(_M_ARM) && _M_ARM == 6)
 #define ALIGN(x) __attribute__((aligned(x)))
 #pragma message("Using ARMv6 PMU to count cycles")
 #define init_cpucycles() \
@@ -77,95 +77,109 @@ unsigned char ALIGN(16) h[CRYPTO_BYTES];
 unsigned long long cycles[NUM_MLENS][NUM_RUNS * 2];
 unsigned int tmp;
 
-static void init_input(void) {
-  int i;
-  for (i = 0; i < MAX_LEN; ++i) m[i] = (uint8_t) rand();
+static void init_input(void)
+{
+    int i;
+    for (i = 0; i < MAX_LEN; ++i) { m[i] = (uint8_t) rand(); }
 #if defined(CRYPTO_AEAD)
-  for (i = 0; i < MAX_LEN; ++i) a[i] = (uint8_t) rand();
-  for (i = 0; i < CRYPTO_KEYBYTES; ++i) k[i] = (uint8_t) rand();
-  for (i = 0; i < CRYPTO_NPUBBYTES; ++i) npub[i] = (uint8_t) rand();
+    for (i = 0; i < MAX_LEN; ++i) { a[i] = (uint8_t) rand(); }
+    for (i = 0; i < CRYPTO_KEYBYTES; ++i) { k[i] = (uint8_t) rand(); }
+    for (i = 0; i < CRYPTO_NPUBBYTES; ++i) { npub[i] = (uint8_t) rand(); }
 #endif
 }
 
-static unsigned long long measure(unsigned long long mlen) {
-  unsigned long long NREPS = NUM_BYTES / mlen;
-  unsigned long long i;
+static unsigned long long measure(unsigned long long mlen)
+{
+    unsigned long long NREPS = NUM_BYTES / mlen;
+    unsigned long long i;
 #if defined(__arm__) || defined(_M_ARM)
-  unsigned int before, after;
+    unsigned int before, after;
 #else
-  unsigned long long before, after;
+    unsigned long long before, after;
 #endif
-  init_input();
-  cpucycles(before);
-  for (i = 0; i < NREPS; ++i)
+    init_input();
+    cpucycles(before);
+    for (i = 0; i < NREPS; ++i)
 #if defined(CRYPTO_AEAD)
-    ascon_aead128_encrypt(c,
-                          c + mlen,
-                          k,
-                          npub,
-                          NULL,
-                          m,
-                          0,
-                          mlen,
-                          16);
+    {
+        ascon_aead128_encrypt(c,
+                              c + mlen,
+                              k,
+                              npub,
+                              NULL,
+                              m,
+                              0,
+                              mlen,
+                              16);
+    }
 #elif defined(CRYPTO_HASH)
     crypto_hash(h, m, mlen);
 #endif
-  cpucycles(after);
-  return after - before;
+    cpucycles(after);
+    return after - before;
 }
 
-static int compare_uint64(const void* first, const void* second) {
-  const unsigned long long* ia = (const unsigned long long*)first;
-  const unsigned long long* ib = (const unsigned long long*)second;
-  if (*ia > *ib) return 1;
-  if (*ia < *ib) return -1;
-  return 0;
+static int compare_uint64(const void* first, const void* second)
+{
+    const unsigned long long* ia = (const unsigned long long*) first;
+    const unsigned long long* ib = (const unsigned long long*) second;
+    if (*ia > *ib) { return 1; }
+    if (*ia < *ib) { return -1; }
+    return 0;
 }
 
-int main(int argc, char* argv[]) {
-  unsigned long long i, j;
-  double factor = 1.0;
-  if (argc == 2) factor = atof(argv[1]);
+int main(int argc, char* argv[])
+{
+    unsigned long long i, j;
+    double factor = 1.0;
+    if (argc == 2) { factor = atof(argv[1]); }
 
-  init_cpucycles();
+    init_cpucycles();
 
-  for (i = 0; i < NUM_MLENS; ++i) {
-    for (j = 0; j < NUM_RUNS; ++j) cycles[i][j] = measure(mlens[i]);
-    qsort(cycles[i], NUM_RUNS, sizeof(unsigned long long), &compare_uint64);
-  }
+    for (i = 0; i < NUM_MLENS; ++i)
+    {
+        for (j = 0; j < NUM_RUNS; ++j) { cycles[i][j] = measure(mlens[i]); }
+        qsort(cycles[i], NUM_RUNS, sizeof(unsigned long long), &compare_uint64);
+    }
 
-  printf("\nsorted cycles:\n");
-  for (i = 0; i < NUM_MLENS; ++i) {
-    unsigned long long NREPS = NUM_BYTES / mlens[i];
-    printf("%5d: ", (int)mlens[i]);
-    for (j = 0; j < NUM_RUNS; ++j) printf("%d ", (int)(cycles[i][j] / NREPS));
+    printf("\nsorted cycles:\n");
+    for (i = 0; i < NUM_MLENS; ++i)
+    {
+        unsigned long long NREPS = NUM_BYTES / mlens[i];
+        printf("%5d: ", (int) mlens[i]);
+        for (j = 0; j < NUM_RUNS; ++j) { printf("%d ", (int) (cycles[i][j] / NREPS)); }
+        printf("\n");
+    }
+
+    printf("\ncycles per byte (min,median):\n");
+    for (i = 0; i < NUM_MLENS; ++i)
+    {
+        unsigned long long NREPS = NUM_BYTES / mlens[i];
+        unsigned long long bytes = mlens[i] * NREPS;
+        printf("%5d: %6.1f %6.1f\n", (int) mlens[i],
+               factor * (double) cycles[i][0] / (double) bytes + 0.05,
+               factor * (double) cycles[i][NUM_RUNS / 2] / (double) bytes + 0.05);
+    }
     printf("\n");
-  }
 
-  printf("\ncycles per byte (min,median):\n");
-  for (i = 0; i < NUM_MLENS; ++i) {
-    unsigned long long NREPS = NUM_BYTES / mlens[i];
-    unsigned long long bytes = mlens[i] * NREPS;
-    printf("%5d: %6.1f %6.1f\n", (int)mlens[i],
-           factor * (double) cycles[i][0] / (double) bytes + 0.05,
-           factor * (double) cycles[i][NUM_RUNS / 2] / (double) bytes + 0.05);
-  }
-  printf("\n");
+    for (i = 0; i < NUM_MLENS; ++i) { printf("| %5d ", (int) mlens[i]); }
+    printf("|\n");
+    for (i = 0; i < NUM_MLENS; ++i) { printf("|------:"); }
+    printf("|\n");
+    for (i = 0; i < NUM_MLENS; ++i)
+    {
+        unsigned long long NREPS = NUM_BYTES / mlens[i];
+        unsigned long long bytes = mlens[i] * NREPS;
+        if (mlens[i] <= 32)
+        {
+            printf("| %5.0f ", factor * (double) cycles[i][0] / (double) bytes + 0.5);
+        }
+        else
+        {
+            printf("| %5.1f ", factor * (double) cycles[i][0] / (double) bytes + 0.05);
+        }
+    }
+    printf("|\n");
 
-  for (i = 0; i < NUM_MLENS; ++i) printf("| %5d ", (int)mlens[i]);
-  printf("|\n");
-  for (i = 0; i < NUM_MLENS; ++i) printf("|------:");
-  printf("|\n");
-  for (i = 0; i < NUM_MLENS; ++i) {
-    unsigned long long NREPS = NUM_BYTES / mlens[i];
-    unsigned long long bytes = mlens[i] * NREPS;
-    if (mlens[i] <= 32)
-      printf("| %5.0f ", factor * (double) cycles[i][0] / (double) bytes + 0.5);
-    else
-      printf("| %5.1f ", factor * (double) cycles[i][0] / (double) bytes + 0.05);
-  }
-  printf("|\n");
-
-  return 0;
+    return 0;
 }
