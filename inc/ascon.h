@@ -1410,10 +1410,12 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* ctx,
                              size_t expected_tag_len);
 
 /**
- * Offline Ascon Hash with fixed digest length.
+ * Offline Ascon-Hash with fixed digest length.
  *
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @image html hash.png
  *
@@ -1433,17 +1435,41 @@ ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
            const uint8_t* data,
            size_t data_len);
 
+/**
+ * Offline Ascon-Hasha with fixed digest length.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash(key || msg)`. There
+ * is **no need to build an HMAC** construct around it, as it does not suffer
+ * from length-extension vulnerabilities.
+ *
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ * @param[in] data message fed into the hash function.
+ * @param[in] data_len length of \p data in bytes.
+ */
 ASCON_API void
 ascon_hasha(uint8_t digest[ASCON_HASHA_DIGEST_LEN],
             const uint8_t* data,
             size_t data_len);
 
 /**
- * Offline Ascon Hash with fixed digest length, finalisation and digest
+ * Offline Ascon-Hash with fixed digest length, finalisation and digest
  * validation of the expected one.
  *
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @image html hash.png
  *
@@ -1470,16 +1496,48 @@ ascon_hash_matches(const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN],
                    const uint8_t* data,
                    size_t data_len);
 
+/**
+ * Offline Ascon-Hasha with fixed digest length, finalisation and digest
+ * validation of the expected one.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash(key || msg)`. There
+ * is **no need to build an HMAC** construct around it, as it does not suffer
+ * from length-extension vulnerabilities.
+ *
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_final() or ascon_hash() function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] data message fed into the hash function.
+ * @param[in] data_len length of \p data in bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
 ASCON_API bool
 ascon_hasha_matches(const uint8_t expected_digest[ASCON_HASHA_DIGEST_LEN],
                     const uint8_t* data,
                     size_t data_len);
 
 /**
- * Online Ascon Hash with fixed digest length, initialisation.
+ * Online Ascon-Hash with fixed digest length, initialisation.
  *
  * Prepares to start a new hashing session to get a digest of
  * #ASCON_HASH_DIGEST_LEN bytes.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @image html hash.png
  *
@@ -1498,17 +1556,42 @@ ascon_hasha_matches(const uint8_t expected_digest[ASCON_HASHA_DIGEST_LEN],
 ASCON_API void
 ascon_hash_init(ascon_hash_ctx_t* ctx);
 
+/**
+ * Online Ascon-Hasha with fixed digest length, initialisation.
+ *
+ * Prepares to start a new hashing session to get a digest of
+ * #ASCON_HASH_DIGEST_LEN bytes.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash(key || msg)`. There
+ * is **no need to build an HMAC** construct around it, as it does not suffer
+ * from length-extension vulnerabilities.
+ *
+ * @warning
+ * Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ */
 ASCON_API void
 ascon_hasha_init(ascon_hash_ctx_t* ctx);
 
 /**
- * Online Ascon Hash with fixed digest length, feeding data to hash.
+ * Online Ascon-Hash with fixed digest length, feeding data to hash.
  *
  * Feeds a chunk of data to the already initialised hashing session.
  *
  * In case of no data at all to be hashed, this function can be called (also
  * many times) with \p data_len set to 0. Iff that is the case, \p data can be
  * set to NULL.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
@@ -1520,16 +1603,35 @@ ascon_hash_update(ascon_hash_ctx_t* ctx,
                   const uint8_t* data,
                   size_t data_len);
 
+/**
+ * Online Ascon-Hasha with fixed digest length, feeding data to hash.
+ *
+ * Feeds a chunk of data to the already initialised hashing session.
+ *
+ * In case of no data at all to be hashed, this function can be called (also
+ * many times) with \p data_len set to 0. Iff that is the case, \p data can be
+ * set to NULL.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
+ * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
+ */
 ASCON_API void
 ascon_hasha_update(ascon_hash_ctx_t* ctx,
                    const uint8_t* data,
                    size_t data_len);
 
 /**
- * Online Ascon Hash with fixed digest length, finalisation and digest
+ * Online Ascon-Hash with fixed digest length, finalisation and digest
  * generation.
  *
  * Finalises the hashing by returning the digest of the message.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @warning
  * In case the hashing session is interrupted and never finalised (this function
@@ -1547,13 +1649,36 @@ ASCON_API void
 ascon_hash_final(ascon_hash_ctx_t* ctx,
                  uint8_t digest[ASCON_HASH_DIGEST_LEN]);
 
+/**
+ * Online Ascon-Hasha with fixed digest length, finalisation and digest
+ * generation.
+ *
+ * Finalises the hashing by returning the digest of the message.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ */
 ASCON_API void
 ascon_hasha_final(ascon_hash_ctx_t* ctx,
                   uint8_t digest[ASCON_HASHA_DIGEST_LEN]);
 
 /**
- * Online Ascon Hash with fixed digest length, finalisation and digest
+ * Online Ascon-Hasha with fixed digest length, finalisation and digest
  * validation of the expected one.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @warning
  * In case the hashing session is interrupted and never finalised (this function
@@ -1578,16 +1703,44 @@ ASCON_API bool
 ascon_hash_final_matches(ascon_hash_ctx_t* ctx,
                          const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN]);
 
+/**
+ * Online Ascon-Hasha with fixed digest length, finalisation and digest
+ * validation of the expected one.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_final() or ascon_hash() function,
+ *       of #ASCON_HASH_DIGEST_LEN bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
 ASCON_API bool
 ascon_hasha_final_matches(ascon_hash_ctx_t* ctx,
                           const uint8_t expected_digest[ASCON_HASHA_DIGEST_LEN]);
 
 /**
- * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * Offline Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF).
  *
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it of the desired length.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @image html hash.png
  *
@@ -1615,6 +1768,36 @@ ascon_hash_xof(uint8_t* digest,
                size_t digest_len,
                size_t data_len);
 
+/**
+ * Offline Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF).
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it of the desired length.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash_xof(key || msg)`.
+ * There is **no need to build an HMAC** construct around it, as it does not
+ * suffer from length-extension vulnerabilities.
+ *
+ * @warning
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
+ *
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of \p digest_len bytes.
+ * @param[in] data message fed into the hash function.
+ * @param[in] digest_len desired length of the \p digest in bytes.
+ * @param[in] data_len length of \p data in bytes.
+ */
 ASCON_API void
 ascon_hasha_xof(uint8_t* digest,
                 const uint8_t* data,
@@ -1622,11 +1805,13 @@ ascon_hasha_xof(uint8_t* digest,
                 size_t data_len);
 
 /**
- * Offline Ascon Hash with custom digest length (eXtendable Output Function,
+ * Offline Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF) and validation of the expected one.
  *
  * Hashes the data, which is already available as a whole in a contiguous
  * buffer, and provides the digest for it of the desired length.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @image html hash.png
  *
@@ -1662,6 +1847,44 @@ ascon_hash_xof_matches(const uint8_t* expected_digest,
                        size_t expected_digest_len,
                        size_t data_len);
 
+/**
+ * Offline Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF) and validation of the expected one.
+ *
+ * Hashes the data, which is already available as a whole in a contiguous
+ * buffer, and provides the digest for it of the desired length.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash_xof(key || msg)`.
+ * There is **no need to build an HMAC** construct around it, as it does not
+ * suffer from length-extension vulnerabilities.
+ *
+ * @warning
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
+ *
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_xof_final() or ascon_hash_xof() function,
+ *       of \p expected_digest_len bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] data message fed into the hash function.
+ * @param[in] expected_digest_len desired length of the \p expected_digest
+ *       in bytes.
+ * @param[in] data_len length of \p data in bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
 ASCON_API bool
 ascon_hasha_xof_matches(const uint8_t* expected_digest,
                         const uint8_t* data,
@@ -1669,12 +1892,14 @@ ascon_hasha_xof_matches(const uint8_t* expected_digest,
                         size_t data_len);
 
 /**
- * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * Online Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF), initialisation.
  *
  * Prepares to start a new hashing session to get a digest of custom length.
  *
- * @image html encrypt.png
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
+ *
+ * @image html hash.png
  *
  * @remark
  * This function can be used for keyed hashing to generate a MAC by simply
@@ -1691,11 +1916,34 @@ ascon_hasha_xof_matches(const uint8_t* expected_digest,
 ASCON_API void
 ascon_hash_xof_init(ascon_hash_ctx_t* ctx);
 
+/**
+ * Online Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF), initialisation.
+ *
+ * Prepares to start a new hashing session to get a digest of custom length.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @image html hash.png
+ *
+ * @remark
+ * This function can be used for keyed hashing to generate a MAC by simply
+ * prepending a secret key to the message, like `ascon_hash_xof(key || msg)`.
+ * There is **no need to build an HMAC** construct around it, as it does not
+ * suffer from length-extension vulnerabilities.
+ *
+ * @warning
+ * Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ */
 ASCON_API void
 ascon_hasha_xof_init(ascon_hash_ctx_t* ctx);
 
 /**
- * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * Online Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF), feeding data to hash.
  *
  * Feeds a chunk of data to the already initialised hashing session.
@@ -1703,6 +1951,8 @@ ascon_hasha_xof_init(ascon_hash_ctx_t* ctx);
  * In case of no data at all to be hashed, this function can be called (also
  * many times) with \p data_len set to 0. Iff that is the case, \p data can be
  * set to NULL.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. Not NULL.
@@ -1714,16 +1964,36 @@ ascon_hash_xof_update(ascon_hash_ctx_t* ctx,
                       const uint8_t* data,
                       size_t data_len);
 
+/**
+ * Online Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF), feeding data to hash.
+ *
+ * Feeds a chunk of data to the already initialised hashing session.
+ *
+ * In case of no data at all to be hashed, this function can be called (also
+ * many times) with \p data_len set to 0. Iff that is the case, \p data can be
+ * set to NULL.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. Not NULL.
+ * @param[in] data bytes to be hashes. May be NULL iff \p data_len is 0.
+ * @param[in] data_len length of the \p data pointed by in bytes. May be 0.
+ */
 ASCON_API void
 ascon_hasha_xof_update(ascon_hash_ctx_t* ctx,
                        const uint8_t* data,
                        size_t data_len);
 
 /**
- * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * Online Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF), finalisation and digest generation.
  *
  * Finalises the hashing by returning the digest of the message.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @warning
  * To have 128 bits of security against birthday attacks (collisions),
@@ -1749,14 +2019,44 @@ ascon_hash_xof_final(ascon_hash_ctx_t* ctx,
                      uint8_t* digest,
                      size_t digest_len);
 
+/**
+ * Online Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF), finalisation and digest generation.
+ *
+ * Finalises the hashing by returning the digest of the message.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @warning
+ * To have 128 bits of security against birthday attacks (collisions),
+ * a digest length of at least 256 bits (32 bytes) is recommended. Against
+ * quantum computers, the hash size should be double the amount of wanted
+ * security bits.
+ *
+ * @warning
+ * In case the hashing session is interrupted and never finalised (this function
+ * is never called), clear the context with ascon_hash_cleanup() to erase any
+ * information about the hashed content, especially in case keyed hashing is
+ * performed.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[out] digest fingerprint of the message, output of the hash function,
+ *       of \p digest_size bytes.
+ * @param[in] digest_len desired length of the \p digest in bytes.
+ */
 ASCON_API void
 ascon_hasha_xof_final(ascon_hash_ctx_t* ctx,
                       uint8_t* digest,
                       size_t digest_len);
 
 /**
- * Online Ascon Hash with custom digest length (eXtendable Output Function,
+ * Online Ascon-Hash with custom digest length (eXtendable Output Function,
  * XOF), finalisation and digest validation of the expected one.
+ *
+ * Uses 12-round `Pb` permutations during absorption and squeezing.
  *
  * @param[in, out] ctx the hashing context, handling the hash function state
  *       and buffering of incoming data to be processed. It will be erased
@@ -1778,6 +2078,28 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* ctx,
                              const uint8_t* expected_digest,
                              size_t expected_digest_len);
 
+/**
+ * Online Ascon-Hasha with custom digest length (eXtendable Output Function,
+ * XOF), finalisation and digest validation of the expected one.
+ *
+ * Uses 8-round `Pb` permutations during absorption and squeezing, lighter
+ * version of the Ascon-Hash function.
+ *
+ * @param[in, out] ctx the hashing context, handling the hash function state
+ *       and buffering of incoming data to be processed. It will be erased
+ *       securely before this function returns. Not NULL.
+ * @param[in] expected_digest expected fingerprint of the message, output of
+ *       the ascon_hash_xof_final() or ascon_hash_xof() function,
+ *       of \p expected_digest_len bytes.
+ *       This is the digest that comes with the message and will be compared
+ *       with the internally-generated one by this function.
+ * @param[in] expected_digest_len desired length of the \p expected_digest in
+ *       bytes.
+ * @return the answer to the question "is the digest valid?", thus
+ *        `true` (== #ASCON_TAG_OK) if the validation of the digest is correct,
+ *        thus the message is intact (and authentic if a keyed hash was
+ *        performed), `false` (== #ASCON_TAG_INVALID) otherwise.
+ */
 ASCON_API bool
 ascon_hasha_xof_final_matches(ascon_hash_ctx_t* ctx,
                               const uint8_t* expected_digest,
