@@ -86,7 +86,7 @@ ascon_round(ascon_sponge_t* sponge,
 }
 
 ASCON_INLINE void
-ascon_permutation_a12(ascon_sponge_t* const sponge)
+ascon_permutation_12(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_01);
     ascon_round(sponge, ROUND_CONSTANT_02);
@@ -103,7 +103,7 @@ ascon_permutation_a12(ascon_sponge_t* const sponge)
 }
 
 ASCON_INLINE void
-ascon_permutation_b8(ascon_sponge_t* const sponge)
+ascon_permutation_8(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_05);
     ascon_round(sponge, ROUND_CONSTANT_06);
@@ -116,7 +116,7 @@ ascon_permutation_b8(ascon_sponge_t* const sponge)
 }
 
 ASCON_INLINE void
-ascon_permutation_b6(ascon_sponge_t* const sponge)
+ascon_permutation_6(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_07);
     ascon_round(sponge, ROUND_CONSTANT_08);

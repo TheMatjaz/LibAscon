@@ -23,7 +23,7 @@ ascon_aead_init(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x2 = ctx->k1;
     ctx->bufstate.sponge.x3 = bigendian_decode_u64(nonce);
     ctx->bufstate.sponge.x4 = bigendian_decode_u64(nonce + sizeof(uint64_t));
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     ctx->bufstate.buffer_len = 0;
@@ -42,7 +42,7 @@ ascon_aead128_80pq_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
         ctx->bufstate.sponge.x0 ^= bigendian_decode_varlen(ctx->bufstate.buffer,
                                                            ctx->bufstate.buffer_len);
         ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
-        ascon_permutation_b6(&ctx->bufstate.sponge);
+        ascon_permutation_6(&ctx->bufstate.sponge);
     }
     // Application of a constant at end of associated data for domain
     // separation. Done always, regardless if there was some associated
@@ -64,7 +64,7 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
         // proper byte order regardless of the platform native endianness.
         bigendian_encode_u64(tag, ctx->bufstate.sponge.x3);
         bigendian_encode_u64(tag + sizeof(uint64_t), ctx->bufstate.sponge.x4);
-        ascon_permutation_a12(&ctx->bufstate.sponge);
+        ascon_permutation_12(&ctx->bufstate.sponge);
         tag_len -= ASCON_AEAD_TAG_MIN_SECURE_LEN;
         tag += ASCON_AEAD_TAG_MIN_SECURE_LEN;
     }
@@ -115,7 +115,7 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
         }
         expected_tag += sizeof(computed_tag_chunk);
         expected_tag_len -= sizeof(computed_tag_chunk);
-        ascon_permutation_a12(&ctx->bufstate.sponge);
+        ascon_permutation_12(&ctx->bufstate.sponge);
     }
     // The last 16 or less bytes (also 0)
     size_t remaining = MIN(sizeof(computed_tag_chunk), expected_tag_len);

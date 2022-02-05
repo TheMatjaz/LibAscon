@@ -214,8 +214,8 @@ byte_mask(uint_fast8_t n);
  * constant.
  *
  * @warning
- * Do not use directly! Use ascon_permutation_a12(), ascon_permutation_b8(),
- * ascon_permutation_b6() instead.
+ * Do not use directly! Use ascon_permutation_12(), ascon_permutation_8(),
+ * ascon_permutation_6() instead.
  *
  * Although this function is never used outside of the file where it is
  * defined, it is NOT marked as static and it is declared globally
@@ -233,21 +233,21 @@ ascon_round(ascon_sponge_t* sponge, uint_fast8_t round_const);
  * Ascon sponge permutation with 12 rounds.
  */
 void
-ascon_permutation_a12(ascon_sponge_t* sponge);
+ascon_permutation_12(ascon_sponge_t* const sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 8 rounds.
  */
 void
-ascon_permutation_b8(ascon_sponge_t* sponge);
+ascon_permutation_8(ascon_sponge_t* const sponge);
 
 /**
  * @internal
  * Ascon sponge permutation with 6 rounds.
  */
 void
-ascon_permutation_b6(ascon_sponge_t* sponge);
+ascon_permutation_6(ascon_sponge_t* const sponge);
 
 /**
  * @internal

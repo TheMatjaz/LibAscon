@@ -22,7 +22,7 @@
  *          .x0 = 0x00400c0000000100ULL, // Init. vector of Ascon-Hash
  *          .x1 = 0, .x2 = 0, .x3 = 0, .x4 = 0,
  *      };
- *      ascon_permutation_a12(&sponge);
+ *      ascon_permutation_12(&sponge);
  */
 static const ascon_sponge_t INITIALISED_SPONGE_HASH = {
         .x0=0xee9398aadb67f03dULL,
@@ -45,7 +45,7 @@ static const ascon_sponge_t INITIALISED_SPONGE_HASH = {
  *          .x0 = 0x00400c0400000100ULL, // Init. vector of Ascon-Hasha
  *          .x1 = 0, .x2 = 0, .x3 = 0, .x4 = 0,
  *      };
- *      ascon_permutation_a12(&sponge);
+ *      ascon_permutation_12(&sponge);
  */
 static const ascon_sponge_t INITIALISED_SPONGE_HASHA = {
         .x0=0x01470194fc6528a6ULL,
@@ -68,7 +68,7 @@ static const ascon_sponge_t INITIALISED_SPONGE_HASHA = {
  *          .x0 = 0x00400c0000000000ULL, // Init. vector of Ascon-XOF
  *          .x1 = 0, .x2 = 0, .x3 = 0, .x4 = 0,
  *      };
- *      ascon_permutation_a12(&sponge);
+ *      ascon_permutation_12(&sponge);
  */
 static const ascon_sponge_t INITIALISED_SPONGE_XOF = {
         .x0=0xb57e273b814cd416ULL,
@@ -91,7 +91,7 @@ static const ascon_sponge_t INITIALISED_SPONGE_XOF = {
  *          .x0 = 0x00400c0400000000ULL, // Init. vector of Ascon-XOFa
  *          .x1 = 0, .x2 = 0, .x3 = 0, .x4 = 0,
  *      };
- *      ascon_permutation_a12(&sponge);
+ *      ascon_permutation_12(&sponge);
  */
 static const ascon_sponge_t INITIALISED_SPONGE_XOFA = {
         .x0=0x44906568b77b9832ULL,
@@ -150,7 +150,7 @@ absorb_hash_data(ascon_sponge_t* const sponge,
 {
     (void) data_out;
     sponge->x0 ^= bigendian_decode_u64(data);
-    ascon_permutation_a12(sponge);
+    ascon_permutation_12(sponge);
 }
 
 /**
@@ -165,7 +165,7 @@ absorb_hasha_data(ascon_sponge_t* const sponge,
 {
     (void) data_out;
     sponge->x0 ^= bigendian_decode_u64(data);
-    ascon_permutation_b8(sponge);
+    ascon_permutation_8(sponge);
 }
 
 ASCON_API void
@@ -225,7 +225,7 @@ hash_final(permutation_fptr permutation,
     // cached in the buffer, pad it and absorb it.
     ctx->sponge.x0 ^= bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
     ctx->sponge.x0 ^= PADDING(ctx->buffer_len);
-    ascon_permutation_a12(&ctx->sponge);
+    ascon_permutation_12(&ctx->sponge);
     // Squeeze the digest from the inner state.
     while (digest_len > ASCON_RATE)
     {
@@ -248,7 +248,7 @@ ascon_hash_xof_final(ascon_hash_ctx_t* const ctx,
     ASCON_ASSERT(digest_len == 0 || digest != NULL);
     ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED
                  || ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
-    hash_final(ascon_permutation_a12, ctx, digest, digest_len);
+    hash_final(ascon_permutation_12, ctx, digest, digest_len);
 }
 
 
@@ -261,7 +261,7 @@ ascon_hasha_xof_final(ascon_hash_ctx_t* const ctx,
     ASCON_ASSERT(digest_len == 0 || digest != NULL);
     ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASHA_INITIALISED
                  || ctx->flow_state == ASCON_FLOW_HASHA_UPDATED);
-    hash_final(ascon_permutation_b8, ctx, digest, digest_len);
+    hash_final(ascon_permutation_8, ctx, digest, digest_len);
 }
 
 ASCON_API void
@@ -331,7 +331,7 @@ hash_final_matches(permutation_fptr permutation,
     // cached in the buffer, pad it and absorb it.
     ctx->sponge.x0 ^= bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
     ctx->sponge.x0 ^= PADDING(ctx->buffer_len);
-    ascon_permutation_a12(&ctx->sponge);
+    ascon_permutation_12(&ctx->sponge);
     // Squeeze the digest from the inner state 8 bytes at the time to compare
     // it chunk by chunk with the expected digest
     uint8_t computed_digest_chunk[ASCON_RATE];
@@ -372,7 +372,7 @@ ascon_hash_xof_final_matches(ascon_hash_ctx_t* const ctx,
     ASCON_ASSERT(expected_digest_len == 0 || expected_digest != NULL);
     ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASH_INITIALISED
                  || ctx->flow_state == ASCON_FLOW_HASH_UPDATED);
-    return hash_final_matches(ascon_permutation_a12, ctx, expected_digest, expected_digest_len);
+    return hash_final_matches(ascon_permutation_12, ctx, expected_digest, expected_digest_len);
 }
 
 ASCON_API bool
@@ -385,7 +385,7 @@ ascon_hasha_xof_final_matches(ascon_hash_ctx_t* const ctx,
     ASCON_ASSERT(expected_digest_len == 0 || expected_digest != NULL);
     ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_HASHA_INITIALISED
                  || ctx->flow_state == ASCON_FLOW_HASHA_UPDATED);
-    return hash_final_matches(ascon_permutation_b8, ctx, expected_digest, expected_digest_len);
+    return hash_final_matches(ascon_permutation_8, ctx, expected_digest, expected_digest_len);
 }
 
 ASCON_API bool
