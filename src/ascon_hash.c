@@ -114,7 +114,7 @@ ascon_hash_init(ascon_hash_ctx_t* const ctx)
 ASCON_API void
 ascon_hasha_init(ascon_hash_ctx_t* const ctx)
 {
-    ASCON_ASSERT(ctx != NULL)
+    ASCON_ASSERT(ctx != NULL);
     ctx->sponge = INITIALISED_SPONGE_HASHA;
     ctx->buffer_len = 0;
     ctx->flow_state = ASCON_FLOW_HASHA_INITIALISED;
@@ -411,8 +411,8 @@ ascon_hash(uint8_t digest[ASCON_HASH_DIGEST_LEN],
     ASCON_ASSERT(data_len == 0 || data != NULL);
     ascon_hash_ctx_t ctx;
     ascon_hash_init(&ctx);
-    ascon_hash_update(&ctx, data, data_len);
-    ascon_hash_final(&ctx, digest);
+    ascon_hash_xof_update(&ctx, data, data_len);
+    ascon_hash_xof_final(&ctx, digest, ASCON_HASH_DIGEST_LEN);
 }
 
 ASCON_API void
@@ -424,8 +424,8 @@ ascon_hasha(uint8_t digest[ASCON_HASHA_DIGEST_LEN],
     ASCON_ASSERT(data_len == 0 || data != NULL);
     ascon_hash_ctx_t ctx;
     ascon_hasha_init(&ctx);
-    ascon_hasha_update(&ctx, data, data_len);
-    ascon_hasha_final(&ctx, digest);
+    ascon_hasha_xof_update(&ctx, data, data_len);
+    ascon_hasha_xof_final(&ctx, digest, ASCON_HASHA_DIGEST_LEN);
 }
 
 ASCON_API bool
@@ -437,8 +437,8 @@ ascon_hash_matches(const uint8_t expected_digest[ASCON_HASH_DIGEST_LEN],
     ASCON_ASSERT(data_len == 0 || data != NULL);
     ascon_hash_ctx_t ctx;
     ascon_hash_init(&ctx);
-    ascon_hash_update(&ctx, data, data_len);
-    return ascon_hash_final_matches(&ctx, expected_digest);
+    ascon_hash_xof_update(&ctx, data, data_len);
+    return ascon_hash_xof_final_matches(&ctx, expected_digest, ASCON_HASH_DIGEST_LEN);
 }
 
 ASCON_API bool
@@ -450,8 +450,8 @@ ascon_hasha_matches(const uint8_t expected_digest[ASCON_HASHA_DIGEST_LEN],
     ASCON_ASSERT(data_len == 0 || data != NULL);
     ascon_hash_ctx_t ctx;
     ascon_hasha_init(&ctx);
-    ascon_hasha_update(&ctx, data, data_len);
-    return ascon_hasha_final_matches(&ctx, expected_digest);
+    ascon_hasha_xof_update(&ctx, data, data_len);
+    return ascon_hasha_xof_final_matches(&ctx, expected_digest, ASCON_HASHA_DIGEST_LEN);
 }
 
 ASCON_API void
