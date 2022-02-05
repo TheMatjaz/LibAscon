@@ -78,7 +78,7 @@ ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     ctx->k0 = bigendian_decode_u64(key) >> 32U;
     ctx->k1 = bigendian_decode_u64(key + 4U);
     ctx->k2 = bigendian_decode_u64(key + 4U + sizeof(uint64_t));
-    ctx->bufstate.sponge.x0 = AEAD80pq_IV | ctx->k0;
+    ctx->bufstate.sponge.x0 = ASCON_IV_AEAD80pq | ctx->k0;
     ctx->bufstate.sponge.x1 = ctx->k1;
     ctx->bufstate.sponge.x2 = ctx->k2;
     ctx->bufstate.sponge.x3 = bigendian_decode_u64(nonce);

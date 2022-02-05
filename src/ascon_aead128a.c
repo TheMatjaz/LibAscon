@@ -74,7 +74,7 @@ ascon_aead128a_init(ascon_aead_ctx_t* const ctx,
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(key != NULL);
     ASCON_ASSERT(nonce != NULL);
-    ascon_aead_init(ctx, key, nonce, AEAD128a_IV);
+    ascon_aead_init(ctx, key, nonce, ASCON_IV_AEAD128a);
     ctx->bufstate.flow_state = ASCON_FLOW_AEAD128a_INITIALISED;
 }
 

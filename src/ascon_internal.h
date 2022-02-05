@@ -30,36 +30,119 @@ extern "C"
 
 /* Definitions of the initialisation vectors used to initialise the sponge
  * state for AEAD and the two types of hashing functions. */
-#define PERMUTATION_12_ROUNDS 12U
-#define PERMUTATION_8_ROUNDS 8U
-#define PERMUTATION_6_ROUNDS 6U
-#define XOF_IV ( \
-      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
-    | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
-    )
-#define AEAD128_IV ( \
-       ((uint64_t)(8U * (ASCON_AEAD128_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8U * (ASCON_RATE))            << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)        << 40U) \
-     | ((uint64_t)(PERMUTATION_6_ROUNDS)         << 32U) \
-     )
-#define AEAD128a_IV ( \
-       ((uint64_t)(8U * (ASCON_AEAD128a_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8U * ASCON_DOUBLE_RATE)        << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
-     | ((uint64_t)(PERMUTATION_8_ROUNDS)          << 32U) \
-     )
-#define AEAD80pq_IV ( \
-       ((uint64_t)(8U * (ASCON_AEAD80pq_KEY_LEN)) << 56U) \
-     | ((uint64_t)(8U * ASCON_RATE)               << 48U) \
-     | ((uint64_t)(PERMUTATION_12_ROUNDS)         << 40U) \
-     | ((uint64_t)(PERMUTATION_6_ROUNDS)          << 32U) \
-     )
-#define HASH_IV ( \
-      ((uint64_t)(8U * (ASCON_RATE))     << 48U) \
-    | ((uint64_t)(PERMUTATION_12_ROUNDS) << 40U) \
-    | ((uint64_t)(8U * ASCON_HASH_DIGEST_LEN)) \
-    )
+/**
+ * @internal
+ * Initialisation vector for the Ascon128 AEAD cipher.
+ *
+ * Equivalent to the binary concatenation of `k || r || a || b || 0^(160−k)`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - `k` is the key length in bits: 128 = 0x80
+ * - `r` is the AEAD rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 6 = 0x06
+ * - right-padded with zeros until we reach 64 bits of size
+ */
+#define ASCON_IV_AEAD128  0x80400c0600000000ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon128a AEAD cipher.
+ *
+ * Equivalent to the binary concatenation of `k || r || a || b || 0^(160−k)`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - `k` is the key length in bits: 128 = 0x80
+ * - `r` is the AEAD rate in bits: 128 = 0x80
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 8 = 0x08
+ * - right-padded with zeros until we reach 64 bits of size
+ */
+#define ASCON_IV_AEAD128a 0x80800c0800000000ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon80pq AEAD cipher.
+ *
+ * Equivalent to the binary concatenation of `k || r || a || b || 0^(160−k)`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - `k` is the key length in bits: 160 = 0xa0
+ * - `r` is the AEAD rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 6 = 0x06
+ * - right-padded with zeros until we reach 64 bits of size
+ */
+#define ASCON_IV_AEAD80pq 0xa0400c0600000000ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon-Hash hashing function.
+ *
+ * Equivalent to the binary concatenation of `0^8 || r || a || a − b || h`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - left-padding with eight zero-bits until we reach 64 bits of size
+ * - `r` is the hash rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 12 = 0x0C
+ * - `h` is the digest length in bits expressed as `uint32_t`: 256 = 0x00000100
+ */
+#define ASCON_IV_HASH     0x00400c0000000100ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon-Hasha hashing function.
+ *
+ * Equivalent to the binary concatenation of `0^8 || r || a || a − b || h`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - left-padding with eight zero-bits until we reach 64 bits of size
+ * - `r` is the hash rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 8 = 0x08
+ * - `h` is the digest length in bits expressed as `uint32_t`: 256 = 0x00000100
+ */
+#define ASCON_IV_HASHa    0x00400c0400000100ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon-XOF hashing function.
+ *
+ * Equivalent to the binary concatenation of `0^8 || r || a || a − b || h`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - left-padding with eight zero-bits until we reach 64 bits of size
+ * - `r` is the hash rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 12 = 0x0C
+ * - `h` is the digest length in bits expressed as `uint32_t`: 0 = 0x00000000,
+ *   here being zero, because of unlimited length
+ */
+#define ASCON_IV_XOF      0x00400c0000000000ULL
+
+/**
+ * @internal
+ * Initialisation vector for the Ascon-XOFa hashing function.
+ *
+ * Equivalent to the binary concatenation of `0^8 || r || a || a − b || h`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - left-padding with eight zero-bits until we reach 64 bits of size
+ * - `r` is the hash rate in bits: 64 = 0x40
+ * - `a` is the amount of rounds during the a-permutation: 12 = 0x0C
+ * - `b` is the amount of rounds during the b-permutation: 8 = 0x08
+ * - `h` is the digest length in bits expressed as `uint32_t`: 0 = 0x00000000,
+ *   here being zero, because of unlimited length
+ */
+#define ASCON_IV_XOFa     0x00400c0400000000ULL
 
 /**
  * @internal
