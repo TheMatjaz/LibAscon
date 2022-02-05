@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.1.2</span>
+   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -99,14 +99,14 @@ Include dependency graph for ascon.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__sponge__t.html">ascon_sponge_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state (320 bits).  <a href="structascon__sponge__t.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__sponge.html">ascon_sponge</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state (320 bits).  <a href="structascon__sponge.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate__t.html">ascon_bufstate_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state associated with a buffer holding for less-than-rate updates.  <a href="structascon__bufstate__t.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html">ascon_bufstate</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state associated with a buffer holding for less-than-rate updates.  <a href="structascon__bufstate.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher context for authenticated encryption and validated decryption.  <a href="structascon__aead__ctx__t.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx.html">ascon_aead_ctx</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher context for authenticated encryption and validated decryption.  <a href="structascon__aead__ctx.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -128,15 +128,15 @@ Macros</h2></td></tr>
 <tr class="memdesc:a70aa0fd858020e1b162ac9db7bc34384"><td class="mdescLeft">&#160;</td><td class="mdescRight">Major version of this API conforming to semantic versioning. <br /></td></tr>
 <tr class="separator:a70aa0fd858020e1b162ac9db7bc34384"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0de7ed569e13ab24073dad1b3abd8a7"><td class="memItemLeft" align="right" valign="top"><a id="ad0de7ed569e13ab24073dad1b3abd8a7" name="ad0de7ed569e13ab24073dad1b3abd8a7"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION_MINOR</b>&#160;&#160;&#160;1</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION_MINOR</b>&#160;&#160;&#160;2</td></tr>
 <tr class="memdesc:ad0de7ed569e13ab24073dad1b3abd8a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minor version of this API conforming to semantic versioning. <br /></td></tr>
 <tr class="separator:ad0de7ed569e13ab24073dad1b3abd8a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b505c27410cec67fc2264aa42051f08"><td class="memItemLeft" align="right" valign="top"><a id="a9b505c27410cec67fc2264aa42051f08" name="a9b505c27410cec67fc2264aa42051f08"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION_BUGFIX</b>&#160;&#160;&#160;2</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION_BUGFIX</b>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:a9b505c27410cec67fc2264aa42051f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bugfix/patch version of this API conforming to semantic versioning. <br /></td></tr>
 <tr class="separator:a9b505c27410cec67fc2264aa42051f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada9c15d7864876adde8ac658fcdb37c4"><td class="memItemLeft" align="right" valign="top"><a id="ada9c15d7864876adde8ac658fcdb37c4" name="ada9c15d7864876adde8ac658fcdb37c4"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION</b>&#160;&#160;&#160;&quot;1.1.2&quot;</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_API_VERSION</b>&#160;&#160;&#160;&quot;1.2.0&quot;</td></tr>
 <tr class="memdesc:ada9c15d7864876adde8ac658fcdb37c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Version of this API conforming to semantic versioning as a string. <br /></td></tr>
 <tr class="separator:ada9c15d7864876adde8ac658fcdb37c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d925f62c1deac9834156f754ec6c365"><td class="memItemLeft" align="right" valign="top"><a id="a5d925f62c1deac9834156f754ec6c365" name="a5d925f62c1deac9834156f754ec6c365"></a>
@@ -163,6 +163,10 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_HASH_DIGEST_LEN</b>&#160;&#160;&#160;32U</td></tr>
 <tr class="memdesc:a2773473671e03e9a2210b179f7a255d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length in bytes of the digest generated by the fixed-size (non-xof) hash function. <br /></td></tr>
 <tr class="separator:a2773473671e03e9a2210b179f7a255d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fb24ad03a21d5cb37d9da9027be2e32"><td class="memItemLeft" align="right" valign="top"><a id="a3fb24ad03a21d5cb37d9da9027be2e32" name="a3fb24ad03a21d5cb37d9da9027be2e32"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_HASHA_DIGEST_LEN</b>&#160;&#160;&#160;<a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0">ASCON_HASH_DIGEST_LEN</a></td></tr>
+<tr class="memdesc:a3fb24ad03a21d5cb37d9da9027be2e32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length in bytes of the digest generated by the fixed-size (non-xof) hasha function. <br /></td></tr>
+<tr class="separator:a3fb24ad03a21d5cb37d9da9027be2e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8b9d549b97e46f61cf586693a276629"><td class="memItemLeft" align="right" valign="top"><a id="ae8b9d549b97e46f61cf586693a276629" name="ae8b9d549b97e46f61cf586693a276629"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ASCON_RATE</b>&#160;&#160;&#160;8U</td></tr>
 <tr class="memdesc:ae8b9d549b97e46f61cf586693a276629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes the cipher can process at the time in AEAD128 mode and hashing. <br /></td></tr>
@@ -181,124 +185,170 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:aaba863f50754a13f14511b7e7c1d1b1c"><td class="memItemLeft" align="right" valign="top"><a id="aaba863f50754a13f14511b7e7c1d1b1c" name="aaba863f50754a13f14511b7e7c1d1b1c"></a>
+typedef struct <a class="el" href="structascon__sponge.html">ascon_sponge</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ascon_sponge_t</b></td></tr>
+<tr class="memdesc:aaba863f50754a13f14511b7e7c1d1b1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state (320 bits). <br /></td></tr>
+<tr class="separator:aaba863f50754a13f14511b7e7c1d1b1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4af27aa4c3796f04bf721ff40cde919"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structascon__bufstate.html">ascon_bufstate</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a></td></tr>
+<tr class="memdesc:ae4af27aa4c3796f04bf721ff40cde919"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cipher sponge state associated with a buffer holding for less-than-rate updates.  <a href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">More...</a><br /></td></tr>
+<tr class="separator:ae4af27aa4c3796f04bf721ff40cde919"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ea1500d62e37e40e6f744eef72a8f03"><td class="memItemLeft" align="right" valign="top"><a id="a6ea1500d62e37e40e6f744eef72a8f03" name="a6ea1500d62e37e40e6f744eef72a8f03"></a>
-typedef <a class="el" href="structascon__bufstate__t.html">ascon_bufstate_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ascon_hash_ctx_t</b></td></tr>
+typedef <a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ascon_hash_ctx_t</b></td></tr>
 <tr class="memdesc:a6ea1500d62e37e40e6f744eef72a8f03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher context for hashing. <br /></td></tr>
 <tr class="separator:a6ea1500d62e37e40e6f744eef72a8f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4458780b3b7603cc952913db3e40860"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structascon__aead__ctx.html">ascon_aead_ctx</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a></td></tr>
+<tr class="memdesc:af4458780b3b7603cc952913db3e40860"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher context for authenticated encryption and validated decryption.  <a href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">More...</a><br /></td></tr>
+<tr class="separator:af4458780b3b7603cc952913db3e40860"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aad16ee534258583d3c658fa45dcd67a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aad16ee534258583d3c658fa45dcd67a1">ascon_aead128_encrypt</a> (uint8_t *ciphertext, uint8_t *tag, const uint8_t key[<a class="el" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *plaintext, size_t assoc_data_len, size_t plaintext_len, size_t tag_len)</td></tr>
 <tr class="memdesc:aad16ee534258583d3c658fa45dcd67a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric encryption using Ascon128.  <a href="ascon_8h.html#aad16ee534258583d3c658fa45dcd67a1">More...</a><br /></td></tr>
 <tr class="separator:aad16ee534258583d3c658fa45dcd67a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a368ec60db11cf197ca49a3290a81d1e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a368ec60db11cf197ca49a3290a81d1e2">ascon_aead128_init</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
+<tr class="memitem:a368ec60db11cf197ca49a3290a81d1e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a368ec60db11cf197ca49a3290a81d1e2">ascon_aead128_init</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
 <tr class="memdesc:a368ec60db11cf197ca49a3290a81d1e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon128, initialisation.  <a href="ascon_8h.html#a368ec60db11cf197ca49a3290a81d1e2">More...</a><br /></td></tr>
 <tr class="separator:a368ec60db11cf197ca49a3290a81d1e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ebc0909121a3f655164c14a2a850c53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a3ebc0909121a3f655164c14a2a850c53">ascon_aead128_assoc_data_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
+<tr class="memitem:a3ebc0909121a3f655164c14a2a850c53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a3ebc0909121a3f655164c14a2a850c53">ascon_aead128_assoc_data_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
 <tr class="memdesc:a3ebc0909121a3f655164c14a2a850c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon128, feeding associated data.  <a href="ascon_8h.html#a3ebc0909121a3f655164c14a2a850c53">More...</a><br /></td></tr>
 <tr class="separator:a3ebc0909121a3f655164c14a2a850c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3154ef7d24cd2aefac7526f47be7af4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4">ascon_aead128_encrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
+<tr class="memitem:aa3154ef7d24cd2aefac7526f47be7af4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4">ascon_aead128_encrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
 <tr class="memdesc:aa3154ef7d24cd2aefac7526f47be7af4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.  <a href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4">More...</a><br /></td></tr>
 <tr class="separator:aa3154ef7d24cd2aefac7526f47be7af4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6362d5089ca5c3dd082722f233997e92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92">ascon_aead128_encrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
+<tr class="memitem:a6362d5089ca5c3dd082722f233997e92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92">ascon_aead128_encrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
 <tr class="memdesc:a6362d5089ca5c3dd082722f233997e92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon128, finalisation and tag generation.  <a href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92">More...</a><br /></td></tr>
 <tr class="separator:a6362d5089ca5c3dd082722f233997e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9921ab2883cf48a221df0935f753864f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a9921ab2883cf48a221df0935f753864f">ascon_aead128_decrypt</a> (uint8_t *plaintext, const uint8_t key[<a class="el" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *ciphertext, const uint8_t *expected_tag, size_t assoc_data_len, size_t ciphertext_len, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:a9921ab2883cf48a221df0935f753864f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric decryption using Ascon128.  <a href="ascon_8h.html#a9921ab2883cf48a221df0935f753864f">More...</a><br /></td></tr>
 <tr class="separator:a9921ab2883cf48a221df0935f753864f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e65fbd17fcdde9fd4621c5d65bdb4e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3">ascon_aead128_decrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
+<tr class="memitem:a5e65fbd17fcdde9fd4621c5d65bdb4e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3">ascon_aead128_decrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
 <tr class="memdesc:a5e65fbd17fcdde9fd4621c5d65bdb4e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon128, feeding ciphertext and getting plaintext.  <a href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3">More...</a><br /></td></tr>
 <tr class="separator:a5e65fbd17fcdde9fd4621c5d65bdb4e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad966f02f3fc5a966216719a554e7453e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e">ascon_aead128_decrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
+<tr class="memitem:ad966f02f3fc5a966216719a554e7453e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e">ascon_aead128_decrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:ad966f02f3fc5a966216719a554e7453e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon128, finalisation and tag validation.  <a href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e">More...</a><br /></td></tr>
 <tr class="separator:ad966f02f3fc5a966216719a554e7453e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad38e9711a09c3a5dc6d0479241a0bf43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43">ascon_aead_cleanup</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx)</td></tr>
+<tr class="memitem:ad38e9711a09c3a5dc6d0479241a0bf43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43">ascon_aead_cleanup</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx)</td></tr>
 <tr class="memdesc:ad38e9711a09c3a5dc6d0479241a0bf43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Security cleanup of the AEAD context, in case the online processing is not completed to the end.  <a href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43">More...</a><br /></td></tr>
 <tr class="separator:ad38e9711a09c3a5dc6d0479241a0bf43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab04a3525639a0696d3c1997cfeccb9be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ab04a3525639a0696d3c1997cfeccb9be">ascon_aead128a_encrypt</a> (uint8_t *ciphertext, uint8_t *tag, const uint8_t key[<a class="el" href="ascon_8h.html#a5d925f62c1deac9834156f754ec6c365">ASCON_AEAD128_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *plaintext, size_t assoc_data_len, size_t plaintext_len, size_t tag_len)</td></tr>
 <tr class="memdesc:ab04a3525639a0696d3c1997cfeccb9be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric encryption using Ascon128a, which uses a double data rate compared to Ascon128.  <a href="ascon_8h.html#ab04a3525639a0696d3c1997cfeccb9be">More...</a><br /></td></tr>
 <tr class="separator:ab04a3525639a0696d3c1997cfeccb9be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae84eb43b40d310b8dd98d9086a0ef423"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ae84eb43b40d310b8dd98d9086a0ef423">ascon_aead128a_init</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#a3511e96b22f3b3c46204e4e2a05866c2">ASCON_AEAD128a_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
+<tr class="memitem:ae84eb43b40d310b8dd98d9086a0ef423"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ae84eb43b40d310b8dd98d9086a0ef423">ascon_aead128a_init</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#a3511e96b22f3b3c46204e4e2a05866c2">ASCON_AEAD128a_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
 <tr class="memdesc:ae84eb43b40d310b8dd98d9086a0ef423"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon128a, initialisation.  <a href="ascon_8h.html#ae84eb43b40d310b8dd98d9086a0ef423">More...</a><br /></td></tr>
 <tr class="separator:ae84eb43b40d310b8dd98d9086a0ef423"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76a1c64c80ee2d7c46f02f033d11a241"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a76a1c64c80ee2d7c46f02f033d11a241">ascon_aead128a_assoc_data_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
+<tr class="memitem:a76a1c64c80ee2d7c46f02f033d11a241"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a76a1c64c80ee2d7c46f02f033d11a241">ascon_aead128a_assoc_data_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
 <tr class="memdesc:a76a1c64c80ee2d7c46f02f033d11a241"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon128a, feeding associated data.  <a href="ascon_8h.html#a76a1c64c80ee2d7c46f02f033d11a241">More...</a><br /></td></tr>
 <tr class="separator:a76a1c64c80ee2d7c46f02f033d11a241"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a9fd46493272b573ce46011e9017417"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417">ascon_aead128a_encrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
+<tr class="memitem:a7a9fd46493272b573ce46011e9017417"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417">ascon_aead128a_encrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
 <tr class="memdesc:a7a9fd46493272b573ce46011e9017417"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon128a, feeding plaintext and getting ciphertext.  <a href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417">More...</a><br /></td></tr>
 <tr class="separator:a7a9fd46493272b573ce46011e9017417"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6099a33b98cfae760ca2d88aac61581d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d">ascon_aead128a_encrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
+<tr class="memitem:a6099a33b98cfae760ca2d88aac61581d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d">ascon_aead128a_encrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
 <tr class="memdesc:a6099a33b98cfae760ca2d88aac61581d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon128a, finalisation and tag generation.  <a href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d">More...</a><br /></td></tr>
 <tr class="separator:a6099a33b98cfae760ca2d88aac61581d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7500885dcad2e4f46827ebd33f226dca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a7500885dcad2e4f46827ebd33f226dca">ascon_aead128a_decrypt</a> (uint8_t *plaintext, const uint8_t key[<a class="el" href="ascon_8h.html#a3511e96b22f3b3c46204e4e2a05866c2">ASCON_AEAD128a_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *ciphertext, const uint8_t *expected_tag, size_t assoc_data_len, size_t ciphertext_len, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:a7500885dcad2e4f46827ebd33f226dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric decryption using Ascon128a, which uses a double data rate compared to Ascon128.  <a href="ascon_8h.html#a7500885dcad2e4f46827ebd33f226dca">More...</a><br /></td></tr>
 <tr class="separator:a7500885dcad2e4f46827ebd33f226dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adffb0d31cb6f87a084f22518d1827000"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000">ascon_aead128a_decrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
+<tr class="memitem:adffb0d31cb6f87a084f22518d1827000"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000">ascon_aead128a_decrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
 <tr class="memdesc:adffb0d31cb6f87a084f22518d1827000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon128a, feeding ciphertext and getting plaintext.  <a href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000">More...</a><br /></td></tr>
 <tr class="separator:adffb0d31cb6f87a084f22518d1827000"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ff439e7572abaee14816a93d8e1a8f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a9ff439e7572abaee14816a93d8e1a8f9">ascon_aead128a_decrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
+<tr class="memitem:a9ff439e7572abaee14816a93d8e1a8f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a9ff439e7572abaee14816a93d8e1a8f9">ascon_aead128a_decrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:a9ff439e7572abaee14816a93d8e1a8f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon128a, finalisation and tag validation.  <a href="ascon_8h.html#a9ff439e7572abaee14816a93d8e1a8f9">More...</a><br /></td></tr>
 <tr class="separator:a9ff439e7572abaee14816a93d8e1a8f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa443ab83fb3be9e579c6e0717b28614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#afa443ab83fb3be9e579c6e0717b28614">ascon_aead80pq_encrypt</a> (uint8_t *ciphertext, uint8_t *tag, const uint8_t key[<a class="el" href="ascon_8h.html#af1192621cfe80af248258cd158087b27">ASCON_AEAD80pq_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *plaintext, size_t assoc_data_len, size_t plaintext_len, size_t tag_len)</td></tr>
 <tr class="memdesc:afa443ab83fb3be9e579c6e0717b28614"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric encryption using Ascon80pq, which uses a larger key.  <a href="ascon_8h.html#afa443ab83fb3be9e579c6e0717b28614">More...</a><br /></td></tr>
 <tr class="separator:afa443ab83fb3be9e579c6e0717b28614"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33555efc5b06b3179d07a57aa775fbfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a33555efc5b06b3179d07a57aa775fbfe">ascon_aead80pq_init</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#af1192621cfe80af248258cd158087b27">ASCON_AEAD80pq_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
+<tr class="memitem:a33555efc5b06b3179d07a57aa775fbfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a33555efc5b06b3179d07a57aa775fbfe">ascon_aead80pq_init</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t key[<a class="el" href="ascon_8h.html#af1192621cfe80af248258cd158087b27">ASCON_AEAD80pq_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>])</td></tr>
 <tr class="memdesc:a33555efc5b06b3179d07a57aa775fbfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon80pq, initialisation - note that a larger key is used compared to Ascon128 and Ascon128a.  <a href="ascon_8h.html#a33555efc5b06b3179d07a57aa775fbfe">More...</a><br /></td></tr>
 <tr class="separator:a33555efc5b06b3179d07a57aa775fbfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac76b1f3ddcd8ed5a3939a9e39729884e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ac76b1f3ddcd8ed5a3939a9e39729884e">ascon_aead80pq_assoc_data_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
+<tr class="memitem:ac76b1f3ddcd8ed5a3939a9e39729884e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ac76b1f3ddcd8ed5a3939a9e39729884e">ascon_aead80pq_assoc_data_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, const uint8_t *assoc_data, size_t assoc_data_len)</td></tr>
 <tr class="memdesc:ac76b1f3ddcd8ed5a3939a9e39729884e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption/decryption using Ascon80pq, feeding associated data.  <a href="ascon_8h.html#ac76b1f3ddcd8ed5a3939a9e39729884e">More...</a><br /></td></tr>
 <tr class="separator:ac76b1f3ddcd8ed5a3939a9e39729884e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70bce72798cb18b7091b33cf70332b6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c">ascon_aead80pq_encrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
+<tr class="memitem:a70bce72798cb18b7091b33cf70332b6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c">ascon_aead80pq_encrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</td></tr>
 <tr class="memdesc:a70bce72798cb18b7091b33cf70332b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon80pq, feeding plaintext and getting ciphertext.  <a href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c">More...</a><br /></td></tr>
 <tr class="separator:a70bce72798cb18b7091b33cf70332b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d37e88fdf53690c3813a30a314ec60b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b">ascon_aead80pq_encrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
+<tr class="memitem:a4d37e88fdf53690c3813a30a314ec60b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b">ascon_aead80pq_encrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *ciphertext, uint8_t *tag, size_t tag_len)</td></tr>
 <tr class="memdesc:a4d37e88fdf53690c3813a30a314ec60b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric encryption using Ascon80pq, finalisation and tag generation.  <a href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b">More...</a><br /></td></tr>
 <tr class="separator:a4d37e88fdf53690c3813a30a314ec60b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a009e8b4ac97834213b6f10d38a600d57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a009e8b4ac97834213b6f10d38a600d57">ascon_aead80pq_decrypt</a> (uint8_t *plaintext, const uint8_t key[<a class="el" href="ascon_8h.html#af1192621cfe80af248258cd158087b27">ASCON_AEAD80pq_KEY_LEN</a>], const uint8_t nonce[<a class="el" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>], const uint8_t *assoc_data, const uint8_t *ciphertext, const uint8_t *expected_tag, size_t assoc_data_len, size_t ciphertext_len, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:a009e8b4ac97834213b6f10d38a600d57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline symmetric decryption using Ascon80pq, which uses a larger key compared to Ascon128.  <a href="ascon_8h.html#a009e8b4ac97834213b6f10d38a600d57">More...</a><br /></td></tr>
 <tr class="separator:a009e8b4ac97834213b6f10d38a600d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45cf70893ac35727009e552229ec4128"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a45cf70893ac35727009e552229ec4128">ascon_aead80pq_decrypt_update</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
+<tr class="memitem:a45cf70893ac35727009e552229ec4128"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a45cf70893ac35727009e552229ec4128">ascon_aead80pq_decrypt_update</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, const uint8_t *ciphertext, size_t ciphertext_len)</td></tr>
 <tr class="memdesc:a45cf70893ac35727009e552229ec4128"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon80pq, feeding ciphertext and getting plaintext.  <a href="ascon_8h.html#a45cf70893ac35727009e552229ec4128">More...</a><br /></td></tr>
 <tr class="separator:a45cf70893ac35727009e552229ec4128"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae05696db7e52c96dfc546c1f39b5710"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aae05696db7e52c96dfc546c1f39b5710">ascon_aead80pq_decrypt_final</a> (<a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
+<tr class="memitem:aae05696db7e52c96dfc546c1f39b5710"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aae05696db7e52c96dfc546c1f39b5710">ascon_aead80pq_decrypt_final</a> (<a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</td></tr>
 <tr class="memdesc:aae05696db7e52c96dfc546c1f39b5710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online symmetric decryption using Ascon80pq, finalisation and tag validation.  <a href="ascon_8h.html#aae05696db7e52c96dfc546c1f39b5710">More...</a><br /></td></tr>
 <tr class="separator:aae05696db7e52c96dfc546c1f39b5710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa39eb254a341c1193c0d41cc20ac3b2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c">ascon_hash</a> (uint8_t digest[<a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0">ASCON_HASH_DIGEST_LEN</a>], const uint8_t *data, size_t data_len)</td></tr>
-<tr class="memdesc:aa39eb254a341c1193c0d41cc20ac3b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon Hash with fixed digest length.  <a href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c">More...</a><br /></td></tr>
+<tr class="memdesc:aa39eb254a341c1193c0d41cc20ac3b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hash with fixed digest length.  <a href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c">More...</a><br /></td></tr>
 <tr class="separator:aa39eb254a341c1193c0d41cc20ac3b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82da8377b6a10c8449cd35fe95c47d88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a82da8377b6a10c8449cd35fe95c47d88">ascon_hasha</a> (uint8_t digest[<a class="el" href="ascon_8h.html#a3fb24ad03a21d5cb37d9da9027be2e32">ASCON_HASHA_DIGEST_LEN</a>], const uint8_t *data, size_t data_len)</td></tr>
+<tr class="memdesc:a82da8377b6a10c8449cd35fe95c47d88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hasha with fixed digest length.  <a href="ascon_8h.html#a82da8377b6a10c8449cd35fe95c47d88">More...</a><br /></td></tr>
+<tr class="separator:a82da8377b6a10c8449cd35fe95c47d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2569e2e42963470b42aabc50bbe44e7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#af2569e2e42963470b42aabc50bbe44e7">ascon_hash_matches</a> (const uint8_t expected_digest[<a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0">ASCON_HASH_DIGEST_LEN</a>], const uint8_t *data, size_t data_len)</td></tr>
-<tr class="memdesc:af2569e2e42963470b42aabc50bbe44e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon Hash with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#af2569e2e42963470b42aabc50bbe44e7">More...</a><br /></td></tr>
+<tr class="memdesc:af2569e2e42963470b42aabc50bbe44e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hash with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#af2569e2e42963470b42aabc50bbe44e7">More...</a><br /></td></tr>
 <tr class="separator:af2569e2e42963470b42aabc50bbe44e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac30ec5413d801c1a5e339d9552ad2036"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ac30ec5413d801c1a5e339d9552ad2036">ascon_hasha_matches</a> (const uint8_t expected_digest[<a class="el" href="ascon_8h.html#a3fb24ad03a21d5cb37d9da9027be2e32">ASCON_HASHA_DIGEST_LEN</a>], const uint8_t *data, size_t data_len)</td></tr>
+<tr class="memdesc:ac30ec5413d801c1a5e339d9552ad2036"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#ac30ec5413d801c1a5e339d9552ad2036">More...</a><br /></td></tr>
+<tr class="separator:ac30ec5413d801c1a5e339d9552ad2036"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d91cbd64b7ded421d09199a13d43ce4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a1d91cbd64b7ded421d09199a13d43ce4">ascon_hash_init</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx)</td></tr>
-<tr class="memdesc:a1d91cbd64b7ded421d09199a13d43ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with fixed digest length, initialisation.  <a href="ascon_8h.html#a1d91cbd64b7ded421d09199a13d43ce4">More...</a><br /></td></tr>
+<tr class="memdesc:a1d91cbd64b7ded421d09199a13d43ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with fixed digest length, initialisation.  <a href="ascon_8h.html#a1d91cbd64b7ded421d09199a13d43ce4">More...</a><br /></td></tr>
 <tr class="separator:a1d91cbd64b7ded421d09199a13d43ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93f9822890bcbd14b97cb1dc0e37a5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ab93f9822890bcbd14b97cb1dc0e37a5d">ascon_hasha_init</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx)</td></tr>
+<tr class="memdesc:ab93f9822890bcbd14b97cb1dc0e37a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with fixed digest length, initialisation.  <a href="ascon_8h.html#ab93f9822890bcbd14b97cb1dc0e37a5d">More...</a><br /></td></tr>
+<tr class="separator:ab93f9822890bcbd14b97cb1dc0e37a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebe0ff13f4f84cb7577d426c8414ff8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#aebe0ff13f4f84cb7577d426c8414ff8a">ascon_hash_update</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *data, size_t data_len)</td></tr>
-<tr class="memdesc:aebe0ff13f4f84cb7577d426c8414ff8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with fixed digest length, feeding data to hash.  <a href="ascon_8h.html#aebe0ff13f4f84cb7577d426c8414ff8a">More...</a><br /></td></tr>
+<tr class="memdesc:aebe0ff13f4f84cb7577d426c8414ff8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with fixed digest length, feeding data to hash.  <a href="ascon_8h.html#aebe0ff13f4f84cb7577d426c8414ff8a">More...</a><br /></td></tr>
 <tr class="separator:aebe0ff13f4f84cb7577d426c8414ff8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7a0e64dfbd07450ad4e741f9c301bfd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ad7a0e64dfbd07450ad4e741f9c301bfd">ascon_hasha_update</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *data, size_t data_len)</td></tr>
+<tr class="memdesc:ad7a0e64dfbd07450ad4e741f9c301bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with fixed digest length, feeding data to hash.  <a href="ascon_8h.html#ad7a0e64dfbd07450ad4e741f9c301bfd">More...</a><br /></td></tr>
+<tr class="separator:ad7a0e64dfbd07450ad4e741f9c301bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbec8a714a3115117d82e4c0f9558097"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097">ascon_hash_final</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, uint8_t digest[<a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0">ASCON_HASH_DIGEST_LEN</a>])</td></tr>
-<tr class="memdesc:abbec8a714a3115117d82e4c0f9558097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with fixed digest length, finalisation and digest generation.  <a href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097">More...</a><br /></td></tr>
+<tr class="memdesc:abbec8a714a3115117d82e4c0f9558097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with fixed digest length, finalisation and digest generation.  <a href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097">More...</a><br /></td></tr>
 <tr class="separator:abbec8a714a3115117d82e4c0f9558097"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12877681100754698a5bf10421fd0654"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a12877681100754698a5bf10421fd0654">ascon_hasha_final</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, uint8_t digest[<a class="el" href="ascon_8h.html#a3fb24ad03a21d5cb37d9da9027be2e32">ASCON_HASHA_DIGEST_LEN</a>])</td></tr>
+<tr class="memdesc:a12877681100754698a5bf10421fd0654"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with fixed digest length, finalisation and digest generation.  <a href="ascon_8h.html#a12877681100754698a5bf10421fd0654">More...</a><br /></td></tr>
+<tr class="separator:a12877681100754698a5bf10421fd0654"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12c01a67bfed9ad3b716b2fde9937385"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a12c01a67bfed9ad3b716b2fde9937385">ascon_hash_final_matches</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t expected_digest[<a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0">ASCON_HASH_DIGEST_LEN</a>])</td></tr>
-<tr class="memdesc:a12c01a67bfed9ad3b716b2fde9937385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a12c01a67bfed9ad3b716b2fde9937385">More...</a><br /></td></tr>
+<tr class="memdesc:a12c01a67bfed9ad3b716b2fde9937385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a12c01a67bfed9ad3b716b2fde9937385">More...</a><br /></td></tr>
 <tr class="separator:a12c01a67bfed9ad3b716b2fde9937385"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78c7f232c706b1508d5d88d28a0d1265"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a78c7f232c706b1508d5d88d28a0d1265">ascon_hasha_final_matches</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t expected_digest[<a class="el" href="ascon_8h.html#a3fb24ad03a21d5cb37d9da9027be2e32">ASCON_HASHA_DIGEST_LEN</a>])</td></tr>
+<tr class="memdesc:a78c7f232c706b1508d5d88d28a0d1265"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a78c7f232c706b1508d5d88d28a0d1265">More...</a><br /></td></tr>
+<tr class="separator:a78c7f232c706b1508d5d88d28a0d1265"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acab8ae06bcbe5b53c806cb18ae96e941"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941">ascon_hash_xof</a> (uint8_t *digest, const uint8_t *data, size_t digest_len, size_t data_len)</td></tr>
-<tr class="memdesc:acab8ae06bcbe5b53c806cb18ae96e941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF).  <a href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941">More...</a><br /></td></tr>
+<tr class="memdesc:acab8ae06bcbe5b53c806cb18ae96e941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF).  <a href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941">More...</a><br /></td></tr>
 <tr class="separator:acab8ae06bcbe5b53c806cb18ae96e941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1ed1987466b2ce14f3edf018fa00041"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ab1ed1987466b2ce14f3edf018fa00041">ascon_hasha_xof</a> (uint8_t *digest, const uint8_t *data, size_t digest_len, size_t data_len)</td></tr>
+<tr class="memdesc:ab1ed1987466b2ce14f3edf018fa00041"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hasha with custom digest length (eXtendable Output Function, XOF).  <a href="ascon_8h.html#ab1ed1987466b2ce14f3edf018fa00041">More...</a><br /></td></tr>
+<tr class="separator:ab1ed1987466b2ce14f3edf018fa00041"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10c82ac727f11449a5bfa605f554b524"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a10c82ac727f11449a5bfa605f554b524">ascon_hash_xof_matches</a> (const uint8_t *expected_digest, const uint8_t *data, size_t expected_digest_len, size_t data_len)</td></tr>
-<tr class="memdesc:a10c82ac727f11449a5bfa605f554b524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF) and validation of the expected one.  <a href="ascon_8h.html#a10c82ac727f11449a5bfa605f554b524">More...</a><br /></td></tr>
+<tr class="memdesc:a10c82ac727f11449a5bfa605f554b524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF) and validation of the expected one.  <a href="ascon_8h.html#a10c82ac727f11449a5bfa605f554b524">More...</a><br /></td></tr>
 <tr class="separator:a10c82ac727f11449a5bfa605f554b524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d50dd6ff8b1b9e407a22f3b63c26b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a94d50dd6ff8b1b9e407a22f3b63c26b5">ascon_hasha_xof_matches</a> (const uint8_t *expected_digest, const uint8_t *data, size_t expected_digest_len, size_t data_len)</td></tr>
+<tr class="memdesc:a94d50dd6ff8b1b9e407a22f3b63c26b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offline Ascon-Hasha with custom digest length (eXtendable Output Function, XOF) and validation of the expected one.  <a href="ascon_8h.html#a94d50dd6ff8b1b9e407a22f3b63c26b5">More...</a><br /></td></tr>
+<tr class="separator:a94d50dd6ff8b1b9e407a22f3b63c26b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f6424f124ab43b23a801f39440b9a12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">ascon_hash_xof_init</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx)</td></tr>
-<tr class="memdesc:a2f6424f124ab43b23a801f39440b9a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), initialisation.  <a href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">More...</a><br /></td></tr>
+<tr class="memdesc:a2f6424f124ab43b23a801f39440b9a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), initialisation.  <a href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">More...</a><br /></td></tr>
 <tr class="separator:a2f6424f124ab43b23a801f39440b9a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3238b204f5edb158228803345fc0c3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#ae3238b204f5edb158228803345fc0c3c">ascon_hasha_xof_init</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx)</td></tr>
+<tr class="memdesc:ae3238b204f5edb158228803345fc0c3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), initialisation.  <a href="ascon_8h.html#ae3238b204f5edb158228803345fc0c3c">More...</a><br /></td></tr>
+<tr class="separator:ae3238b204f5edb158228803345fc0c3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70136fcbc6c9bcd465221acb68bcbd0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c">ascon_hash_xof_update</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *data, size_t data_len)</td></tr>
-<tr class="memdesc:a70136fcbc6c9bcd465221acb68bcbd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash.  <a href="ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c">More...</a><br /></td></tr>
+<tr class="memdesc:a70136fcbc6c9bcd465221acb68bcbd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash.  <a href="ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c">More...</a><br /></td></tr>
 <tr class="separator:a70136fcbc6c9bcd465221acb68bcbd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b81bcb8eede6599b9a146a3ecb02f52"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a4b81bcb8eede6599b9a146a3ecb02f52">ascon_hasha_xof_update</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *data, size_t data_len)</td></tr>
+<tr class="memdesc:a4b81bcb8eede6599b9a146a3ecb02f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), feeding data to hash.  <a href="ascon_8h.html#a4b81bcb8eede6599b9a146a3ecb02f52">More...</a><br /></td></tr>
+<tr class="separator:a4b81bcb8eede6599b9a146a3ecb02f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af966155aba9e0a9b14264d97ddafafdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc">ascon_hash_xof_final</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, uint8_t *digest, size_t digest_len)</td></tr>
-<tr class="memdesc:af966155aba9e0a9b14264d97ddafafdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation.  <a href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc">More...</a><br /></td></tr>
+<tr class="memdesc:af966155aba9e0a9b14264d97ddafafdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation.  <a href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc">More...</a><br /></td></tr>
 <tr class="separator:af966155aba9e0a9b14264d97ddafafdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d756370ec3b0c265c52b353a1846fe2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a2d756370ec3b0c265c52b353a1846fe2">ascon_hasha_xof_final</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, uint8_t *digest, size_t digest_len)</td></tr>
+<tr class="memdesc:a2d756370ec3b0c265c52b353a1846fe2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation.  <a href="ascon_8h.html#a2d756370ec3b0c265c52b353a1846fe2">More...</a><br /></td></tr>
+<tr class="separator:a2d756370ec3b0c265c52b353a1846fe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bff26b9462fe7029391a5ec6650aac8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8">ascon_hash_xof_final_matches</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *expected_digest, size_t expected_digest_len)</td></tr>
-<tr class="memdesc:a7bff26b9462fe7029391a5ec6650aac8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8">More...</a><br /></td></tr>
+<tr class="memdesc:a7bff26b9462fe7029391a5ec6650aac8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8">More...</a><br /></td></tr>
 <tr class="separator:a7bff26b9462fe7029391a5ec6650aac8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13d02a2e1b6062f524e44924b69f1c45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a13d02a2e1b6062f524e44924b69f1c45">ascon_hasha_xof_final_matches</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx, const uint8_t *expected_digest, size_t expected_digest_len)</td></tr>
+<tr class="memdesc:a13d02a2e1b6062f524e44924b69f1c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one.  <a href="ascon_8h.html#a13d02a2e1b6062f524e44924b69f1c45">More...</a><br /></td></tr>
+<tr class="separator:a13d02a2e1b6062f524e44924b69f1c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4954f13cbf0f61de82ea3ea6f1530578"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578">ascon_hash_cleanup</a> (<a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *ctx)</td></tr>
 <tr class="memdesc:a4954f13cbf0f61de82ea3ea6f1530578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Security cleanup of the hashing context, in case the online processing is not completed to the end.  <a href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578">More...</a><br /></td></tr>
 <tr class="separator:a4954f13cbf0f61de82ea3ea6f1530578"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -415,6 +465,41 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ae4af27aa4c3796f04bf721ff40cde919" name="ae4af27aa4c3796f04bf721ff40cde919"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4af27aa4c3796f04bf721ff40cde919">&#9670;&nbsp;</a></span>ascon_bufstate_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structascon__bufstate.html">ascon_bufstate</a> <a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Internal cipher sponge state associated with a buffer holding for less-than-rate updates. </p>
+<p >Used for the Init-Update-Final implementation. </p>
+
+</div>
+</div>
+<a id="af4458780b3b7603cc952913db3e40860" name="af4458780b3b7603cc952913db3e40860"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4458780b3b7603cc952913db3e40860">&#9670;&nbsp;</a></span>ascon_aead_ctx_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structascon__aead__ctx.html">ascon_aead_ctx</a> <a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cipher context for authenticated encryption and validated decryption. </p>
+<p >Half of this context's size is the cipher's sponge state, the remaining part is holding the key and the buffering of online data (and some padding). </p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aad16ee534258583d3c658fa45dcd67a1" name="aad16ee534258583d3c658fa45dcd67a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad16ee534258583d3c658fa45dcd67a1">&#9670;&nbsp;</a></span>ascon_aead128_encrypt()</h2>
@@ -492,7 +577,7 @@ Functions</h2></td></tr>
 </div>
 <dl class="section warning"><dt>Warning</dt><dd>The nonce <b>must be unique</b>, as the strength of the AEAD is based on its uniqueness.</dd>
 <dd>
-Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">ciphertext</td><td>encrypted data with the same length as the plaintext, thus <code>plaintext_len</code> will be written in this buffer. This pointer may also point to the same location as <code>plaintext</code> to encrypt the plaintext in-place, sparing on memory instead of writing into a separate output buffer. Not NULL. </td></tr>
@@ -519,7 +604,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead128_init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -557,7 +642,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
  <div class="image">
 <img src="decrypt.png" alt=""/>
 </div>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
 A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the <a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a> or <a class="el" href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e" title="Online symmetric decryption using Ascon128, finalisation and tag validation.">ascon_aead128_decrypt_final()</a> call. In case the encryption or decryption session is interrupted and never finalised, clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd>
 <dd>
@@ -582,7 +667,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead128_assoc_data_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -607,7 +692,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 
 <p>Online symmetric encryption/decryption using Ascon128, feeding associated data. </p>
 <p >Feeds a chunk of associated data to the already initialised encryption or decryption session. The data will be authenticated by the tag provided by the final function, but not encrypted or decrypted.</p>
-<p >In case of no associated data at all to be authenticated/validated, this function can either be either skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
+<p >In case of no associated data at all to be authenticated/validated, this function can either be skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
 <p >After calling <a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4" title="Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.">ascon_aead128_encrypt_update()</a> or <a class="el" href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3" title="Online symmetric decryption using Ascon128, feeding ciphertext and getting plaintext.">ascon_aead128_decrypt_update()</a>, this function <b>must</b> not be used anymore on the same context.</p>
 <p >The calling order for encryption/decryption is:</p><ol type="1">
 <li><a class="el" href="ascon_8h.html#a368ec60db11cf197ca49a3290a81d1e2" title="Online symmetric encryption/decryption using Ascon128, initialisation.">ascon_aead128_init()</a> - once only</li>
@@ -615,7 +700,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4" title="Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.">ascon_aead128_encrypt_update()</a> / <a class="el" href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3" title="Online symmetric decryption using Ascon128, feeding ciphertext and getting plaintext.">ascon_aead128_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a> / <a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption/decryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -636,7 +721,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128_encrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -674,7 +759,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4" title="Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.">ascon_aead128_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -697,7 +782,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128_encrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -735,9 +820,9 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4" title="Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.">ascon_aead128_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6362d5089ca5c3dd082722f233997e92" title="Online symmetric encryption using Ascon128, finalisation and tag generation.">ascon_aead128_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
-A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -852,7 +937,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128_decrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -912,7 +997,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128_decrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -956,7 +1041,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 <li><a class="el" href="ascon_8h.html#a5e65fbd17fcdde9fd4621c5d65bdb4e3" title="Online symmetric decryption using Ascon128, feeding ciphertext and getting plaintext.">ascon_aead128_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e" title="Online symmetric decryption using Ascon128, finalisation and tag validation.">ascon_aead128_decrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the decryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -980,7 +1065,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead_cleanup </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1075,7 +1160,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 </div>
 <dl class="section warning"><dt>Warning</dt><dd>The nonce <b>must be unique</b>, as the strength of the AEAD is based on its uniqueness.</dd>
 <dd>
-Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">ciphertext</td><td>encrypted data with the same length as the plaintext, thus <code>plaintext_len</code> will be written in this buffer. This pointer may also point to the same location as <code>plaintext</code> to encrypt the plaintext in-place, sparing on memory instead of writing into a separate output buffer. Not NULL. </td></tr>
@@ -1102,7 +1187,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead128a_init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1140,7 +1225,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
  <div class="image">
 <img src="decrypt.png" alt=""/>
 </div>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
 A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the <a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d" title="Online symmetric encryption using Ascon128a, finalisation and tag generation.">ascon_aead128a_encrypt_final()</a> or <a class="el" href="ascon_8h.html#a9ff439e7572abaee14816a93d8e1a8f9" title="Online symmetric decryption using Ascon128a, finalisation and tag validation.">ascon_aead128a_decrypt_final()</a> call. In case the encryption or decryption session is interrupted and never finalised, clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd>
 <dd>
@@ -1165,7 +1250,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead128a_assoc_data_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1190,7 +1275,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 
 <p>Online symmetric encryption/decryption using Ascon128a, feeding associated data. </p>
 <p >Feeds a chunk of associated data to the already initialised encryption or decryption session. The data will be authenticated by the tag provided by the final function, but not encrypted or decrypted.</p>
-<p >In case of no associated data at all to be authenticated/validated, this function can either be either skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
+<p >In case of no associated data at all to be authenticated/validated, this function can either be skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
 <p >After calling <a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417" title="Online symmetric encryption using Ascon128a, feeding plaintext and getting ciphertext.">ascon_aead128a_encrypt_update()</a> or <a class="el" href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000" title="Online symmetric decryption using Ascon128a, feeding ciphertext and getting plaintext.">ascon_aead128a_decrypt_update()</a>, this function <b>must</b> not be used anymore on the same context.</p>
 <p >The calling order for encryption/decryption is:</p><ol type="1">
 <li><a class="el" href="ascon_8h.html#ae84eb43b40d310b8dd98d9086a0ef423" title="Online symmetric encryption/decryption using Ascon128a, initialisation.">ascon_aead128a_init()</a> - once only</li>
@@ -1198,7 +1283,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417" title="Online symmetric encryption using Ascon128a, feeding plaintext and getting ciphertext.">ascon_aead128a_encrypt_update()</a> / <a class="el" href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000" title="Online symmetric decryption using Ascon128a, feeding ciphertext and getting plaintext.">ascon_aead128a_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d" title="Online symmetric encryption using Ascon128a, finalisation and tag generation.">ascon_aead128a_encrypt_final()</a> / <a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d" title="Online symmetric encryption using Ascon128a, finalisation and tag generation.">ascon_aead128a_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption/decryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -1219,7 +1304,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128a_encrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1257,7 +1342,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417" title="Online symmetric encryption using Ascon128a, feeding plaintext and getting ciphertext.">ascon_aead128a_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d" title="Online symmetric encryption using Ascon128a, finalisation and tag generation.">ascon_aead128a_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -1280,7 +1365,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128a_encrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1318,9 +1403,9 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a7a9fd46493272b573ce46011e9017417" title="Online symmetric encryption using Ascon128a, feeding plaintext and getting ciphertext.">ascon_aead128a_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a6099a33b98cfae760ca2d88aac61581d" title="Online symmetric encryption using Ascon128a, finalisation and tag generation.">ascon_aead128a_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
-A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -1435,7 +1520,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128a_decrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1495,7 +1580,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead128a_decrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1539,7 +1624,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 <li><a class="el" href="ascon_8h.html#adffb0d31cb6f87a084f22518d1827000" title="Online symmetric decryption using Ascon128a, feeding ciphertext and getting plaintext.">ascon_aead128a_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a9ff439e7572abaee14816a93d8e1a8f9" title="Online symmetric decryption using Ascon128a, finalisation and tag validation.">ascon_aead128a_decrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the decryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -1630,7 +1715,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 </div>
 <dl class="section warning"><dt>Warning</dt><dd>The nonce <b>must be unique</b>, as the strength of the AEAD is based on its uniqueness.</dd>
 <dd>
-Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">ciphertext</td><td>encrypted data with the same length as the plaintext, thus <code>plaintext_len</code> will be written in this buffer. This pointer may also point to the same location as <code>plaintext</code> to encrypt the plaintext in-place, sparing on memory instead of writing into a separate output buffer. Not NULL. </td></tr>
@@ -1657,7 +1742,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead80pq_init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1695,7 +1780,7 @@ Using the AEAD to just authenticate any associated data with no plaintext to be 
  <div class="image">
 <img src="decrypt.png" alt=""/>
 </div>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
 A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the <a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b" title="Online symmetric encryption using Ascon80pq, finalisation and tag generation.">ascon_aead80pq_encrypt_final()</a> or <a class="el" href="ascon_8h.html#aae05696db7e52c96dfc546c1f39b5710" title="Online symmetric decryption using Ascon80pq, finalisation and tag validation.">ascon_aead80pq_decrypt_final()</a> call. In case the encryption or decryption session is interrupted and never finalised, clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd>
 <dd>
@@ -1720,7 +1805,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_aead80pq_assoc_data_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1745,7 +1830,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 
 <p>Online symmetric encryption/decryption using Ascon80pq, feeding associated data. </p>
 <p >Feeds a chunk of associated data to the already initialised encryption or decryption session. The data will be authenticated by the tag provided by the final function, but not encrypted or decrypted.</p>
-<p >In case of no associated data at all to be authenticated/validated, this function can either be either skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
+<p >In case of no associated data at all to be authenticated/validated, this function can either be skipped completely or called (also many times) with <code>assoc_data_len</code> set to 0. Iff that is the case, <code>assoc_data</code> can be set to NULL.</p>
 <p >After calling <a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c" title="Online symmetric encryption using Ascon80pq, feeding plaintext and getting ciphertext.">ascon_aead80pq_encrypt_update()</a> or <a class="el" href="ascon_8h.html#a45cf70893ac35727009e552229ec4128" title="Online symmetric decryption using Ascon80pq, feeding ciphertext and getting plaintext.">ascon_aead80pq_decrypt_update()</a>, this function <b>must</b> not be used anymore on the same context.</p>
 <p >The calling order for encryption/decryption is:</p><ol type="1">
 <li><a class="el" href="ascon_8h.html#a33555efc5b06b3179d07a57aa775fbfe" title="Online symmetric encryption/decryption using Ascon80pq, initialisation - note that a larger key is us...">ascon_aead80pq_init()</a> - once only</li>
@@ -1753,7 +1838,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c" title="Online symmetric encryption using Ascon80pq, feeding plaintext and getting ciphertext.">ascon_aead80pq_encrypt_update()</a> / <a class="el" href="ascon_8h.html#a45cf70893ac35727009e552229ec4128" title="Online symmetric decryption using Ascon80pq, feeding ciphertext and getting plaintext.">ascon_aead80pq_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b" title="Online symmetric encryption using Ascon80pq, finalisation and tag generation.">ascon_aead80pq_encrypt_final()</a> / <a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b" title="Online symmetric encryption using Ascon80pq, finalisation and tag generation.">ascon_aead80pq_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption/decryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -1774,7 +1859,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead80pq_encrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1812,7 +1897,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c" title="Online symmetric encryption using Ascon80pq, feeding plaintext and getting ciphertext.">ascon_aead80pq_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b" title="Online symmetric encryption using Ascon80pq, finalisation and tag generation.">ascon_aead80pq_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -1835,7 +1920,7 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead80pq_encrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -1873,9 +1958,9 @@ Do not mix Init-Update-Final functions across ciphers.</dd></dl>
 <li><a class="el" href="ascon_8h.html#a70bce72798cb18b7091b33cf70332b6c" title="Online symmetric encryption using Ascon80pq, feeding plaintext and getting ciphertext.">ascon_aead80pq_encrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#a4d37e88fdf53690c3813a30a314ec60b" title="Online symmetric encryption using Ascon80pq, finalisation and tag generation.">ascon_aead80pq_encrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>Using the AEAD to just authenticate any associated data with no plaintext to be encrypted is not recommended as the AEAD algorithm is not designed for that. Instead, use the Ascon hashing or xof functions in the form <code>Hash(key || msg)</code>.</dd>
 <dd>
-A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the encryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the encryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -1990,7 +2075,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead80pq_decrypt_update </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -2050,7 +2135,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
         <tr>
           <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> size_t ascon_aead80pq_decrypt_final </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#af4458780b3b7603cc952913db3e40860">ascon_aead_ctx_t</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
@@ -2094,7 +2179,7 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 <li><a class="el" href="ascon_8h.html#a45cf70893ac35727009e552229ec4128" title="Online symmetric decryption using Ascon80pq, feeding ciphertext and getting plaintext.">ascon_aead80pq_decrypt_update()</a> - 0 or more times, see warning</li>
 <li><a class="el" href="ascon_8h.html#aae05696db7e52c96dfc546c1f39b5710" title="Online symmetric decryption using Ascon80pq, finalisation and tag validation.">ascon_aead80pq_decrypt_final()</a> - once only</li>
 </ol>
-<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during the this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>A copy of the secret key is kept in the <code>ctx</code> struct and securely erased during this function call. In case the decryption session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#ad38e9711a09c3a5dc6d0479241a0bf43" title="Security cleanup of the AEAD context, in case the online processing is not completed to the end.">ascon_aead_cleanup()</a> to erase the key copy.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the decryption context, handling the cipher state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
@@ -2141,8 +2226,59 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Offline Ascon Hash with fixed digest length. </p>
+<p>Offline Ascon-Hash with fixed digest length. </p>
 <p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">digest</td><td>fingerprint of the message, output of the hash function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a82da8377b6a10c8449cd35fe95c47d88" name="a82da8377b6a10c8449cd35fe95c47d88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82da8377b6a10c8449cd35fe95c47d88">&#9670;&nbsp;</a></span>ascon_hasha()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>digest</em>[ASCON_HASHA_DIGEST_LEN], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Offline Ascon-Hasha with fixed digest length. </p>
+<p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <div class="image">
 <img src="hash.png" alt=""/>
 </div>
@@ -2190,15 +2326,67 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Offline Ascon Hash with fixed digest length, finalisation and digest validation of the expected one. </p>
+<p>Offline Ascon-Hash with fixed digest length, finalisation and digest validation of the expected one. </p>
 <p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
 <div class="image">
 <img src="hash.png" alt=""/>
 </div>
 <dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon-Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon-Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the answer to the question "is the digest valid?", thus <code>true</code> (== <a class="el" href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e" title="The tag is valid thus the associated data and ciphertext were intact.">ASCON_TAG_OK</a>) if the validation of the digest is correct, thus the message is intact (and authentic if a keyed hash was performed), <code>false</code> (== <a class="el" href="ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd" title="The tag is invalid thus the associated data and decrypted data should be ignored.">ASCON_TAG_INVALID</a>) otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="ac30ec5413d801c1a5e339d9552ad2036" name="ac30ec5413d801c1a5e339d9552ad2036"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac30ec5413d801c1a5e339d9552ad2036">&#9670;&nbsp;</a></span>ascon_hasha_matches()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool ascon_hasha_matches </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t&#160;</td>
+          <td class="paramname"><em>expected_digest</em>[ASCON_HASHA_DIGEST_LEN], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Offline Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one. </p>
+<p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon-Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon-Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
   </table>
@@ -2224,8 +2412,42 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with fixed digest length, initialisation. </p>
+<p>Online Ascon-Hash with fixed digest length, initialisation. </p>
 <p >Prepares to start a new hashing session to get a digest of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab93f9822890bcbd14b97cb1dc0e37a5d" name="ab93f9822890bcbd14b97cb1dc0e37a5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab93f9822890bcbd14b97cb1dc0e37a5d">&#9670;&nbsp;</a></span>ascon_hasha_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with fixed digest length, initialisation. </p>
+<p >Prepares to start a new hashing session to get a digest of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <div class="image">
 <img src="hash.png" alt=""/>
 </div>
@@ -2272,9 +2494,57 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with fixed digest length, feeding data to hash. </p>
+<p>Online Ascon-Hash with fixed digest length, feeding data to hash. </p>
 <p >Feeds a chunk of data to the already initialised hashing session.</p>
 <p >In case of no data at all to be hashed, this function can be called (also many times) with <code>data_len</code> set to 0. Iff that is the case, <code>data</code> can be set to NULL.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>bytes to be hashes. May be NULL iff <code>data_len</code> is 0. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of the <code>data</code> pointed by in bytes. May be 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad7a0e64dfbd07450ad4e741f9c301bfd" name="ad7a0e64dfbd07450ad4e741f9c301bfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7a0e64dfbd07450ad4e741f9c301bfd">&#9670;&nbsp;</a></span>ascon_hasha_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with fixed digest length, feeding data to hash. </p>
+<p >Feeds a chunk of data to the already initialised hashing session.</p>
+<p >In case of no data at all to be hashed, this function can be called (also many times) with <code>data_len</code> set to 0. Iff that is the case, <code>data</code> can be set to NULL.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -2312,8 +2582,49 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with fixed digest length, finalisation and digest generation. </p>
+<p>Online Ascon-Hash with fixed digest length, finalisation and digest generation. </p>
 <p >Finalises the hashing by returning the digest of the message.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<dl class="section warning"><dt>Warning</dt><dd>In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">digest</td><td>fingerprint of the message, output of the hash function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a12877681100754698a5bf10421fd0654" name="a12877681100754698a5bf10421fd0654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12877681100754698a5bf10421fd0654">&#9670;&nbsp;</a></span>ascon_hasha_final()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_final </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>digest</em>[ASCON_HASHA_DIGEST_LEN]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with fixed digest length, finalisation and digest generation. </p>
+<p >Finalises the hashing by returning the digest of the message.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <dl class="section warning"><dt>Warning</dt><dd>In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -2351,12 +2662,53 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with fixed digest length, finalisation and digest validation of the expected one. </p>
+<p>Online Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one. </p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
 <dl class="section warning"><dt>Warning</dt><dd>In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon-Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon-Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the answer to the question "is the digest valid?", thus <code>true</code> (== <a class="el" href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e" title="The tag is valid thus the associated data and ciphertext were intact.">ASCON_TAG_OK</a>) if the validation of the digest is correct, thus the message is intact (and authentic if a keyed hash was performed), <code>false</code> (== <a class="el" href="ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd" title="The tag is invalid thus the associated data and decrypted data should be ignored.">ASCON_TAG_INVALID</a>) otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a78c7f232c706b1508d5d88d28a0d1265" name="a78c7f232c706b1508d5d88d28a0d1265"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78c7f232c706b1508d5d88d28a0d1265">&#9670;&nbsp;</a></span>ascon_hasha_final_matches()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool ascon_hasha_final_matches </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t&#160;</td>
+          <td class="paramname"><em>expected_digest</em>[ASCON_HASHA_DIGEST_LEN]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with fixed digest length, finalisation and digest validation of the expected one. </p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
+<dl class="section warning"><dt>Warning</dt><dd>In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon-Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#aa39eb254a341c1193c0d41cc20ac3b2c" title="Offline Ascon-Hash with fixed digest length.">ascon_hash()</a> function, of <a class="el" href="ascon_8h.html#a2773473671e03e9a2210b179f7a255d0" title="Length in bytes of the digest generated by the fixed-size (non-xof) hash function.">ASCON_HASH_DIGEST_LEN</a> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
   </table>
   </dd>
 </dl>
@@ -2402,8 +2754,67 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF). </p>
+<p>Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF). </p>
 <p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it of the desired length.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash_xof(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>To have 128 bits of security against birthday attacks (collisions), a digest length of at least 256 bits (32 bytes) is recommended. Against quantum computers, the hash size should be double the amount of wanted security bits.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">digest</td><td>fingerprint of the message, output of the hash function, of <code>digest_len</code> bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">digest_len</td><td>desired length of the <code>digest</code> in bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab1ed1987466b2ce14f3edf018fa00041" name="ab1ed1987466b2ce14f3edf018fa00041"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1ed1987466b2ce14f3edf018fa00041">&#9670;&nbsp;</a></span>ascon_hasha_xof()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_xof </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>digest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>digest_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Offline Ascon-Hasha with custom digest length (eXtendable Output Function, XOF). </p>
+<p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it of the desired length.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <div class="image">
 <img src="hash.png" alt=""/>
 </div>
@@ -2459,8 +2870,9 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF) and validation of the expected one. </p>
+<p>Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF) and validation of the expected one. </p>
 <p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it of the desired length.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
 <div class="image">
 <img src="hash.png" alt=""/>
 </div>
@@ -2468,7 +2880,66 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
 <dl class="section warning"><dt>Warning</dt><dd>To have 128 bits of security against birthday attacks (collisions), a digest length of at least 256 bits (32 bytes) is recommended. Against quantum computers, the hash size should be double the amount of wanted security bits.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest_len</td><td>desired length of the <code>expected_digest</code> in bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the answer to the question "is the digest valid?", thus <code>true</code> (== <a class="el" href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e" title="The tag is valid thus the associated data and ciphertext were intact.">ASCON_TAG_OK</a>) if the validation of the digest is correct, thus the message is intact (and authentic if a keyed hash was performed), <code>false</code> (== <a class="el" href="ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd" title="The tag is invalid thus the associated data and decrypted data should be ignored.">ASCON_TAG_INVALID</a>) otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a94d50dd6ff8b1b9e407a22f3b63c26b5" name="a94d50dd6ff8b1b9e407a22f3b63c26b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94d50dd6ff8b1b9e407a22f3b63c26b5">&#9670;&nbsp;</a></span>ascon_hasha_xof_matches()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool ascon_hasha_xof_matches </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>expected_digest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>expected_digest_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Offline Ascon-Hasha with custom digest length (eXtendable Output Function, XOF) and validation of the expected one. </p>
+<p >Hashes the data, which is already available as a whole in a contiguous buffer, and provides the digest for it of the desired length.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash_xof(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>To have 128 bits of security against birthday attacks (collisions), a digest length of at least 256 bits (32 bytes) is recommended. Against quantum computers, the hash size should be double the amount of wanted security bits.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>message fed into the hash function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest_len</td><td>desired length of the <code>expected_digest</code> in bytes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of <code>data</code> in bytes. </td></tr>
@@ -2495,10 +2966,44 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), initialisation. </p>
+<p>Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), initialisation. </p>
 <p >Prepares to start a new hashing session to get a digest of custom length.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
 <div class="image">
-<img src="encrypt.png" alt=""/>
+<img src="hash.png" alt=""/>
+</div>
+<dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash_xof(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae3238b204f5edb158228803345fc0c3c" name="ae3238b204f5edb158228803345fc0c3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3238b204f5edb158228803345fc0c3c">&#9670;&nbsp;</a></span>ascon_hasha_xof_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_xof_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), initialisation. </p>
+<p >Prepares to start a new hashing session to get a digest of custom length.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
+<div class="image">
+<img src="hash.png" alt=""/>
 </div>
 <dl class="section remark"><dt>Remarks</dt><dd>This function can be used for keyed hashing to generate a MAC by simply prepending a secret key to the message, like <code>ascon_hash_xof(key || msg)</code>. There is <b>no need to build an HMAC</b> construct around it, as it does not suffer from length-extension vulnerabilities.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Do not mix Init-Update-Final functions of Ascon-Hash and Ascon-XOF.</dd></dl>
@@ -2543,9 +3048,57 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash. </p>
+<p>Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash. </p>
 <p >Feeds a chunk of data to the already initialised hashing session.</p>
 <p >In case of no data at all to be hashed, this function can be called (also many times) with <code>data_len</code> set to 0. Iff that is the case, <code>data</code> can be set to NULL.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>bytes to be hashes. May be NULL iff <code>data_len</code> is 0. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_len</td><td>length of the <code>data</code> pointed by in bytes. May be 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4b81bcb8eede6599b9a146a3ecb02f52" name="a4b81bcb8eede6599b9a146a3ecb02f52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b81bcb8eede6599b9a146a3ecb02f52">&#9670;&nbsp;</a></span>ascon_hasha_xof_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_xof_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), feeding data to hash. </p>
+<p >Feeds a chunk of data to the already initialised hashing session.</p>
+<p >In case of no data at all to be hashed, this function can be called (also many times) with <code>data_len</code> set to 0. Iff that is the case, <code>data</code> can be set to NULL.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. Not NULL. </td></tr>
@@ -2589,8 +3142,58 @@ A copy of the secret key is kept in the <code>ctx</code> struct and securely era
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation. </p>
+<p>Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation. </p>
 <p >Finalises the hashing by returning the digest of the message.</p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
+<dl class="section warning"><dt>Warning</dt><dd>To have 128 bits of security against birthday attacks (collisions), a digest length of at least 256 bits (32 bytes) is recommended. Against quantum computers, the hash size should be double the amount of wanted security bits.</dd>
+<dd>
+In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">digest</td><td>fingerprint of the message, output of the hash function, of <code>digest_size</code> bytes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">digest_len</td><td>desired length of the <code>digest</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2d756370ec3b0c265c52b353a1846fe2" name="a2d756370ec3b0c265c52b353a1846fe2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d756370ec3b0c265c52b353a1846fe2">&#9670;&nbsp;</a></span>ascon_hasha_xof_final()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> void ascon_hasha_xof_final </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>digest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>digest_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), finalisation and digest generation. </p>
+<p >Finalises the hashing by returning the digest of the message.</p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
 <dl class="section warning"><dt>Warning</dt><dd>To have 128 bits of security against birthday attacks (collisions), a digest length of at least 256 bits (32 bytes) is recommended. Against quantum computers, the hash size should be double the amount of wanted security bits.</dd>
 <dd>
 In case the hashing session is interrupted and never finalised (this function is never called), clear the context with <a class="el" href="ascon_8h.html#a4954f13cbf0f61de82ea3ea6f1530578" title="Security cleanup of the hashing context, in case the online processing is not completed to the end.">ascon_hash_cleanup()</a> to erase any information about the hashed content, especially in case keyed hashing is performed.</dd></dl>
@@ -2637,11 +3240,58 @@ In case the hashing session is interrupted and never finalised (this function is
       </table>
 </div><div class="memdoc">
 
-<p>Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one. </p>
+<p>Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one. </p>
+<p >Uses 12-round <code>Pb</code> permutations during absorption and squeezing.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest_len</td><td>desired length of the <code>expected_digest</code> in bytes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the answer to the question "is the digest valid?", thus <code>true</code> (== <a class="el" href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e" title="The tag is valid thus the associated data and ciphertext were intact.">ASCON_TAG_OK</a>) if the validation of the digest is correct, thus the message is intact (and authentic if a keyed hash was performed), <code>false</code> (== <a class="el" href="ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd" title="The tag is invalid thus the associated data and decrypted data should be ignored.">ASCON_TAG_INVALID</a>) otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a13d02a2e1b6062f524e44924b69f1c45" name="a13d02a2e1b6062f524e44924b69f1c45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13d02a2e1b6062f524e44924b69f1c45">&#9670;&nbsp;</a></span>ascon_hasha_xof_final_matches()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#a454e4755b63e89f6cf08beae6608754d">ASCON_API</a> bool ascon_hasha_xof_final_matches </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ascon_8h.html#a6ea1500d62e37e40e6f744eef72a8f03">ascon_hash_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>expected_digest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>expected_digest_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), finalisation and digest validation of the expected one. </p>
+<p >Uses 8-round <code>Pb</code> permutations during absorption and squeezing, lighter version of the Ascon-Hash function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>the hashing context, handling the hash function state and buffering of incoming data to be processed. It will be erased securely before this function returns. Not NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest</td><td>expected fingerprint of the message, output of the <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#acab8ae06bcbe5b53c806cb18ae96e941" title="Offline Ascon-Hash with custom digest length (eXtendable Output Function, XOF).">ascon_hash_xof()</a> function, of <code>expected_digest_len</code> bytes. This is the digest that comes with the message and will be compared with the internally-generated one by this function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">expected_digest_len</td><td>desired length of the <code>expected_digest</code> in bytes. </td></tr>
   </table>
   </dd>
@@ -2667,7 +3317,7 @@ In case the hashing session is interrupted and never finalised (this function is
 </div><div class="memdoc">
 
 <p>Security cleanup of the hashing context, in case the online processing is not completed to the end. </p>
-<p >Use this function only when something goes wrong between the calls of online hashing or decryption and you never call the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> functions (because these 2 functions perform the cleanup automatically).</p>
+<p >Use this function only when something goes wrong between the calls of online hashing or decryption, and you never call the <a class="el" href="ascon_8h.html#abbec8a714a3115117d82e4c0f9558097" title="Online Ascon-Hash with fixed digest length, finalisation and digest generation.">ascon_hash_final()</a> or <a class="el" href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc" title="Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...">ascon_hash_xof_final()</a> or <a class="el" href="ascon_8h.html#a12877681100754698a5bf10421fd0654" title="Online Ascon-Hasha with fixed digest length, finalisation and digest generation.">ascon_hasha_final()</a> or <a class="el" href="ascon_8h.html#a2d756370ec3b0c265c52b353a1846fe2" title="Online Ascon-Hasha with custom digest length (eXtendable Output Function, XOF), finalisation and dige...">ascon_hasha_xof_final()</a> functions (because these functions perform the cleanup automatically).</p>
 <p >This is to prevent any information to leak through the context in case an hashing transaction is rolled back/abruptly terminated, especially parts of a key (for keyed hashing) still buffered in the context.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.1.2</span>
+   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.0</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -82,9 +82,11 @@ Features</h1>
 <li>Ascon80pq v1.2 (160 bit key, 64 bit rate)</li>
 </ul>
 </li>
-<li>2 hashing functions<ul>
-<li>Ascon-Hash v1.2 (fixed-length output)</li>
-<li>Ascon-XOF v1.2 (variable-length output)</li>
+<li>4 hashing functions<ul>
+<li>Ascon-Hash v1.2 (fixed-length output, 12-rounds absorption/squeeze)</li>
+<li>Ascon-XOF v1.2 (variable-length output, 12-rounds absorption/squeeze)</li>
+<li>Ascon-Hasha v1.2 (fixed-length output, 8-rounds absorption/squeeze)</li>
+<li>Ascon-XOFa v1.2 (variable-length output, 8-rounds absorption/squeeze)</li>
 </ul>
 </li>
 <li><b>Online processing</b> (<b>Init-Update-Final</b> paradigm) for hashing and encryption/decryption. This means that the data can be processed one chunk at the time. Useful when operating on large amounts of data that are not available contiguously in memory, e.g. a too-large file or data in transmission.</li>
@@ -94,9 +96,10 @@ Features</h1>
 </li>
 <li>Encryption/decryption can be performed <b>in-place</b>, without the need of a second output buffer.</li>
 <li>AEAD tag may be provided to a <b>separate location</b>, i.e. not concatenated to the ciphertext.</li>
-<li>Same performance as the original C implementation in <em>Release</em> mode, about 2x slower in <em>MinSizeRel</em> mode.</li>
+<li>Same performance as the original reference (unoptimised) C implementation in <em>Release</em> mode, about 2x slower in <em>MinSizeRel</em> mode.</li>
+<li>Hashing functions that can also automatically validate the digest against a known one when the hashing process is completed.</li>
 <li>A <b><a href="https://thematjaz.github.io/LibAscon/">heavily documented</a> developer-friendly API</b>, making it easier to compile and add to your project, both through static and dynamic inclusion.</li>
-<li>Tested with <b>100% line coverage</b>, with CI running on Linux, macOS and Windows with GCC, Clang and CL (MSVC).</li>
+<li>Tested with <b>100% line and branch* coverage</b>, with CI running on Linux, macOS and Windows with GCC, Clang and CL (MSVC) (*: branch coverage excludes the debugging-asserts).</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Usage example</h1>
@@ -112,7 +115,7 @@ En/decrypting using Ascon128's Init-Update-Final API</h2>
 <div class="line"><span class="keyword">const</span> uint8_t unique_nonce[<a class="code hl_define" href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a>] = {</div>
 <div class="line">        1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6</div>
 <div class="line">};</div>
-<div class="line"><a class="code hl_struct" href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a> ctx;</div>
+<div class="line"><a class="code hl_struct" href="structascon__aead__ctx.html">ascon_aead_ctx_t</a> ctx;</div>
 <div class="line"><a class="code hl_function" href="ascon_8h.html#a368ec60db11cf197ca49a3290a81d1e2">ascon_aead128_init</a>(&amp;ctx, secret_key, unique_nonce);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now we feed any associated data into the cipher first</span></div>
@@ -183,7 +186,7 @@ En/decrypting using Ascon128's Init-Update-Final API</h2>
 <div class="ttc" id="aascon_8h_html_aa3154ef7d24cd2aefac7526f47be7af4"><div class="ttname"><a href="ascon_8h.html#aa3154ef7d24cd2aefac7526f47be7af4">ascon_aead128_encrypt_update</a></div><div class="ttdeci">ASCON_API size_t ascon_aead128_encrypt_update(ascon_aead_ctx_t *ctx, uint8_t *ciphertext, const uint8_t *plaintext, size_t plaintext_len)</div><div class="ttdoc">Online symmetric encryption using Ascon128, feeding plaintext and getting ciphertext.</div></div>
 <div class="ttc" id="aascon_8h_html_ad966f02f3fc5a966216719a554e7453e"><div class="ttname"><a href="ascon_8h.html#ad966f02f3fc5a966216719a554e7453e">ascon_aead128_decrypt_final</a></div><div class="ttdeci">ASCON_API size_t ascon_aead128_decrypt_final(ascon_aead_ctx_t *ctx, uint8_t *plaintext, bool *is_tag_valid, const uint8_t *expected_tag, size_t expected_tag_len)</div><div class="ttdoc">Online symmetric decryption using Ascon128, finalisation and tag validation.</div></div>
 <div class="ttc" id="aascon_8h_html_af7ad24ebb29bc3179e2b0a11c1b782e8"><div class="ttname"><a href="ascon_8h.html#af7ad24ebb29bc3179e2b0a11c1b782e8">ASCON_AEAD_NONCE_LEN</a></div><div class="ttdeci">#define ASCON_AEAD_NONCE_LEN</div><div class="ttdoc">Length in bytes of the public nonce used for authenticated encryption and decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:125</div></div>
-<div class="ttc" id="astructascon__aead__ctx__t_html"><div class="ttname"><a href="structascon__aead__ctx__t.html">ascon_aead_ctx_t</a></div><div class="ttdoc">Cipher context for authenticated encryption and validated decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:224</div></div>
+<div class="ttc" id="astructascon__aead__ctx_html"><div class="ttname"><a href="structascon__aead__ctx.html">ascon_aead_ctx</a></div><div class="ttdoc">Cipher context for authenticated encryption and validated decryption.</div><div class="ttdef"><b>Definition:</b> ascon.h:230</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
 Encrypting using Ascon128's offline API for contiguous data</h2>
 <div class="fragment"><div class="line"><span class="comment">// We need the key and the nonce, both 128 bits.</span></div>
@@ -238,7 +241,7 @@ Encrypting using Ascon128's offline API for contiguous data</h2>
 <div class="line"><span class="comment">// The function zeroes out the context automatically.</span></div>
 <div class="ttc" id="aascon_8h_html_a9921ab2883cf48a221df0935f753864f"><div class="ttname"><a href="ascon_8h.html#a9921ab2883cf48a221df0935f753864f">ascon_aead128_decrypt</a></div><div class="ttdeci">ASCON_API bool ascon_aead128_decrypt(uint8_t *plaintext, const uint8_t key[ASCON_AEAD128_KEY_LEN], const uint8_t nonce[ASCON_AEAD_NONCE_LEN], const uint8_t *assoc_data, const uint8_t *ciphertext, const uint8_t *expected_tag, size_t assoc_data_len, size_t ciphertext_len, size_t expected_tag_len)</div><div class="ttdoc">Offline symmetric decryption using Ascon128.</div></div>
 <div class="ttc" id="aascon_8h_html_aad16ee534258583d3c658fa45dcd67a1"><div class="ttname"><a href="ascon_8h.html#aad16ee534258583d3c658fa45dcd67a1">ascon_aead128_encrypt</a></div><div class="ttdeci">ASCON_API void ascon_aead128_encrypt(uint8_t *ciphertext, uint8_t *tag, const uint8_t key[ASCON_AEAD128_KEY_LEN], const uint8_t nonce[ASCON_AEAD_NONCE_LEN], const uint8_t *assoc_data, const uint8_t *plaintext, size_t assoc_data_len, size_t plaintext_len, size_t tag_len)</div><div class="ttdoc">Offline symmetric encryption using Ascon128.</div></div>
-<div class="ttc" id="aascon_8h_html_ae4039ea40dc117ac4189ec25a812293e"><div class="ttname"><a href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e">ASCON_TAG_OK</a></div><div class="ttdeci">#define ASCON_TAG_OK</div><div class="ttdoc">The tag is valid thus the associated data and ciphertext were intact.</div><div class="ttdef"><b>Definition:</b> ascon.h:155</div></div>
+<div class="ttc" id="aascon_8h_html_ae4039ea40dc117ac4189ec25a812293e"><div class="ttname"><a href="ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e">ASCON_TAG_OK</a></div><div class="ttdeci">#define ASCON_TAG_OK</div><div class="ttdoc">The tag is valid thus the associated data and ciphertext were intact.</div><div class="ttdef"><b>Definition:</b> ascon.h:161</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
 Keyed hashing using Ascon-XOF's Init-Update-Final API</h2>
 <div class="fragment"><div class="line"><span class="comment">// We want to authenticate a message with a keyed hash and transmit it.</span></div>
@@ -252,7 +255,7 @@ Keyed hashing using Ascon-XOF's Init-Update-Final API</h2>
 <div class="line"><span class="comment">// Preparing the Ascon-XOF function. The XOF allows arbitrary digest size,</span></div>
 <div class="line"><span class="comment">// while Ascon-Hash (ascon_hash_init) has a fixed digest length.</span></div>
 <div class="line"><span class="comment">// NOTE: Ascon-Hash and Ascon-XOF produce different outputs!</span></div>
-<div class="line"><a class="code hl_struct" href="structascon__bufstate__t.html">ascon_hash_ctx_t</a> ctx;</div>
+<div class="line"><a class="code hl_struct" href="structascon__bufstate.html">ascon_hash_ctx_t</a> ctx;</div>
 <div class="line"><a class="code hl_function" href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">ascon_hash_xof_init</a>(&amp;ctx);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// If we want a Message Authentication Code that also proves authenticity,</span></div>
@@ -286,11 +289,11 @@ Keyed hashing using Ascon-XOF's Init-Update-Final API</h2>
 <div class="line">} <span class="keywordflow">else</span> { <span class="comment">// ASCON_TAG_INVALID</span></div>
 <div class="line">    puts(<span class="stringliteral">&quot;Something went wrong!&quot;</span>);</div>
 <div class="line">}</div>
-<div class="ttc" id="aascon_8h_html_a2f6424f124ab43b23a801f39440b9a12"><div class="ttname"><a href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">ascon_hash_xof_init</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_init(ascon_hash_ctx_t *ctx)</div><div class="ttdoc">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), initialisation.</div></div>
-<div class="ttc" id="aascon_8h_html_a70136fcbc6c9bcd465221acb68bcbd0c"><div class="ttname"><a href="ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c">ascon_hash_xof_update</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_update(ascon_hash_ctx_t *ctx, const uint8_t *data, size_t data_len)</div><div class="ttdoc">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash.</div></div>
-<div class="ttc" id="aascon_8h_html_a7bff26b9462fe7029391a5ec6650aac8"><div class="ttname"><a href="ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8">ascon_hash_xof_final_matches</a></div><div class="ttdeci">ASCON_API bool ascon_hash_xof_final_matches(ascon_hash_ctx_t *ctx, const uint8_t *expected_digest, size_t expected_digest_len)</div><div class="ttdoc">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...</div></div>
-<div class="ttc" id="aascon_8h_html_af966155aba9e0a9b14264d97ddafafdc"><div class="ttname"><a href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc">ascon_hash_xof_final</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_final(ascon_hash_ctx_t *ctx, uint8_t *digest, size_t digest_len)</div><div class="ttdoc">Online Ascon Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...</div></div>
-<div class="ttc" id="astructascon__bufstate__t_html"><div class="ttname"><a href="structascon__bufstate__t.html">ascon_bufstate_t</a></div><div class="ttdoc">Internal cipher sponge state associated with a buffer holding for less-than-rate updates.</div><div class="ttdef"><b>Definition:</b> ascon.h:184</div></div>
+<div class="ttc" id="aascon_8h_html_a2f6424f124ab43b23a801f39440b9a12"><div class="ttname"><a href="ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12">ascon_hash_xof_init</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_init(ascon_hash_ctx_t *ctx)</div><div class="ttdoc">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), initialisation.</div></div>
+<div class="ttc" id="aascon_8h_html_a70136fcbc6c9bcd465221acb68bcbd0c"><div class="ttname"><a href="ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c">ascon_hash_xof_update</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_update(ascon_hash_ctx_t *ctx, const uint8_t *data, size_t data_len)</div><div class="ttdoc">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), feeding data to hash.</div></div>
+<div class="ttc" id="aascon_8h_html_a7bff26b9462fe7029391a5ec6650aac8"><div class="ttname"><a href="ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8">ascon_hash_xof_final_matches</a></div><div class="ttdeci">ASCON_API bool ascon_hash_xof_final_matches(ascon_hash_ctx_t *ctx, const uint8_t *expected_digest, size_t expected_digest_len)</div><div class="ttdoc">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...</div></div>
+<div class="ttc" id="aascon_8h_html_af966155aba9e0a9b14264d97ddafafdc"><div class="ttname"><a href="ascon_8h.html#af966155aba9e0a9b14264d97ddafafdc">ascon_hash_xof_final</a></div><div class="ttdeci">ASCON_API void ascon_hash_xof_final(ascon_hash_ctx_t *ctx, uint8_t *digest, size_t digest_len)</div><div class="ttdoc">Online Ascon-Hash with custom digest length (eXtendable Output Function, XOF), finalisation and diges...</div></div>
+<div class="ttc" id="astructascon__bufstate_html"><div class="ttname"><a href="structascon__bufstate.html">ascon_bufstate</a></div><div class="ttdoc">Internal cipher sponge state associated with a buffer holding for less-than-rate updates.</div><div class="ttdef"><b>Definition:</b> ascon.h:190</div></div>
 </div><!-- fragment --><p >For more examples, check the test suite and how the Ascon API is used in there.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Dependencies of the library</h1>

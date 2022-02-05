@@ -13,9 +13,10 @@ var searchData=
   ['ascon_5fassert_10',['ASCON_ASSERT',['../ascon_8h.html#acaa443e88c4be76f47b63f2c313e0f21',1,'ascon.h']]],
   ['ascon_5fdouble_5frate_11',['ASCON_DOUBLE_RATE',['../ascon_8h.html#a46b065520f316170a86a56bed780bcd3',1,'ascon.h']]],
   ['ascon_5fhash_5fdigest_5flen_12',['ASCON_HASH_DIGEST_LEN',['../ascon_8h.html#a2773473671e03e9a2210b179f7a255d0',1,'ascon.h']]],
-  ['ascon_5finput_5fasserts_13',['ASCON_INPUT_ASSERTS',['../ascon_8h.html#a4d9e7874efcfe5c4789385bf580f5d14',1,'ascon.h']]],
-  ['ascon_5frate_14',['ASCON_RATE',['../ascon_8h.html#ae8b9d549b97e46f61cf586693a276629',1,'ascon.h']]],
-  ['ascon_5ftag_5finvalid_15',['ASCON_TAG_INVALID',['../ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd',1,'ascon.h']]],
-  ['ascon_5ftag_5fok_16',['ASCON_TAG_OK',['../ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e',1,'ascon.h']]],
-  ['ascon_5fwindows_17',['ASCON_WINDOWS',['../ascon_8h.html#aeef5680166cd4abd560723ed81468e58',1,'ascon.h']]]
+  ['ascon_5fhasha_5fdigest_5flen_13',['ASCON_HASHA_DIGEST_LEN',['../ascon_8h.html#a3fb24ad03a21d5cb37d9da9027be2e32',1,'ascon.h']]],
+  ['ascon_5finput_5fasserts_14',['ASCON_INPUT_ASSERTS',['../ascon_8h.html#a4d9e7874efcfe5c4789385bf580f5d14',1,'ascon.h']]],
+  ['ascon_5frate_15',['ASCON_RATE',['../ascon_8h.html#ae8b9d549b97e46f61cf586693a276629',1,'ascon.h']]],
+  ['ascon_5ftag_5finvalid_16',['ASCON_TAG_INVALID',['../ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd',1,'ascon.h']]],
+  ['ascon_5ftag_5fok_17',['ASCON_TAG_OK',['../ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e',1,'ascon.h']]],
+  ['ascon_5fwindows_18',['ASCON_WINDOWS',['../ascon_8h.html#aeef5680166cd4abd560723ed81468e58',1,'ascon.h']]]
 ];

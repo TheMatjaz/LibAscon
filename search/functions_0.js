@@ -37,5 +37,17 @@ var searchData=
   ['ascon_5fhash_5fxof_5ffinal_5fmatches_34',['ascon_hash_xof_final_matches',['../ascon_8h.html#a7bff26b9462fe7029391a5ec6650aac8',1,'ascon.h']]],
   ['ascon_5fhash_5fxof_5finit_35',['ascon_hash_xof_init',['../ascon_8h.html#a2f6424f124ab43b23a801f39440b9a12',1,'ascon.h']]],
   ['ascon_5fhash_5fxof_5fmatches_36',['ascon_hash_xof_matches',['../ascon_8h.html#a10c82ac727f11449a5bfa605f554b524',1,'ascon.h']]],
-  ['ascon_5fhash_5fxof_5fupdate_37',['ascon_hash_xof_update',['../ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c',1,'ascon.h']]]
+  ['ascon_5fhash_5fxof_5fupdate_37',['ascon_hash_xof_update',['../ascon_8h.html#a70136fcbc6c9bcd465221acb68bcbd0c',1,'ascon.h']]],
+  ['ascon_5fhasha_38',['ascon_hasha',['../ascon_8h.html#a82da8377b6a10c8449cd35fe95c47d88',1,'ascon.h']]],
+  ['ascon_5fhasha_5ffinal_39',['ascon_hasha_final',['../ascon_8h.html#a12877681100754698a5bf10421fd0654',1,'ascon.h']]],
+  ['ascon_5fhasha_5ffinal_5fmatches_40',['ascon_hasha_final_matches',['../ascon_8h.html#a78c7f232c706b1508d5d88d28a0d1265',1,'ascon.h']]],
+  ['ascon_5fhasha_5finit_41',['ascon_hasha_init',['../ascon_8h.html#ab93f9822890bcbd14b97cb1dc0e37a5d',1,'ascon.h']]],
+  ['ascon_5fhasha_5fmatches_42',['ascon_hasha_matches',['../ascon_8h.html#ac30ec5413d801c1a5e339d9552ad2036',1,'ascon.h']]],
+  ['ascon_5fhasha_5fupdate_43',['ascon_hasha_update',['../ascon_8h.html#ad7a0e64dfbd07450ad4e741f9c301bfd',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_44',['ascon_hasha_xof',['../ascon_8h.html#ab1ed1987466b2ce14f3edf018fa00041',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_5ffinal_45',['ascon_hasha_xof_final',['../ascon_8h.html#a2d756370ec3b0c265c52b353a1846fe2',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_5ffinal_5fmatches_46',['ascon_hasha_xof_final_matches',['../ascon_8h.html#a13d02a2e1b6062f524e44924b69f1c45',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_5finit_47',['ascon_hasha_xof_init',['../ascon_8h.html#ae3238b204f5edb158228803345fc0c3c',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_5fmatches_48',['ascon_hasha_xof_matches',['../ascon_8h.html#a94d50dd6ff8b1b9e407a22f3b63c26b5',1,'ascon.h']]],
+  ['ascon_5fhasha_5fxof_5fupdate_49',['ascon_hasha_xof_update',['../ascon_8h.html#a4b81bcb8eede6599b9a146a3ecb02f52',1,'ascon.h']]]
 ];
