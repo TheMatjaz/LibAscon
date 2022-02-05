@@ -168,7 +168,7 @@ extern "C"
 /**
  * Internal cipher sponge state (320 bits).
  */
-typedef struct
+typedef struct ascon_sponge
 {
     /** Sponge's first field */
     uint64_t x0;
@@ -186,7 +186,7 @@ typedef struct
  * Internal cipher sponge state associated with a buffer holding for
  * less-than-rate updates. Used for the Init-Update-Final implementation.
  */
-typedef struct
+typedef struct ascon_bufstate
 {
     /** Cipher sponge state. */
     ascon_sponge_t sponge;
@@ -226,7 +226,7 @@ typedef ascon_bufstate_t ascon_hash_ctx_t;
  * Half of this context's size is the cipher's sponge state, the remaining
  * part is holding the key and the buffering of online data (and some padding).
  */
-typedef struct
+typedef struct ascon_aead_ctx
 {
     /** Cipher buffered sponge state. */
     ascon_bufstate_t bufstate;
