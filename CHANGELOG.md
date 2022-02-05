@@ -329,7 +329,7 @@ Added Ascon80pq cipher, example in Readme.
 
 - `ascon_aead128a_*` functions, working exactly as the `aead128` versions.
   Internally they absorb the data with a double rate.
-- Example encryption and decrpytion code into Readme.
+- Example encryption and decryption code into Readme.
 
 ### Removed
 

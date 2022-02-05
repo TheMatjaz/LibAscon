@@ -262,7 +262,7 @@ typedef struct ascon_aead_ctx
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[out] ciphertext encrypted data with the same length as the
@@ -318,7 +318,7 @@ ascon_aead128_encrypt(uint8_t* ciphertext,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
@@ -350,7 +350,7 @@ ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * the final function, but not encrypted or decrypted.
  *
  * In case of no associated data at all to be authenticated/validated, this
- * function can either be either skipped completely or called (also many times)
+ * function can either be skipped completely or called (also many times)
  * with \p assoc_data_len set to 0. Iff that is the case, \p assoc_data can
  * be set to NULL.
  *
@@ -368,7 +368,7 @@ ascon_aead128_init(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
@@ -403,7 +403,7 @@ ascon_aead128_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
@@ -447,12 +447,12 @@ ascon_aead128_encrypt_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the encryption session is interrupted
+ * during this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -587,7 +587,7 @@ ascon_aead128_decrypt_update(ascon_aead_ctx_t* ctx,
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the decryption session is interrupted
+ * during this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -660,7 +660,7 @@ ascon_aead_cleanup(ascon_aead_ctx_t* ctx);
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[out] ciphertext encrypted data with the same length as the
@@ -718,7 +718,7 @@ ascon_aead128a_encrypt(uint8_t* ciphertext,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
@@ -750,7 +750,7 @@ ascon_aead128a_init(ascon_aead_ctx_t* ctx,
  * the final function, but not encrypted or decrypted.
  *
  * In case of no associated data at all to be authenticated/validated, this
- * function can either be either skipped completely or called (also many times)
+ * function can either be skipped completely or called (also many times)
  * with \p assoc_data_len set to 0. Iff that is the case, \p assoc_data can
  * be set to NULL.
  *
@@ -769,7 +769,7 @@ ascon_aead128a_init(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
@@ -804,7 +804,7 @@ ascon_aead128a_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
@@ -849,12 +849,12 @@ ascon_aead128a_encrypt_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the encryption session is interrupted
+ * during this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -991,7 +991,7 @@ ascon_aead128a_decrypt_update(ascon_aead_ctx_t* ctx,
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the decryption session is interrupted
+ * during this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -1045,7 +1045,7 @@ ascon_aead128a_decrypt_final(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the
+ * designed for that. Instead, use the Ascon hashing or xof functions in the
  * form `Hash(key || msg)`.
  *
  * @param[out] ciphertext encrypted data with the same length as the
@@ -1104,7 +1104,7 @@ ascon_aead80pq_encrypt(uint8_t* ciphertext,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
@@ -1136,7 +1136,7 @@ ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
  * the final function, but not encrypted or decrypted.
  *
  * In case of no associated data at all to be authenticated/validated, this
- * function can either be either skipped completely or called (also many times)
+ * function can either be skipped completely or called (also many times)
  * with \p assoc_data_len set to 0. Iff that is the case, \p assoc_data can
  * be set to NULL.
  *
@@ -1155,7 +1155,7 @@ ascon_aead80pq_init(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption/decryption context, handling the cipher
@@ -1190,7 +1190,7 @@ ascon_aead80pq_assoc_data_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @param[in, out] ctx the encryption context, handling the cipher
@@ -1235,12 +1235,12 @@ ascon_aead80pq_encrypt_update(ascon_aead_ctx_t* ctx,
  * @warning
  * Using the AEAD to just authenticate any associated data with no
  * plaintext to be encrypted is not recommended as the AEAD algorithm is not
- * designed for that. Instead use the Ascon hashing or xof functions in the form
+ * designed for that. Instead, use the Ascon hashing or xof functions in the form
  * `Hash(key || msg)`.
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the encryption session is interrupted
+ * during this function call. In case the encryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -1376,7 +1376,7 @@ ascon_aead80pq_decrypt_update(ascon_aead_ctx_t* ctx,
  *
  * @warning
  * A copy of the secret key is kept in the \p ctx struct and securely erased
- * during the this function call. In case the decryption session is interrupted
+ * during this function call. In case the decryption session is interrupted
  * and never finalised (this function is never called), clear the context with
  * ascon_aead_cleanup() to erase the key copy.
  *
@@ -2110,7 +2110,7 @@ ascon_hasha_xof_final_matches(ascon_hash_ctx_t* ctx,
  * processing is not completed to the end.
  *
  * Use this function only when something goes wrong between the calls of
- * online hashing or decryption and you never call the ascon_hash_final()
+ * online hashing or decryption, and you never call the ascon_hash_final()
  * or ascon_hash_xof_final() or ascon_hasha_final()
  * or ascon_hasha_xof_final() functions (because these functions perform the
  * cleanup automatically).

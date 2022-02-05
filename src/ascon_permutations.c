@@ -38,12 +38,12 @@
  * Performs one permutation round on the Ascon sponge for the given round
  * constant.
  *
- * Although this function is never used outside of this file,
+ * Although this function is never used outside this file,
  * it is NOT marked as static, as it is generally inline in the functions
  * using it to increase the performance. Inlining static functions into
- * functions used outside of this file leads to compilation errors:
+ * functions used outside this file leads to compilation errors:
  * "error: static function 'ascon_round' is used in an inline function with
- * external linkage [-Werror,-Wstatic-in-inline]".
+ * external linkage `[-Werror,-Wstatic-in-inline]`".
  */
 ASCON_INLINE void
 ascon_round(ascon_sponge_t* sponge,
