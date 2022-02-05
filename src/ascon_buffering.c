@@ -110,8 +110,8 @@ buffered_accumulation(ascon_bufstate_t* const ctx,
     size_t fresh_out_bytes = 0;
     if (ctx->buffer_len > 0)
     {
-        // There is associated data in the buffer already.
-        // Place as much as possible of the new associated data into the buffer.
+        // There is data in the buffer already.
+        // Place as much as possible of the new data into the buffer.
         const uint_fast8_t space_in_buf = (uint_fast8_t) (rate - ctx->buffer_len);
         const uint_fast8_t into_buffer = (uint_fast8_t) MIN(space_in_buf, data_in_len);
         small_cpy(&ctx->buffer[ctx->buffer_len], data_in, into_buffer);
@@ -129,7 +129,7 @@ buffered_accumulation(ascon_bufstate_t* const ctx,
         else
         {
             // Do nothing.
-            // The buffer contains some associated data, but it's not full yet
+            // The buffer contains some data, but it's not full yet
             // and there is no more data in this update call.
             // Keep it cached for the next update call or the digest call.
         }

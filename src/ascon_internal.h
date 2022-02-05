@@ -177,6 +177,8 @@ typedef enum
     ASCON_FLOW_AEAD128a_ASSOC_DATA_UPDATED,
     ASCON_FLOW_AEAD128a_ENCRYPT_UPDATED,
     ASCON_FLOW_AEAD128a_DECRYPT_UPDATED,
+    ASCON_FLOW_HASHA_INITIALISED,
+    ASCON_FLOW_HASHA_UPDATED,
 } ascon_flow_t;
 
 /** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */
@@ -228,7 +230,7 @@ ascon_round(ascon_sponge_t* sponge, uint_fast8_t round_const);
 
 /**
  * @internal
- * Ascon sponge permutation with 12 rounds, known as permutation-a.
+ * Ascon sponge permutation with 12 rounds.
  */
 void
 ascon_permutation_a12(ascon_sponge_t* sponge);
@@ -242,10 +244,16 @@ ascon_permutation_b8(ascon_sponge_t* sponge);
 
 /**
  * @internal
- * Ascon sponge permutation with 6 rounds, known as permutation-b.
+ * Ascon sponge permutation with 6 rounds.
  */
 void
 ascon_permutation_b6(ascon_sponge_t* sponge);
+
+/**
+ * @internal
+ * Function pointer representing any Ascon sponge permutation.
+ */
+typedef void (* permutation_fptr)(ascon_sponge_t*);
 
 /**
  * @internal
