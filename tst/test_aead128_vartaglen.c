@@ -206,10 +206,99 @@ static void test_decrypt_offline(void)
     }
 }
 
+static void test_decrypt_invalid_tags(void)
+{
+    vecs_aead_t testcase =
+            {
+                    .key = {
+                            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+                    },
+                    .nonce = {
+                            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+                    },
+                    .plaintext_len = 0,
+                    .assoc_data_len = 0,
+                    .tag = {0}, // Not used in this test
+                    .ciphertext_len = 0,
+            };
+    uint8_t correct_tag[TAG_MAX_LEN] = {
+            0xE3, 0x55, 0x15, 0x9F, 0x29, 0x29, 0x11, 0xF7,
+            0x94, 0xCB, 0x14, 0x32, 0xA0, 0x10, 0x3A, 0x8A,
+            0x65, 0xCF, 0x99, 0x43, 0x70, 0xC2, 0xE3, 0xB8,
+            0x98, 0xD8, 0x04, 0xD6, 0x3C, 0x22, 0xD3, 0xB4,
+            0x8D, 0xF7, 0x82, 0xC0, 0x74, 0xC5, 0xD8, 0x0D,
+            0xF8, 0x9F, 0x64, 0xAA, 0xBD, 0xE5, 0x29, 0x51,
+            0x50, 0x61, 0x01, 0x99, 0x63, 0xCC, 0x71, 0x59,
+            0xE9, 0x35, 0x6F, 0x7D, 0x44, 0x12, 0x65, 0xD9
+    };
+    atto_eq(testcase.plaintext_len, testcase.ciphertext_len);
+    uint8_t obtained_plaintext[VECS_MAX_AEAD_PLAINTEXT_LEN] = {0};
+    bool is_valid;
+
+    // Sanity check: the ciphertext and tag above are actually correct.
+    is_valid = ascon_aead128_decrypt(obtained_plaintext,
+                                     testcase.key,
+                                     testcase.nonce,
+                                     testcase.assoc_data,
+                                     testcase.ciphertext,
+                                     correct_tag,
+                                     testcase.assoc_data_len,
+                                     testcase.ciphertext_len,
+                                     TAG_MAX_LEN);
+    atto_eq(is_valid, ASCON_TAG_OK);
+
+    // Enforcing branch when tag differs in last block, in sponge.x4
+    // when tag is longer than 16 bytes
+    atto_neq(correct_tag[8], 0xFF);
+    correct_tag[8] = 0xFF;
+    is_valid = ascon_aead128_decrypt(obtained_plaintext,
+                                     testcase.key,
+                                     testcase.nonce,
+                                     testcase.assoc_data,
+                                     testcase.ciphertext,
+                                     correct_tag,
+                                     testcase.assoc_data_len,
+                                     testcase.ciphertext_len,
+                                     TAG_MAX_LEN);
+    atto_eq(is_valid, ASCON_TAG_INVALID);
+
+    // Enforcing branch when tag differs in last block, in sponge.x4
+    // when tag is 16 bytes
+    is_valid = ascon_aead128_decrypt(obtained_plaintext,
+                                     testcase.key,
+                                     testcase.nonce,
+                                     testcase.assoc_data,
+                                     testcase.ciphertext,
+                                     correct_tag,
+                                     testcase.assoc_data_len,
+                                     testcase.ciphertext_len,
+                                     16);
+    atto_eq(is_valid, ASCON_TAG_INVALID);
+
+    // Enforcing branch when tag differs in first block, in sponge.x3
+    // when tag is longer than 16 bytes
+    atto_neq(correct_tag[7], 0xFF);
+    correct_tag[7] = 0xFF;
+    is_valid = ascon_aead128_decrypt(obtained_plaintext,
+                                     testcase.key,
+                                     testcase.nonce,
+                                     testcase.assoc_data,
+                                     testcase.ciphertext,
+                                     correct_tag,
+                                     testcase.assoc_data_len,
+                                     testcase.ciphertext_len,
+                                     TAG_MAX_LEN);
+    atto_eq(is_valid, ASCON_TAG_INVALID);
+}
+
 void test_aead128_vartaglen(void)
 {
+    puts("Testing Ascon-128 en/decryption with variable tag length...");
     test_encrypt_empty();
     test_encrypt_offline();
     test_decrypt_empty();
     test_decrypt_offline();
+    test_decrypt_invalid_tags();
 }

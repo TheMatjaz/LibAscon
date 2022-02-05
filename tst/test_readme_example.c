@@ -204,6 +204,7 @@ static void test_readme_example_hashing_iuf(void)
 
 void test_readme_example(void)
 {
+    puts("Testing readme example...");
     test_readme_example_encrypting_iuf();
     test_readme_example_encrypting_offline();
     test_readme_example_hashing_iuf();

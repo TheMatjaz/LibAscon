@@ -31,9 +31,11 @@ LibAscon provides:
   - Ascon128a v1.2 (128 bit key, 128 bit rate)
   - Ascon80pq v1.2 (160 bit key, 64 bit rate)
 
-- 2 hashing functions
-  - Ascon-Hash v1.2 (fixed-length output)
-  - Ascon-XOF v1.2 (variable-length output)
+- 4 hashing functions
+  - Ascon-Hash v1.2 (fixed-length output, 12-rounds absorption/squeeze)
+  - Ascon-XOF v1.2 (variable-length output, 12-rounds absorption/squeeze)
+  - Ascon-Hasha v1.2 (fixed-length output, 8-rounds absorption/squeeze)
+  - Ascon-XOFa v1.2 (variable-length output, 8-rounds absorption/squeeze)
 
 - **Online processing** (**Init-Update-Final** paradigm) for hashing and
   encryption/decryption. This means that the data can be processed one chunk at
@@ -56,15 +58,19 @@ LibAscon provides:
 - AEAD tag may be provided to a **separate location**, i.e. not concatenated to
   the ciphertext.
 
-- Same performance as the original C implementation in _Release_ mode, about 2x
-  slower in _MinSizeRel_ mode.
+- Same performance as the original reference (unoptimised) C implementation in
+  _Release_ mode, about 2x slower in _MinSizeRel_ mode.
+
+- Hashing functions that can also automatically validate the digest
+  against a known one when the hashing process is completed.
 
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
   developer-friendly API**, making it easier to compile and add to your
   project, both through static and dynamic inclusion.
 
-- Tested with **100% line coverage**, with CI running on Linux, macOS and
-  Windows with GCC, Clang and CL (MSVC).
+- Tested with **100% line and branch\* coverage**, with CI running on Linux,
+  macOS and Windows with GCC, Clang and CL (MSVC) (\*: branch coverage excludes
+  the debugging-asserts).
 
 Usage example
 ----------------------------------------

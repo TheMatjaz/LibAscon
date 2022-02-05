@@ -38,12 +38,12 @@
  * Performs one permutation round on the Ascon sponge for the given round
  * constant.
  *
- * Although this function is never used outside of this file,
+ * Although this function is never used outside this file,
  * it is NOT marked as static, as it is generally inline in the functions
  * using it to increase the performance. Inlining static functions into
- * functions used outside of this file leads to compilation errors:
+ * functions used outside this file leads to compilation errors:
  * "error: static function 'ascon_round' is used in an inline function with
- * external linkage [-Werror,-Wstatic-in-inline]".
+ * external linkage `[-Werror,-Wstatic-in-inline]`".
  */
 ASCON_INLINE void
 ascon_round(ascon_sponge_t* sponge,
@@ -86,7 +86,7 @@ ascon_round(ascon_sponge_t* sponge,
 }
 
 ASCON_INLINE void
-ascon_permutation_a12(ascon_sponge_t* const sponge)
+ascon_permutation_12(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_01);
     ascon_round(sponge, ROUND_CONSTANT_02);
@@ -103,7 +103,7 @@ ascon_permutation_a12(ascon_sponge_t* const sponge)
 }
 
 ASCON_INLINE void
-ascon_permutation_b8(ascon_sponge_t* const sponge)
+ascon_permutation_8(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_05);
     ascon_round(sponge, ROUND_CONSTANT_06);
@@ -116,7 +116,7 @@ ascon_permutation_b8(ascon_sponge_t* const sponge)
 }
 
 ASCON_INLINE void
-ascon_permutation_b6(ascon_sponge_t* const sponge)
+ascon_permutation_6(ascon_sponge_t* const sponge)
 {
     ascon_round(sponge, ROUND_CONSTANT_07);
     ascon_round(sponge, ROUND_CONSTANT_08);

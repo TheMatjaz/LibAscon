@@ -74,7 +74,7 @@ ascon_aead128a_init(ascon_aead_ctx_t* const ctx,
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(key != NULL);
     ASCON_ASSERT(nonce != NULL);
-    ascon_aead_init(ctx, key, nonce, AEAD128a_IV);
+    ascon_aead_init(ctx, key, nonce, ASCON_IV_AEAD128a);
     ctx->bufstate.flow_state = ASCON_FLOW_AEAD128a_INITIALISED;
 }
 
@@ -91,7 +91,7 @@ absorb_assoc_data(ascon_sponge_t* sponge,
     (void) data_out;
     sponge->x0 ^= bigendian_decode_u64(data);
     sponge->x1 ^= bigendian_decode_u64(data + ASCON_RATE);
-    ascon_permutation_b8(sponge);
+    ascon_permutation_8(sponge);
 }
 
 /**
@@ -113,7 +113,7 @@ absorb_ciphertext(ascon_sponge_t* const sponge,
     sponge->x0 = c_0;
     sponge->x1 = c_1;
     // Permute the state
-    ascon_permutation_b8(sponge);
+    ascon_permutation_8(sponge);
 }
 
 /**
@@ -133,7 +133,7 @@ absorb_plaintext(ascon_sponge_t* const sponge,
     bigendian_encode_u64(ciphertext, sponge->x0);
     bigendian_encode_u64(ciphertext + ASCON_RATE, sponge->x1);
     // Permute the state
-    ascon_permutation_b8(sponge);
+    ascon_permutation_8(sponge);
 }
 
 
@@ -191,7 +191,7 @@ ascon_128a_finalise_assoc_data(ascon_aead_ctx_t* const ctx)
                                                                ctx->bufstate.buffer_len);
             ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
         }
-        ascon_permutation_b8(&ctx->bufstate.sponge);
+        ascon_permutation_8(&ctx->bufstate.sponge);
     }
     // Application of a constant at end of associated data for domain
     // separation. Done always, regardless if there was some associated
@@ -273,7 +273,7 @@ ascon_aead128a_encrypt_final(ascon_aead_ctx_t* const ctx,
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x2 ^= ctx->k0;
     ctx->bufstate.sponge.x3 ^= ctx->k1;
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     // Squeeze out tag into its buffer.
@@ -366,7 +366,7 @@ ascon_aead128a_decrypt_final(ascon_aead_ctx_t* const ctx,
     // Apply key twice more with a permutation to set the state for the tag.
     ctx->bufstate.sponge.x2 ^= ctx->k0;
     ctx->bufstate.sponge.x3 ^= ctx->k1;
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k0;
     ctx->bufstate.sponge.x4 ^= ctx->k1;
     // Validate tag with variable len

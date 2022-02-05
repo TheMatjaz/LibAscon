@@ -9,6 +9,46 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 *******************************************************************************
 
+[1.2.0] - 2022-02-05
+----------------------------------------
+
+New, lighter hashing functions: Ascon-Hasha and Ascon-XOFa, as per Ascon's NIST
+submission update (2021). Pre-initialised hashes.
+
+### Added
+
+- Ascon-Hasha functions:
+  - Offline processing:
+    - `ascon_hasha()`
+    - `ascon_hasha_matches()`
+  - Online processing:
+    - `ascon_hasha_init()`
+    - `ascon_hasha_update()`
+    - `ascon_hasha_final()`
+    - `ascon_hasha_final_matches()`
+
+- Ascon-XOFa functions:
+  - Offline processing:
+    - `ascon_hasha_xof()`
+    - `ascon_hasha_xof_matches()`
+  - Online processing:
+    - `ascon_hasha_xof_init()`
+    - `ascon_hasha_xof_update()`
+    - `ascon_hasha_xof_final()`
+    - `ascon_hasha_xof_final_matches()`
+
+### Fixed
+
+- Faster initialisation phase of all hashing functions states: using
+  precomputed sponges for each hashing function instead of applying its
+  initialisation vector and permuting it with 12 rounds. Given that this
+  operation is deterministic, we can trade code size space (the precomputed
+  sponges) for computation time (no permutation needed).
+- Add struct names to anonymous structs that were only typedef-ed in the
+  library header. Helps when debugging, so the debugger can show the struct
+  name.
+- Minor internal simplifications of the benchmark and test suite.
+
 [1.1.2] - 2022-02-04
 ----------------------------------------
 
@@ -289,7 +329,7 @@ Added Ascon80pq cipher, example in Readme.
 
 - `ascon_aead128a_*` functions, working exactly as the `aead128` versions.
   Internally they absorb the data with a double rate.
-- Example encryption and decrpytion code into Readme.
+- Example encryption and decryption code into Readme.
 
 ### Removed
 

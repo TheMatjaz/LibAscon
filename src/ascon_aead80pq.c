@@ -78,12 +78,12 @@ ascon_aead80pq_init(ascon_aead_ctx_t* const ctx,
     ctx->k0 = bigendian_decode_u64(key) >> 32U;
     ctx->k1 = bigendian_decode_u64(key + 4U);
     ctx->k2 = bigendian_decode_u64(key + 4U + sizeof(uint64_t));
-    ctx->bufstate.sponge.x0 = AEAD80pq_IV | ctx->k0;
+    ctx->bufstate.sponge.x0 = ASCON_IV_AEAD80pq | ctx->k0;
     ctx->bufstate.sponge.x1 = ctx->k1;
     ctx->bufstate.sponge.x2 = ctx->k2;
     ctx->bufstate.sponge.x3 = bigendian_decode_u64(nonce);
     ctx->bufstate.sponge.x4 = bigendian_decode_u64(nonce + sizeof(uint64_t));
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x2 ^= ctx->k0;
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
@@ -139,7 +139,7 @@ ascon_aead80pq_encrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x1 ^= ctx->k0 << 32U | ctx->k1 >> 32U;
     ctx->bufstate.sponge.x2 ^= ctx->k1 << 32U | ctx->k2 >> 32U;
     ctx->bufstate.sponge.x3 ^= ctx->k2 << 32U;
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     // Squeeze out tag into its buffer.
@@ -196,7 +196,7 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     ctx->bufstate.sponge.x1 ^= ctx->k0 << 32U | ctx->k1 >> 32U;
     ctx->bufstate.sponge.x2 ^= ctx->k1 << 32U | ctx->k2 >> 32U;
     ctx->bufstate.sponge.x3 ^= ctx->k2 << 32U;
-    ascon_permutation_a12(&ctx->bufstate.sponge);
+    ascon_permutation_12(&ctx->bufstate.sponge);
     ctx->bufstate.sponge.x3 ^= ctx->k1;
     ctx->bufstate.sponge.x4 ^= ctx->k2;
     // Validate tag with variable len

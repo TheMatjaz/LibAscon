@@ -208,6 +208,7 @@ static void test_decrypt_offline(void)
 
 void test_aead128a_vartaglen(void)
 {
+    puts("Testing Ascon-128a en/decryption with variable tag length...");
     test_encrypt_empty();
     test_encrypt_offline();
     test_decrypt_empty();

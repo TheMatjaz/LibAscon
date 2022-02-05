@@ -2,37 +2,28 @@
  * @file
  * Benchmarking tool measuring the average CPU cycles per byte processed.
  *
- * Copied from the original implementation, forced into usign CRYPTO_AEAD
- * and calling the offline Ascon128 function from LibAscon instead of the
- * original implementation.
+ * Adapted from the reference implementation, heavily simplified.
  *
  * @license Creative Commons Zero (CC0) 1.0
  * @authors see AUTHORS.md file
  */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include "ascon.h"
-
-#define CRYPTO_AEAD
-#define CRYPTO_KEYBYTES 16
-#define CRYPTO_NSECBYTES 0
-#define CRYPTO_NPUBBYTES 16
-#define CRYPTO_ABYTES 16
-
 
 #if !defined(__arm__) && !defined(_M_ARM)
 #pragma message("Using RDTSC to count cycles")
 #ifdef _MSC_VER
-#include <intrin.h>
+#include <intrin.digest>
 #define ALIGN(x)
 #else
 #include <x86intrin.h>
 #define ALIGN(x) __attribute__((aligned(x)))
 #endif
 #define init_cpucycles()
-#define cpucycles(cycles) cycles = __rdtsc()
-//#define cpucycles(cycles) cycles = __rdtscp(&tmp)
+#define cpucycles(cycles) __rdtsc()
 #endif
 
 #if defined(__ARM_ARCH_6__) \
@@ -55,131 +46,106 @@
   __asm__ __volatile__("mrc p15, 0, %0, c9, c13, 0" : "=r"(cycles))
 #endif
 
-#define NUM_RUNS 100
-#define NUM_BYTES 32768
-#define MAX_LEN 32768
-#define NUM_MLENS 7
+#define AMOUNT_OF_RUNS 100U
+#define MAX_PLAINTEXT_LENGTH 32768U
+#define AMOUNT_OF_LENGTHS 7U
 
-unsigned long long mlens[] = {1, 8, 16, 32, 64, 1536, 32768};
-unsigned char ALIGN(16) m[MAX_LEN];
-#if defined(CRYPTO_AEAD)
-unsigned long long alen = 0;
-unsigned long long clen = 0;
-unsigned char ALIGN(16) a[MAX_LEN];
-unsigned char ALIGN(16) c[MAX_LEN + CRYPTO_ABYTES];
-unsigned char ALIGN(16) nsec[CRYPTO_NSECBYTES ? CRYPTO_NSECBYTES : 1];
-unsigned char ALIGN(16) npub[CRYPTO_NPUBBYTES ? CRYPTO_NPUBBYTES : 1];
-unsigned char ALIGN(16) k[CRYPTO_KEYBYTES];
-#elif defined(CRYPTO_HASH)
-unsigned char ALIGN(16) h[CRYPTO_BYTES];
-#endif
+static const size_t plaintext_lengths[] = {1, 8, 16, 32, 64, 1536, 32768};
+static uint8_t ALIGN(16) plaintext[MAX_PLAINTEXT_LENGTH];
+static uint8_t ALIGN(16) assoc_data[MAX_PLAINTEXT_LENGTH];
+static uint8_t ALIGN(16) ciphertext[MAX_PLAINTEXT_LENGTH];
+static uint8_t ALIGN(16) tag[ASCON_AEAD_TAG_MIN_SECURE_LEN];
+static uint8_t ALIGN(16) nonce[ASCON_AEAD_NONCE_LEN];
+static uint8_t ALIGN(16) key[ASCON_AEAD128_KEY_LEN];
+static uint8_t ALIGN(16) digest[ASCON_HASH_DIGEST_LEN];
+static uint64_t cycles[AMOUNT_OF_LENGTHS][AMOUNT_OF_RUNS * 2];
 
-unsigned long long cycles[NUM_MLENS][NUM_RUNS * 2];
-unsigned int tmp;
-
-static void init_input(void)
+static void randomise_input(void)
 {
-    int i;
-    for (i = 0; i < MAX_LEN; ++i) { m[i] = (uint8_t) rand(); }
-#if defined(CRYPTO_AEAD)
-    for (i = 0; i < MAX_LEN; ++i) { a[i] = (uint8_t) rand(); }
-    for (i = 0; i < CRYPTO_KEYBYTES; ++i) { k[i] = (uint8_t) rand(); }
-    for (i = 0; i < CRYPTO_NPUBBYTES; ++i) { npub[i] = (uint8_t) rand(); }
-#endif
+    unsigned int i;
+    srand(123456);
+    for (i = 0; i < MAX_PLAINTEXT_LENGTH; i++) { plaintext[i] = (uint8_t) rand(); }
+    for (i = 0; i < MAX_PLAINTEXT_LENGTH; i++) { assoc_data[i] = (uint8_t) rand(); }
+    for (i = 0; i < ASCON_AEAD128_KEY_LEN; i++) { key[i] = (uint8_t) rand(); }
+    for (i = 0; i < ASCON_AEAD_NONCE_LEN; i++) { nonce[i] = (uint8_t) rand(); }
 }
 
-static unsigned long long measure(unsigned long long mlen)
+static uint64_t
+measure_aead(const size_t plaintext_len)
 {
-    unsigned long long NREPS = NUM_BYTES / mlen;
-    unsigned long long i;
-#if defined(__arm__) || defined(_M_ARM)
-    unsigned int before, after;
-#else
-    unsigned long long before, after;
-#endif
-    init_input();
-    cpucycles(before);
-    for (i = 0; i < NREPS; ++i)
-#if defined(CRYPTO_AEAD)
+    init_cpucycles();
+    size_t repetitions = MAX_PLAINTEXT_LENGTH / plaintext_len;
+    randomise_input();
+    const uint64_t start = cpucycles(before);
+    for (size_t i = 0; i < repetitions; i++)
     {
-        ascon_aead128_encrypt(c,
-                              c + mlen,
-                              k,
-                              npub,
-                              NULL,
-                              m,
-                              0,
-                              mlen,
-                              16);
+        ascon_aead128_encrypt(ciphertext, tag, key, nonce,
+                              NULL, plaintext,
+                              0, plaintext_len, ASCON_AEAD_TAG_MIN_SECURE_LEN);
     }
-#elif defined(CRYPTO_HASH)
-    crypto_hash(h, m, mlen);
-#endif
-    cpucycles(after);
-    return after - before;
+    const uint64_t end = cpucycles(after);
+    return end - start;
 }
 
-static int compare_uint64(const void* first, const void* second)
+static uint64_t
+measure_hash(const size_t plaintext_len)
 {
-    const unsigned long long* ia = (const unsigned long long*) first;
-    const unsigned long long* ib = (const unsigned long long*) second;
+    init_cpucycles();
+    size_t repetitions = MAX_PLAINTEXT_LENGTH / plaintext_len;
+    randomise_input();
+    const uint64_t start = cpucycles(before);
+    for (size_t i = 0; i < repetitions; i++)
+    {
+        ascon_hash(digest, plaintext, plaintext_len);
+    }
+    const uint64_t end = cpucycles(after);
+    return end - start;
+}
+
+static int
+compare_uint64(const void* first, const void* second)
+{
+    const uint64_t* ia = (const uint64_t*) first;
+    const uint64_t* ib = (const uint64_t*) second;
     if (*ia > *ib) { return 1; }
     if (*ia < *ib) { return -1; }
     return 0;
 }
 
-int main(int argc, char* argv[])
+static void
+report(const char* title)
 {
-    unsigned long long i, j;
-    double factor = 1.0;
-    if (argc == 2) { factor = atof(argv[1]); }
-
-    init_cpucycles();
-
-    for (i = 0; i < NUM_MLENS; ++i)
+    const double factor = 1.0;
+    size_t i;
+    printf("%s\nCycles per byte (min, median):\n", title);
+    for (i = 0; i < AMOUNT_OF_LENGTHS; i++)
     {
-        for (j = 0; j < NUM_RUNS; ++j) { cycles[i][j] = measure(mlens[i]); }
-        qsort(cycles[i], NUM_RUNS, sizeof(unsigned long long), &compare_uint64);
-    }
-
-    printf("\nsorted cycles:\n");
-    for (i = 0; i < NUM_MLENS; ++i)
-    {
-        unsigned long long NREPS = NUM_BYTES / mlens[i];
-        printf("%5d: ", (int) mlens[i]);
-        for (j = 0; j < NUM_RUNS; ++j) { printf("%d ", (int) (cycles[i][j] / NREPS)); }
-        printf("\n");
-    }
-
-    printf("\ncycles per byte (min,median):\n");
-    for (i = 0; i < NUM_MLENS; ++i)
-    {
-        unsigned long long NREPS = NUM_BYTES / mlens[i];
-        unsigned long long bytes = mlens[i] * NREPS;
-        printf("%5d: %6.1f %6.1f\n", (int) mlens[i],
+        const size_t repetitions = MAX_PLAINTEXT_LENGTH / plaintext_lengths[i];
+        const size_t bytes = plaintext_lengths[i] * repetitions;
+        printf("%5zu: %6.1f %6.1f\n", plaintext_lengths[i],
                factor * (double) cycles[i][0] / (double) bytes + 0.05,
-               factor * (double) cycles[i][NUM_RUNS / 2] / (double) bytes + 0.05);
+               factor * (double) cycles[i][AMOUNT_OF_RUNS / 2U] / (double) bytes + 0.05);
     }
     printf("\n");
+}
 
-    for (i = 0; i < NUM_MLENS; ++i) { printf("| %5d ", (int) mlens[i]); }
-    printf("|\n");
-    for (i = 0; i < NUM_MLENS; ++i) { printf("|------:"); }
-    printf("|\n");
-    for (i = 0; i < NUM_MLENS; ++i)
+int
+main(void)
+{
+    size_t i;
+    size_t j;
+    for (i = 0; i < AMOUNT_OF_LENGTHS; i++)
     {
-        unsigned long long NREPS = NUM_BYTES / mlens[i];
-        unsigned long long bytes = mlens[i] * NREPS;
-        if (mlens[i] <= 32)
-        {
-            printf("| %5.0f ", factor * (double) cycles[i][0] / (double) bytes + 0.5);
-        }
-        else
-        {
-            printf("| %5.1f ", factor * (double) cycles[i][0] / (double) bytes + 0.05);
-        }
+        for (j = 0; j < AMOUNT_OF_RUNS; j++) { cycles[i][j] = measure_aead(plaintext_lengths[i]); }
+        qsort(cycles[i], AMOUNT_OF_RUNS, sizeof(uint64_t), &compare_uint64);
     }
-    printf("|\n");
+    report("Ascon128");
+    for (i = 0; i < AMOUNT_OF_LENGTHS; i++)
+    {
+        for (j = 0; j < AMOUNT_OF_RUNS; j++) { cycles[i][j] = measure_hash(plaintext_lengths[i]); }
+        qsort(cycles[i], AMOUNT_OF_RUNS, sizeof(uint64_t), &compare_uint64);
+    }
+    report("Ascon-Hash");
 
     return 0;
 }

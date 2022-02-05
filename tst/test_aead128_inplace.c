@@ -187,6 +187,7 @@ static void test_inplace_update_single_byte(void)
 
 void test_aead128_inplace(void)
 {
+    puts("Testing Ascon-128 en/decryption in-place...");
     test_inplace_offline();
     test_inplace_update_single_byte();
 }

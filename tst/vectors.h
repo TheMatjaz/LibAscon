@@ -60,7 +60,7 @@ typedef enum
     VECS_FORMAT_TOO_SHORT_CIPHERTEXT = 17,
 } vecs_err_t;
 
-typedef struct
+typedef struct vecs_hash
 {
     size_t message_len;
     size_t count;
@@ -68,7 +68,7 @@ typedef struct
     uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
 } vecs_hash_t;
 
-typedef struct
+typedef struct vecs_aead
 {
     size_t plaintext_len;
     size_t assoc_data_len;
@@ -84,7 +84,7 @@ typedef struct
     uint8_t pad[4];  // if sizeof(size_t)==8, fills the trailing padding. Otherwise just adds 4 B.
 } vecs_aead_t;
 
-typedef struct
+typedef struct vecs_ctx
 {
     FILE* handle;
     size_t key_len;

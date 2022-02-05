@@ -12,12 +12,10 @@
 
 void test_structs(void)
 {
-    printf("Sizeof sponge: %zu\n", sizeof(ascon_sponge_t));
+    puts("Testing structs...");
     atto_eq(sizeof(ascon_sponge_t), 5 * 8);
-    printf("Sizeof bufstate: %zu\n", sizeof(ascon_bufstate_t));
     atto_eq(sizeof(ascon_bufstate_t), sizeof(ascon_sponge_t)
                                       + ASCON_DOUBLE_RATE + 8);
-    printf("Sizeof aead ctx: %zu\n", sizeof(ascon_aead_ctx_t));
     atto_eq(sizeof(ascon_aead_ctx_t), sizeof(ascon_bufstate_t)
                                       + 8 + 8 + 8);
 }

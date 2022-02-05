@@ -1,0 +1,15 @@
+# Check out files with Unix line endings
+* text=auto eol=lf
+
+# Force these files to be text
+*.gitattributes text
+.gitignore      text
+*.md            text
+
+# Force Windows scripts to use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Preserve line endings as-they-are
+*.patch    -text
