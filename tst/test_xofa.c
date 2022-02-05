@@ -11,7 +11,7 @@
 #include "ascon.h"
 #include "vectors.h"
 
-#define XOF_VECTORS_FILE "vectors/xofa.txt"
+#define XOFA_VECTORS_FILE "vectors/xofa.txt"
 #define KEY_LEN 0 /* Key not used in this file. */
 
 static void test_xof_empty(void)
@@ -486,7 +486,7 @@ static void test_xof_batch(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASHA_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, XOF_VECTORS_FILE, KEY_LEN);
+    vecs_err_t errcode = vecs_init(&ctx, XOFA_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -497,6 +497,7 @@ static void test_xof_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hasha_xof(obtained_digest, testcase.message,
                         ASCON_HASHA_DIGEST_LEN, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
@@ -516,7 +517,7 @@ static void test_xof_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASHA_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, XOF_VECTORS_FILE, KEY_LEN);
+    vecs_err_t errcode = vecs_init(&ctx, XOFA_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
     ascon_hash_ctx_t xof_ctx;
 
@@ -528,6 +529,7 @@ static void test_xof_update_single_byte(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         // Many 1-byte update calls
         ascon_hasha_xof_init(&xof_ctx);
         for (size_t i = 0; i < testcase.message_len; i++)
@@ -563,7 +565,7 @@ static void test_xof_batch_custom_digest_len(void)
     vecs_hash_t testcase;
     const size_t digest_len = 30;
     uint8_t obtained_digest[32] = {0};
-    vecs_err_t errcode = vecs_init(&ctx, XOF_VECTORS_FILE, KEY_LEN);
+    vecs_err_t errcode = vecs_init(&ctx, XOFA_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -574,6 +576,7 @@ static void test_xof_batch_custom_digest_len(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hasha_xof(obtained_digest, testcase.message,
                         digest_len, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
@@ -621,7 +624,7 @@ static void test_xof_matches_failing_on_wrong_input(void)
     atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
-void test_xof(void)
+void test_xofa(void)
 {
     test_xof_empty();
     test_xof_1_byte();

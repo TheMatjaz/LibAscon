@@ -496,6 +496,7 @@ static void test_hash_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hash(obtained_digest, testcase.message, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
@@ -527,6 +528,7 @@ static void test_hash_update_single_byte(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         // Many 1-byte update calls
         ascon_hash_init(&hash_ctx);
         for (size_t i = 0; i < testcase.message_len; i++)

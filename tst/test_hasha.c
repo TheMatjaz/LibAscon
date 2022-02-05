@@ -11,7 +11,7 @@
 #include "ascon.h"
 #include "vectors.h"
 
-#define HASH_VECTORS_FILE "vectors/hasha.txt"
+#define HASHA_VECTORS_FILE "vectors/hasha.txt"
 #define KEY_LEN 0 /* Key not used in this file. */
 
 static void test_hash_empty(void)
@@ -477,7 +477,7 @@ static void test_hash_batch(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASHA_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE, KEY_LEN);
+    vecs_err_t errcode = vecs_init(&ctx, HASHA_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
 
     while (1)
@@ -488,6 +488,7 @@ static void test_hash_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hasha(obtained_digest, testcase.message, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
         atto_memeq(obtained_digest,
@@ -507,7 +508,7 @@ static void test_hash_update_single_byte(void)
     vecs_ctx_t ctx;
     vecs_hash_t testcase;
     uint8_t obtained_digest[ASCON_HASHA_DIGEST_LEN];
-    vecs_err_t errcode = vecs_init(&ctx, HASH_VECTORS_FILE, KEY_LEN);
+    vecs_err_t errcode = vecs_init(&ctx, HASHA_VECTORS_FILE, KEY_LEN);
     atto_eq(errcode, VECS_OK);
     ascon_hash_ctx_t hash_ctx;
 
@@ -519,6 +520,7 @@ static void test_hash_update_single_byte(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         // Many 1-byte update calls
         ascon_hasha_init(&hash_ctx);
         for (size_t i = 0; i < testcase.message_len; i++)
@@ -573,7 +575,7 @@ static void test_hash_matches_failing_on_wrong_input(void)
     atto_zeros(&hash_ctx, sizeof(ascon_hash_ctx_t));
 }
 
-void test_hash(void)
+void test_hasha(void)
 {
     test_hash_empty();
     test_hash_1_byte();

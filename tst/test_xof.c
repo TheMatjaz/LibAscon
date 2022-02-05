@@ -497,6 +497,7 @@ static void test_xof_batch(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hash_xof(obtained_digest, testcase.message,
                        ASCON_HASH_DIGEST_LEN, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
@@ -528,6 +529,7 @@ static void test_xof_update_single_byte(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         // Many 1-byte update calls
         ascon_hash_xof_init(&xof_ctx);
         for (size_t i = 0; i < testcase.message_len; i++)
@@ -574,6 +576,7 @@ static void test_xof_batch_custom_digest_len(void)
             break;
         }
         atto_eq(errcode, VECS_OK);
+        atto_ctr(testcase.count);
         ascon_hash_xof(obtained_digest, testcase.message,
                        digest_len, testcase.message_len);
         vecs_hash_log(&testcase, obtained_digest);
