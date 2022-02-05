@@ -648,6 +648,7 @@ static void test_decrypt_update_var_bytes(void)
 
 void test_aead128a_decryption(void)
 {
+    puts("Testing Ascon-128a decryption...");
     test_decrypt_empty();
     test_decrypt_1_byte_ad_empty_pt();
     test_decrypt_1_byte_pt_empty_ad();

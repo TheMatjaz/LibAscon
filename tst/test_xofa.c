@@ -626,6 +626,7 @@ static void test_xof_matches_failing_on_wrong_input(void)
 
 void test_xofa(void)
 {
+    puts("Testing Ascon-XOFa...");
     test_xof_empty();
     test_xof_1_byte();
     test_xof_2_bytes();

@@ -621,6 +621,7 @@ static void test_encrypt_update_var_bytes(void)
 
 void test_aead128_encryption(void)
 {
+    puts("Testing Ascon-128 encryption...");
     test_aead_cleanup();
     test_encrypt_empty();
     test_encrypt_1_byte_ad_empty_pt();

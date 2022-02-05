@@ -577,6 +577,7 @@ static void test_hash_matches_failing_on_wrong_input(void)
 
 void test_hasha(void)
 {
+    puts("Testing Ascon-Hasha...");
     test_hash_empty();
     test_hash_1_byte();
     test_hash_2_bytes();
