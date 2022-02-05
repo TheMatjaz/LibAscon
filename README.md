@@ -68,8 +68,9 @@ LibAscon provides:
   developer-friendly API**, making it easier to compile and add to your
   project, both through static and dynamic inclusion.
 
-- Tested with **100% line coverage**, with CI running on Linux, macOS and
-  Windows with GCC, Clang and CL (MSVC).
+- Tested with **100% line and branch\* coverage**, with CI running on Linux,
+  macOS and Windows with GCC, Clang and CL (MSVC) (\*: branch coverage excludes
+  the debugging-asserts).
 
 Usage example
 ----------------------------------------

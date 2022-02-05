@@ -74,8 +74,7 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
     tag += remaining;
     // The last 8 or fewer bytes (also 0)
     tag_len -= remaining;
-    remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
-    bigendian_encode_varlen(tag, ctx->bufstate.sponge.x4, remaining);
+    bigendian_encode_varlen(tag, ctx->bufstate.sponge.x4, (uint_fast8_t) tag_len);
 }
 
 /** @internal Simplistic clone of `memcmp() != 0`, true when NOT equal. */
