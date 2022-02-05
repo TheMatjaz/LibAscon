@@ -622,6 +622,26 @@ static void test_xof_matches_failing_on_wrong_input(void)
                                                 sizeof(expected_digest));
     atto_eq(is_tag_valid, ASCON_TAG_INVALID);
     atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
+
+    // Enforcing branch when digest differs in last block
+    atto_neq(expected_digest[12], 0xFF);
+    expected_digest[12] = 0xFF;
+    ascon_hash_xof_init(&xof_ctx);
+    ascon_hash_xof_update(&xof_ctx, dummy_data, sizeof(dummy_data));
+    is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, expected_digest,
+                                                sizeof(expected_digest));
+    atto_eq(is_tag_valid, ASCON_TAG_INVALID);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
+
+    // Enforcing branch when digest differs in first block
+    atto_neq(expected_digest[0], 0xFF);
+    expected_digest[0] = 0xFF;
+    ascon_hash_xof_init(&xof_ctx);
+    ascon_hash_xof_update(&xof_ctx, dummy_data, sizeof(dummy_data));
+    is_tag_valid = ascon_hash_xof_final_matches(&xof_ctx, expected_digest,
+                                                sizeof(expected_digest));
+    atto_eq(is_tag_valid, ASCON_TAG_INVALID);
+    atto_zeros(&xof_ctx, sizeof(ascon_hash_ctx_t));
 }
 
 void test_xof(void)

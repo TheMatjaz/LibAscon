@@ -99,7 +99,7 @@ ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
     {
         // All bytes before the last 16
         // Note: converting the sponge uint64_t to bytes to then check them as
-        // uint64_t is required, as the conversion to bytes ensures the
+        // is required, as the conversion to bytes ensures the
         // proper tag's byte order regardless of the platform's endianness.
         bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x3);
         if (small_neq(computed_tag_chunk, expected_tag, sizeof(computed_tag_chunk)))

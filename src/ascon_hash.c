@@ -338,7 +338,7 @@ hash_final_matches(permutation_fptr permutation,
     while (expected_digest_len > ASCON_RATE)
     {
         // Note: converting the sponge uint64_t to bytes to then check them as
-        // uint64_t is required, as the conversion to bytes ensures the
+        // is required, as the conversion to bytes ensures the
         // proper tag's byte order regardless of the platform's endianness.
         bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
         permutation(&ctx->sponge);
