@@ -58,8 +58,11 @@ LibAscon provides:
 - AEAD tag may be provided to a **separate location**, i.e. not concatenated to
   the ciphertext.
 
-- Same performance as the original C implementation in _Release_ mode, about 2x
-  slower in _MinSizeRel_ mode.
+- Same performance as the original reference (unoptimised) C implementation in
+  _Release_ mode, about 2x slower in _MinSizeRel_ mode.
+
+- Hashing functions that can also automatically validate the digest
+  against a known one when the hashing process is completed.
 
 - A **[heavily documented](https://thematjaz.github.io/LibAscon/)
   developer-friendly API**, making it easier to compile and add to your

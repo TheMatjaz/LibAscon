@@ -97,11 +97,11 @@ extern "C"
 /** Major version of this API conforming to semantic versioning. */
 #define ASCON_API_VERSION_MAJOR 1
 /** Minor version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_MINOR 1
+#define ASCON_API_VERSION_MINOR 2
 /** Bugfix/patch version of this API conforming to semantic versioning. */
-#define ASCON_API_VERSION_BUGFIX 2
+#define ASCON_API_VERSION_BUGFIX 0
 /** Version of this API conforming to semantic versioning as a string. */
-#define ASCON_API_VERSION "1.1.2"
+#define ASCON_API_VERSION "1.2.0"
 
 /**
  * Length in bytes of the secret symmetric key used for the Ascon128 cipher.
@@ -2111,7 +2111,8 @@ ascon_hasha_xof_final_matches(ascon_hash_ctx_t* ctx,
  *
  * Use this function only when something goes wrong between the calls of
  * online hashing or decryption and you never call the ascon_hash_final()
- * or ascon_hash_xof_final() functions (because these 2 functions perform the
+ * or ascon_hash_xof_final() or ascon_hasha_final()
+ * or ascon_hasha_xof_final() functions (because these functions perform the
  * cleanup automatically).
  *
  * This is to prevent any information to leak through the context in case an
