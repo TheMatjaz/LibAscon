@@ -79,6 +79,7 @@ else ()
 
     # Release mode optimised for speed
     string(APPEND CMAKE_C_FLAGS_RELEASE " -O3")  # Max optimisation for speed
+    string(APPEND CMAKE_C_FLAGS_RELEASE " -s")  # Strip symbols
     string(APPEND CMAKE_C_FLAGS_RELEASE " -Werror")  # Warnings as errors
     string(APPEND CMAKE_C_FLAGS_RELEASE " -fomit-frame-pointer")
     string(APPEND CMAKE_C_FLAGS_RELEASE " -march=native")
@@ -86,6 +87,7 @@ else ()
 
     # Release mode optimised for size
     string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -Os")  # Optimise for size
+    string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -s")  # Strip symbols
     string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -fomit-frame-pointer")
     string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -march=native")
     string(APPEND CMAKE_C_FLAGS_MINSIZEREL " -mtune=native")
