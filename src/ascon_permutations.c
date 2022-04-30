@@ -49,7 +49,6 @@ ASCON_INLINE void
 ascon_round(ascon_sponge_t* sponge,
             const uint_fast8_t round_const)
 {
-    ascon_sponge_t temp;
     // addition of round constant
     sponge->x2 ^= round_const;
     // substitution layer
@@ -57,16 +56,13 @@ ascon_round(ascon_sponge_t* sponge,
     sponge->x4 ^= sponge->x3;
     sponge->x2 ^= sponge->x1;
     // start of keccak s-box
-    temp.x0 = ~sponge->x0;
-    temp.x1 = ~sponge->x1;
-    temp.x2 = ~sponge->x2;
-    temp.x3 = ~sponge->x3;
-    temp.x4 = ~sponge->x4;
-    temp.x0 &= sponge->x1;
-    temp.x1 &= sponge->x2;
-    temp.x2 &= sponge->x3;
-    temp.x3 &= sponge->x4;
-    temp.x4 &= sponge->x0;
+    const ascon_sponge_t temp = {
+            .x0 = (~sponge->x0) & sponge->x1,
+            .x1 = (~sponge->x1) & sponge->x2,
+            .x2 = (~sponge->x2) & sponge->x3,
+            .x3 = (~sponge->x3) & sponge->x4,
+            .x4 = (~sponge->x4) & sponge->x0,
+    };
     sponge->x0 ^= temp.x1;
     sponge->x1 ^= temp.x2;
     sponge->x2 ^= temp.x3;
