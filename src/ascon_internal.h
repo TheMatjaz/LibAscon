@@ -204,9 +204,14 @@ bigendian_encode_varlen(uint8_t* bytes, uint64_t x, uint_fast8_t n);
 /**
  * @internal
  * Creates a mask to extract the n most significant bytes of a uint64_t.
+ *
+ * Examples:
+ *
+ * - `n == 1` returns `FF00 0000 0000 0000` (spaces are just for readability)
+ * - `n == 5` returns `FFFF FFFF FF00 0000`
  */
 uint64_t
-byte_mask(uint_fast8_t n);
+mask_most_signif_bytes(uint_fast8_t n);
 
 /**
  * @internal

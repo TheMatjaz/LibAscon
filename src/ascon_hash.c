@@ -304,17 +304,6 @@ ascon_hash_cleanup(ascon_hash_ctx_t* const ctx)
     }
 }
 
-/** @internal Simplistic clone of `memcmp() != 0`, true when NOT equal. */
-inline static bool
-small_neq(const uint8_t* restrict a, const uint8_t* restrict b, size_t amount)
-{
-    while (amount--)
-    {
-        if (*(a++) != *(b++)) { return true; }
-    }
-    return false;
-}
-
 /**
  * @internal
  * Final step of the hashing flow with tag equality checks, same for Hash, XOF,
@@ -334,33 +323,32 @@ hash_final_matches(permutation_fptr permutation,
     ascon_permutation_12(&ctx->sponge);
     // Squeeze the digest from the inner state 8 bytes at the time to compare
     // it chunk by chunk with the expected digest
-    uint8_t computed_digest_chunk[ASCON_RATE];
+    uint64_t expected_digest_chunk;
+    bool digests_differ = false;
     while (expected_digest_len > ASCON_RATE)
     {
-        // Note: converting the sponge uint64_t to bytes to then check them as
-        // is required, as the conversion to bytes ensures the
-        // proper tag's byte order regardless of the platform's endianness.
-        bigendian_encode_u64(computed_digest_chunk, ctx->sponge.x0);
+        // Note: converting the expected digest from uint8_t[] to uint64_t
+        // for a faster comparison. It has to be decoded explicitly to ensure
+        // it works the same on all platforms, regardless of endianness.
+        // Type-punning like `*(uint64_t*) expected_digest` is NOT portable.
+        //
+        // Constant time comparison expected vs computed digest chunk
+        expected_digest_chunk = bigendian_decode_u64(expected_digest);
+        digests_differ |= (expected_digest_chunk ^ ctx->sponge.x0);
+        expected_digest_len -= sizeof(expected_digest_chunk);
+        expected_digest += sizeof(expected_digest_chunk);
+        // Permute and go to next chunk
         permutation(&ctx->sponge);
-        if (small_neq(computed_digest_chunk, expected_digest, sizeof(computed_digest_chunk)))
-        {
-            ascon_hash_cleanup(ctx);
-            return ASCON_TAG_INVALID;
-        }
-        expected_digest_len -= sizeof(computed_digest_chunk);
-        expected_digest += sizeof(computed_digest_chunk);
     }
-    bigendian_encode_varlen(computed_digest_chunk, ctx->sponge.x0,
-                            (uint_fast8_t) expected_digest_len);
-    // Check the remaining bytes in the chunk, potentially less than ASCON_RATE
-    if (small_neq(computed_digest_chunk, expected_digest, expected_digest_len))
-    {
-        ascon_hash_cleanup(ctx);
-        return ASCON_TAG_INVALID;
-    }
+    // Extract the remaining n most significant bytes of expected/computed digests
+    const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_digest_len);
+    expected_digest_chunk = bigendian_decode_varlen(
+            expected_digest, (uint_fast8_t) expected_digest_len);
+    // Constant time comparison expected vs computed chunk
+    digests_differ |= (expected_digest_chunk ^ (ctx->sponge.x0 & ms_mask));
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
-    return ASCON_TAG_OK;
+    return !digests_differ; // True if they are equal
 }
 
 ASCON_API bool

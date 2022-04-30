@@ -9,6 +9,39 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 *******************************************************************************
 
+[1.2.1] - 2022-04-30
+----------------------------------------
+
+Constant-time tag/digest validation against timing attacks, improved CMake
+portability.
+
+### Fixed
+
+#### Security
+
+- Use constant-time tag/digest validation to offer some resistance against
+  timing attacks. Applies to all decryption functions
+  (`ascon_aead*_decrypt*()`)  and all hashing functions which compare
+  the generated digest to the expected (`ascon_hash_*_matches()`).
+
+#### Cross-platform portability
+
+- Enforced name `libascon.{dll|so|dylib}` for the shared library, so it's the
+  same when built with any toolchain.
+- CMake will not verify whether a compiler supports a flag before using it.
+  This makes the CMake configuration phase slightly longer, but the result
+  is cached, so it happens only the first time.
+- CMake now defaults to `MinSizeRel` build type if `CMAKE_BUILD_TYPE` is not
+  specified, because binary size matters more than speed for a cross-platform
+  implementation. Additionaly, on some platforms it overperforms the
+  `Release` build.
+- Explicitly setting many Doxygen settings.
+
+#### Internal changes
+
+- Simplified Ascon permutation code, to increase its readability.
+- Internal function `byte_mask()` renamed to `mask_most_signif_bytes()`.
+
 [1.2.0] - 2022-02-05
 ----------------------------------------
 

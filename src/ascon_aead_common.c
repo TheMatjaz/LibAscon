@@ -77,56 +77,45 @@ ascon_aead_generate_tag(ascon_aead_ctx_t* const ctx,
     bigendian_encode_varlen(tag, ctx->bufstate.sponge.x4, (uint_fast8_t) tag_len);
 }
 
-/** @internal Simplistic clone of `memcmp() != 0`, true when NOT equal. */
-inline static bool
-small_neq(const uint8_t* restrict a, const uint8_t* restrict b, size_t amount)
-{
-    while (amount--)
-    {
-        if (*(a++) != *(b++)) { return true; }
-    }
-    return false;
-}
-
 bool
 ascon_aead_is_tag_valid(ascon_aead_ctx_t* const ctx,
                         const uint8_t* expected_tag,
                         size_t expected_tag_len)
 {
-    uint8_t computed_tag_chunk[ASCON_RATE];
+    uint64_t expected_tag_chunk;
+    bool tags_differ = false;
     while (expected_tag_len > ASCON_AEAD_TAG_MIN_SECURE_LEN)
     {
-        // All bytes before the last 16
-        // Note: converting the sponge uint64_t to bytes to then check them as
-        // is required, as the conversion to bytes ensures the
-        // proper tag's byte order regardless of the platform's endianness.
-        bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x3);
-        if (small_neq(computed_tag_chunk, expected_tag, sizeof(computed_tag_chunk)))
-        {
-            return ASCON_TAG_INVALID;
-        }
-        expected_tag += sizeof(computed_tag_chunk);
-        expected_tag_len -= sizeof(computed_tag_chunk);
-        bigendian_encode_u64(computed_tag_chunk, ctx->bufstate.sponge.x4);
-        if (small_neq(computed_tag_chunk, expected_tag, sizeof(computed_tag_chunk)))
-        {
-            return ASCON_TAG_INVALID;
-        }
-        expected_tag += sizeof(computed_tag_chunk);
-        expected_tag_len -= sizeof(computed_tag_chunk);
+        // Note: converting the expected tag from uint8_t[] to uint64_t
+        // for a faster comparison. It has to be decoded explicitly to ensure
+        // it works the same on all platforms, regardless of endianness.
+        // Type-punning like `*(uint64_t*) expected_tag` is NOT portable.
+        //
+        // Constant time comparison expected vs computed digest chunk, part 1
+        expected_tag_chunk = bigendian_decode_u64(expected_tag);
+        tags_differ |= (expected_tag_chunk ^ ctx->bufstate.sponge.x3);
+        expected_tag += sizeof(expected_tag_chunk);
+        expected_tag_len -= sizeof(expected_tag_chunk);
+        // Constant time comparison expected vs computed digest chunk, part 2
+        expected_tag_chunk = bigendian_decode_u64(expected_tag);
+        tags_differ |= (expected_tag_chunk ^ ctx->bufstate.sponge.x4);
+        expected_tag += sizeof(expected_tag_chunk);
+        expected_tag_len -= sizeof(expected_tag_chunk);
+        // Permute and go to next chunk
         ascon_permutation_12(&ctx->bufstate.sponge);
     }
-    // The last 16 or fewer bytes (also 0)
-    size_t remaining = MIN(sizeof(computed_tag_chunk), expected_tag_len);
-    bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x3, (uint_fast8_t) remaining);
-    if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
+    // Extract the remaining n most significant bytes of expected/computed tags
+    size_t remaining = MIN(sizeof(expected_tag_chunk), expected_tag_len);
+    uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) remaining);
+    expected_tag_chunk = bigendian_decode_varlen(expected_tag, (uint_fast8_t) remaining);
+    tags_differ |= (expected_tag_chunk ^ (ctx->bufstate.sponge.x3 & ms_mask));
     expected_tag += remaining;
-    // The last 8 or fewer bytes (also 0)
     expected_tag_len -= remaining;
-    remaining = MIN(sizeof(computed_tag_chunk), expected_tag_len);
-    bigendian_encode_varlen(computed_tag_chunk, ctx->bufstate.sponge.x4, (uint_fast8_t) remaining);
-    if (small_neq(computed_tag_chunk, expected_tag, remaining)) { return ASCON_TAG_INVALID; }
-    return ASCON_TAG_OK;
+    remaining = MIN(sizeof(expected_tag_chunk), expected_tag_len);
+    ms_mask = mask_most_signif_bytes((uint_fast8_t) remaining);
+    expected_tag_chunk = bigendian_decode_varlen(expected_tag, (uint_fast8_t) remaining);
+    tags_differ |= (expected_tag_chunk ^ (ctx->bufstate.sponge.x4 & ms_mask));
+    return !tags_differ; // True if they are equal
 }
 
 ASCON_API void
