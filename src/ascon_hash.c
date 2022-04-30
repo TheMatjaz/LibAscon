@@ -323,28 +323,29 @@ hash_final_matches(permutation_fptr permutation,
     ascon_permutation_12(&ctx->sponge);
     // Squeeze the digest from the inner state 8 bytes at the time to compare
     // it chunk by chunk with the expected digest
-    bool digests_differ = false;
     uint64_t expected_digest_chunk;
+    bool digests_differ = false;
     while (expected_digest_len > ASCON_RATE)
     {
         // Note: converting the expected digest from uint8_t[] to uint64_t
         // for a faster comparison. It has to be decoded explicitly to ensure
         // it works the same on all platforms, regardless of endianness.
         // Type-punning like `*(uint64_t*) expected_digest` is NOT portable.
-        expected_digest_chunk = bigendian_decode_u64(expected_digest);
+        //
         // Constant time comparison expected vs computed digest chunk
+        expected_digest_chunk = bigendian_decode_u64(expected_digest);
         digests_differ |= (expected_digest_chunk ^ ctx->sponge.x0);
-        // Permute and shift to next chunk
-        permutation(&ctx->sponge);
         expected_digest_len -= sizeof(expected_digest_chunk);
         expected_digest += sizeof(expected_digest_chunk);
+        // Permute and go to next chunk
+        permutation(&ctx->sponge);
     }
-    // Extract the remaining n most significant bytes of the two digest chunks
-    ctx->sponge.x0 &= mask_most_signif_bytes((uint_fast8_t) expected_digest_len);
+    // Extract the remaining n most significant bytes of expected/computed digests
+    const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_digest_len);
     expected_digest_chunk = bigendian_decode_varlen(
             expected_digest, (uint_fast8_t) expected_digest_len);
     // Constant time comparison expected vs computed chunk
-    digests_differ |= (expected_digest_chunk ^ ctx->sponge.x0);
+    digests_differ |= (expected_digest_chunk ^ (ctx->sponge.x0 & ms_mask));
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
     return !digests_differ; // True if they are equal
