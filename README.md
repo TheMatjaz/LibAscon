@@ -13,13 +13,19 @@ associated data (AEAD) and hashing functions, but it also includes
 Init-Update-Final processing and variable tag length. Heavily tested and ready
 for embedded systems!
 
-### Disclaimer
+### Security disclaimer
 
-This is not a security-hardened implementation, just a simple one focused
-mostly on usability, portability and high(er) set of features There is no added
-protection against side-channel attacks other than what the Ascon algorithm
-itself provides by design.
+This is **not a security-hardened implementation**, just a simple one, focused
+mostly on usability, portability, and high(er) set of features compared to the
+reference implementation. There is no explicit protection against side-channel
+attacks other than what the Ascon algorithm itself provides by design.
 
+Nevertheless, this implementation:
+
+- uses constant-time operations (should help against timing attacks),
+- **tries** to force the compiler to actually clear sensitive data instead of
+  optimising the operations away (this is hard to achieve properly),
+- has 100% line and 100% branch test coverage.
 
 Features
 ----------------------------------------
