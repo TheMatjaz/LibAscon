@@ -14,6 +14,7 @@ project(LibAscon
 # Default build type, if not specified explicitly with `-DCMAKE_BUILD_TYPE`
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE MinSizeRel)
+    message("CMAKE_BUILD_TYPE unspecified, defaulting to ${CMAKE_BUILD_TYPE}")
 endif ()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -122,14 +123,17 @@ target_include_directories(ascon128ahash PUBLIC inc/ PRIVATE src/)
 add_library(ascon80pqhash STATIC ${LIB_SRC_FILES_80pq} ${LIB_SRC_FILES_HASH})
 target_include_directories(ascon80pqhash PUBLIC inc/ PRIVATE src/)
 
-# Shared library (.dylib / .dll)
+# Shared library (.so / .dylib / .dll)
 # Does not reuse the static library object files, as they are
 # recompiled in order to have position-independent code
 add_library(ascon SHARED ${LIB_SRC_FILES_FULL})
 target_include_directories(ascon PUBLIC inc/ PRIVATE src/)
 set_target_properties(ascon PROPERTIES
         POSITION_INDEPENDENT_CODE ON
-        INTERPROCEDURAL_OPTIMISATION TRUE)
+        INTERPROCEDURAL_OPTIMISATION TRUE
+        # Remove any "msys-" and enforce the same lib name with all toolchains
+        PREFIX lib
+        OUTPUT_NAME ascon)
 
 # Copy test vectors files to build directory.
 # They are used by the test runner
