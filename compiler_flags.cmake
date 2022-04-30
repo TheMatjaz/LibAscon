@@ -114,7 +114,6 @@ else ()
 
     # Release mode optimised for speed
     compflag(CMAKE_C_FLAGS_RELEASE "-O3")  # Max optimisation for speed
-    compflag(CMAKE_C_FLAGS_RELEASE "-s")  # Strip binary
     compflag(CMAKE_C_FLAGS_RELEASE "-Werror")  # Warnings as errors
     compflag(CMAKE_C_FLAGS_RELEASE "-fomit-frame-pointer")
     compflag(CMAKE_C_FLAGS_RELEASE "-march=native")
@@ -122,7 +121,6 @@ else ()
 
     # Release mode optimised for size
     compflag(CMAKE_C_FLAGS_MINSIZEREL "-Os")  # Optimise for size
-    compflag(CMAKE_C_FLAGS_MINSIZEREL "-s")  # Strip binary
     compflag(CMAKE_C_FLAGS_MINSIZEREL "-fomit-frame-pointer")
     compflag(CMAKE_C_FLAGS_MINSIZEREL "-march=native")
     compflag(CMAKE_C_FLAGS_MINSIZEREL "-mtune=native")
