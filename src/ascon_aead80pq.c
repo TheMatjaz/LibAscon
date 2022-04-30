@@ -187,7 +187,7 @@ ascon_aead80pq_decrypt_final(ascon_aead_ctx_t* const ctx,
     bigendian_encode_varlen(plaintext, ctx->bufstate.sponge.x0 ^ c_0,
                             ctx->bufstate.buffer_len);
     // Final state changes at decryption's end
-    ctx->bufstate.sponge.x0 &= ~byte_mask(ctx->bufstate.buffer_len);
+    ctx->bufstate.sponge.x0 &= ~mask_most_signif_bytes(ctx->bufstate.buffer_len);
     ctx->bufstate.sponge.x0 |= c_0;
     ctx->bufstate.sponge.x0 ^= PADDING(ctx->bufstate.buffer_len);
     freshly_generated_plaintext_len += ctx->bufstate.buffer_len;

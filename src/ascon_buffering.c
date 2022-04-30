@@ -87,7 +87,7 @@ bigendian_encode_varlen(uint8_t* const bytes, const uint64_t x, const uint_fast8
 }
 
 uint64_t
-byte_mask(const uint_fast8_t n)
+mask_most_signif_bytes(uint_fast8_t n)
 {
     uint64_t x = 0;
     // Unsigned int should be the fastest unsigned on the machine.

@@ -340,7 +340,7 @@ hash_final_matches(permutation_fptr permutation,
         expected_digest += sizeof(expected_digest_chunk);
     }
     // Extract the remaining n most significant bytes of the two digest chunks
-    ctx->sponge.x0 &= byte_mask((uint_fast8_t) expected_digest_len);
+    ctx->sponge.x0 &= mask_most_signif_bytes((uint_fast8_t) expected_digest_len);
     expected_digest_chunk = bigendian_decode_varlen(
             expected_digest, (uint_fast8_t) expected_digest_len);
     // Constant time comparison expected vs computed chunk
