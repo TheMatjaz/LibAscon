@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.0</span>
+   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.1</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -86,27 +86,88 @@ Collaboration diagram for ascon_aead_ctx:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:ae6850bbdaa531f7ab52243735587e5df"><td class="memItemLeft" align="right" valign="top"><a id="ae6850bbdaa531f7ab52243735587e5df" name="ae6850bbdaa531f7ab52243735587e5df"></a>
-<a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>bufstate</b></td></tr>
-<tr class="memdesc:ae6850bbdaa531f7ab52243735587e5df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher buffered sponge state. <br /></td></tr>
+<tr class="memitem:ae6850bbdaa531f7ab52243735587e5df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx.html#ae6850bbdaa531f7ab52243735587e5df">bufstate</a></td></tr>
+<tr class="memdesc:ae6850bbdaa531f7ab52243735587e5df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher buffered sponge state.  <a href="structascon__aead__ctx.html#ae6850bbdaa531f7ab52243735587e5df">More...</a><br /></td></tr>
 <tr class="separator:ae6850bbdaa531f7ab52243735587e5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7660ebb5908406c06e31e81a5a828a0a"><td class="memItemLeft" align="right" valign="top"><a id="a7660ebb5908406c06e31e81a5a828a0a" name="a7660ebb5908406c06e31e81a5a828a0a"></a>
-uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>k0</b></td></tr>
-<tr class="memdesc:a7660ebb5908406c06e31e81a5a828a0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, first part. <br /></td></tr>
+<tr class="memitem:a7660ebb5908406c06e31e81a5a828a0a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx.html#a7660ebb5908406c06e31e81a5a828a0a">k0</a></td></tr>
+<tr class="memdesc:a7660ebb5908406c06e31e81a5a828a0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, first part.  <a href="structascon__aead__ctx.html#a7660ebb5908406c06e31e81a5a828a0a">More...</a><br /></td></tr>
 <tr class="separator:a7660ebb5908406c06e31e81a5a828a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbe2921c77d0f9571d4ee5af5650ba2d"><td class="memItemLeft" align="right" valign="top"><a id="abbe2921c77d0f9571d4ee5af5650ba2d" name="abbe2921c77d0f9571d4ee5af5650ba2d"></a>
-uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>k1</b></td></tr>
-<tr class="memdesc:abbe2921c77d0f9571d4ee5af5650ba2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, second part. <br /></td></tr>
+<tr class="memitem:abbe2921c77d0f9571d4ee5af5650ba2d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx.html#abbe2921c77d0f9571d4ee5af5650ba2d">k1</a></td></tr>
+<tr class="memdesc:abbe2921c77d0f9571d4ee5af5650ba2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, second part.  <a href="structascon__aead__ctx.html#abbe2921c77d0f9571d4ee5af5650ba2d">More...</a><br /></td></tr>
 <tr class="separator:abbe2921c77d0f9571d4ee5af5650ba2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7371ccc00308ef791a811a2989f607b7"><td class="memItemLeft" align="right" valign="top"><a id="a7371ccc00308ef791a811a2989f607b7" name="a7371ccc00308ef791a811a2989f607b7"></a>
-uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>k2</b></td></tr>
-<tr class="memdesc:a7371ccc00308ef791a811a2989f607b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, third part, used only in the Ascon80pq cipher. <br /></td></tr>
+<tr class="memitem:a7371ccc00308ef791a811a2989f607b7"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__aead__ctx.html#a7371ccc00308ef791a811a2989f607b7">k2</a></td></tr>
+<tr class="memdesc:a7371ccc00308ef791a811a2989f607b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the secret key, to be used in the final step, third part, used only in the Ascon80pq cipher.  <a href="structascon__aead__ctx.html#a7371ccc00308ef791a811a2989f607b7">More...</a><br /></td></tr>
 <tr class="separator:a7371ccc00308ef791a811a2989f607b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Cipher context for authenticated encryption and validated decryption. </p>
 <p >Half of this context's size is the cipher's sponge state, the remaining part is holding the key and the buffering of online data (and some padding). </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="ae6850bbdaa531f7ab52243735587e5df" name="ae6850bbdaa531f7ab52243735587e5df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6850bbdaa531f7ab52243735587e5df">&#9670;&nbsp;</a></span>bufstate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#ae4af27aa4c3796f04bf721ff40cde919">ascon_bufstate_t</a> ascon_aead_ctx::bufstate</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cipher buffered sponge state. </p>
+
+</div>
+</div>
+<a id="a7660ebb5908406c06e31e81a5a828a0a" name="a7660ebb5908406c06e31e81a5a828a0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7660ebb5908406c06e31e81a5a828a0a">&#9670;&nbsp;</a></span>k0</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t ascon_aead_ctx::k0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copy of the secret key, to be used in the final step, first part. </p>
+
+</div>
+</div>
+<a id="abbe2921c77d0f9571d4ee5af5650ba2d" name="abbe2921c77d0f9571d4ee5af5650ba2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbe2921c77d0f9571d4ee5af5650ba2d">&#9670;&nbsp;</a></span>k1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t ascon_aead_ctx::k1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copy of the secret key, to be used in the final step, second part. </p>
+
+</div>
+</div>
+<a id="a7371ccc00308ef791a811a2989f607b7" name="a7371ccc00308ef791a811a2989f607b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7371ccc00308ef791a811a2989f607b7">&#9670;&nbsp;</a></span>k2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t ascon_aead_ctx::k2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copy of the secret key, to be used in the final step, third part, used only in the Ascon80pq cipher. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>inc/<a class="el" href="ascon_8h_source.html">ascon.h</a></li>
 </ul>
 </div><!-- contents -->

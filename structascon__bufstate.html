@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.0</span>
+   <div id="projectname">LibAscon<span id="projectnumber">&#160;1.2.1</span>
    </div>
    <div id="projectbrief">Lightweight Authenticated Encryption &amp; Hashing,         also with Init-Update-Final paradigm.</div>
   </td>
@@ -85,30 +85,74 @@ Collaboration diagram for ascon_bufstate:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a6a798b5928471275e60d357f2010e220"><td class="memItemLeft" align="right" valign="top"><a id="a6a798b5928471275e60d357f2010e220" name="a6a798b5928471275e60d357f2010e220"></a>
-<a class="el" href="ascon_8h.html#aaba863f50754a13f14511b7e7c1d1b1c">ascon_sponge_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sponge</b></td></tr>
-<tr class="memdesc:a6a798b5928471275e60d357f2010e220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher sponge state. <br /></td></tr>
+<tr class="memitem:a6a798b5928471275e60d357f2010e220"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ascon_8h.html#aaba863f50754a13f14511b7e7c1d1b1c">ascon_sponge_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html#a6a798b5928471275e60d357f2010e220">sponge</a></td></tr>
+<tr class="memdesc:a6a798b5928471275e60d357f2010e220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cipher sponge state.  <a href="structascon__bufstate.html#a6a798b5928471275e60d357f2010e220">More...</a><br /></td></tr>
 <tr class="separator:a6a798b5928471275e60d357f2010e220"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c589b42b759f19cec9e3b2292cb05ef"><td class="memItemLeft" align="right" valign="top"><a id="a1c589b42b759f19cec9e3b2292cb05ef" name="a1c589b42b759f19cec9e3b2292cb05ef"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>buffer</b> [<a class="el" href="ascon_8h.html#a46b065520f316170a86a56bed780bcd3">ASCON_DOUBLE_RATE</a>]</td></tr>
-<tr class="memdesc:a1c589b42b759f19cec9e3b2292cb05ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer caching the less-than-rate long input between update calls. <br /></td></tr>
+<tr class="memitem:a1c589b42b759f19cec9e3b2292cb05ef"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html#a1c589b42b759f19cec9e3b2292cb05ef">buffer</a> [<a class="el" href="ascon_8h.html#a46b065520f316170a86a56bed780bcd3">ASCON_DOUBLE_RATE</a>]</td></tr>
+<tr class="memdesc:a1c589b42b759f19cec9e3b2292cb05ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer caching the less-than-rate long input between update calls.  <a href="structascon__bufstate.html#a1c589b42b759f19cec9e3b2292cb05ef">More...</a><br /></td></tr>
 <tr class="separator:a1c589b42b759f19cec9e3b2292cb05ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a607f8bce5d82dd63049853f97b559eda"><td class="memItemLeft" align="right" valign="top"><a id="a607f8bce5d82dd63049853f97b559eda" name="a607f8bce5d82dd63049853f97b559eda"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>buffer_len</b></td></tr>
-<tr class="memdesc:a607f8bce5d82dd63049853f97b559eda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Currently used bytes of the buffer. <br /></td></tr>
+<tr class="memitem:a607f8bce5d82dd63049853f97b559eda"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html#a607f8bce5d82dd63049853f97b559eda">buffer_len</a></td></tr>
+<tr class="memdesc:a607f8bce5d82dd63049853f97b559eda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Currently used bytes of the buffer.  <a href="structascon__bufstate.html#a607f8bce5d82dd63049853f97b559eda">More...</a><br /></td></tr>
 <tr class="separator:a607f8bce5d82dd63049853f97b559eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada570bc18bf509fb489eaecfbe9155d1"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html#ada570bc18bf509fb489eaecfbe9155d1">flow_state</a></td></tr>
 <tr class="memdesc:ada570bc18bf509fb489eaecfbe9155d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the order of Init-Update-Final function calls, checked to know when to finalise the associated data processing and for the runtime assertions on the correct order of the functions.  <a href="structascon__bufstate.html#ada570bc18bf509fb489eaecfbe9155d1">More...</a><br /></td></tr>
 <tr class="separator:ada570bc18bf509fb489eaecfbe9155d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7c34ce0f0f2b964183e87315b420958"><td class="memItemLeft" align="right" valign="top"><a id="ac7c34ce0f0f2b964183e87315b420958" name="ac7c34ce0f0f2b964183e87315b420958"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>pad</b> [6]</td></tr>
-<tr class="memdesc:ac7c34ce0f0f2b964183e87315b420958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unused padding to the next uint64_t (sponge.x0 or ctx.k0) to avoid errors when compiling with <code>-Wpadding</code> on any platform. <br /></td></tr>
+<tr class="memitem:ac7c34ce0f0f2b964183e87315b420958"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__bufstate.html#ac7c34ce0f0f2b964183e87315b420958">pad</a> [6]</td></tr>
+<tr class="memdesc:ac7c34ce0f0f2b964183e87315b420958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unused padding to the next uint64_t (sponge.x0 or ctx.k0) to avoid errors when compiling with <code>-Wpadding</code> on any platform.  <a href="structascon__bufstate.html#ac7c34ce0f0f2b964183e87315b420958">More...</a><br /></td></tr>
 <tr class="separator:ac7c34ce0f0f2b964183e87315b420958"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Internal cipher sponge state associated with a buffer holding for less-than-rate updates. </p>
 <p >Used for the Init-Update-Final implementation. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a id="a6a798b5928471275e60d357f2010e220" name="a6a798b5928471275e60d357f2010e220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a798b5928471275e60d357f2010e220">&#9670;&nbsp;</a></span>sponge</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ascon_8h.html#aaba863f50754a13f14511b7e7c1d1b1c">ascon_sponge_t</a> ascon_bufstate::sponge</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cipher sponge state. </p>
+
+</div>
+</div>
+<a id="a1c589b42b759f19cec9e3b2292cb05ef" name="a1c589b42b759f19cec9e3b2292cb05ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c589b42b759f19cec9e3b2292cb05ef">&#9670;&nbsp;</a></span>buffer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t ascon_bufstate::buffer[<a class="el" href="ascon_8h.html#a46b065520f316170a86a56bed780bcd3">ASCON_DOUBLE_RATE</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Buffer caching the less-than-rate long input between update calls. </p>
+
+</div>
+</div>
+<a id="a607f8bce5d82dd63049853f97b559eda" name="a607f8bce5d82dd63049853f97b559eda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a607f8bce5d82dd63049853f97b559eda">&#9670;&nbsp;</a></span>buffer_len</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t ascon_bufstate::buffer_len</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Currently used bytes of the buffer. </p>
+
+</div>
+</div>
 <a id="ada570bc18bf509fb489eaecfbe9155d1" name="ada570bc18bf509fb489eaecfbe9155d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ada570bc18bf509fb489eaecfbe9155d1">&#9670;&nbsp;</a></span>flow_state</h2>
 
@@ -124,6 +168,22 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>pad</b> [6]</td></
 <p>State of the order of Init-Update-Final function calls, checked to know when to finalise the associated data processing and for the runtime assertions on the correct order of the functions. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="ascon_8h.html#a4d9e7874efcfe5c4789385bf580f5d14" title="When defined, enables the runtime assertions on the parameters of all functions of the library API us...">ASCON_INPUT_ASSERTS</a></dd></dl>
 <p>Note: this variable is not semantically relevant in THIS struct, as it should belong in the struct ascon_aead_ctx_t, but by having it here we spare bytes of padding (7 on 64-bit systems, 3 on 32-bit, 1 on 16-bit) at the end of the struct ascon_aead_ctx_t, by using some of the padding space this struct anyway has. </p>
+
+</div>
+</div>
+<a id="ac7c34ce0f0f2b964183e87315b420958" name="ac7c34ce0f0f2b964183e87315b420958"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7c34ce0f0f2b964183e87315b420958">&#9670;&nbsp;</a></span>pad</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t ascon_bufstate::pad[6]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unused padding to the next uint64_t (sponge.x0 or ctx.k0) to avoid errors when compiling with <code>-Wpadding</code> on any platform. </p>
 
 </div>
 </div>

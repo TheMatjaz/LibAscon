@@ -77,5 +77,6 @@ var searchData=
   ['ascon_5ftag_5finvalid_74',['ASCON_TAG_INVALID',['../ascon_8h.html#a7ee43438b3164b90c2aeb5f15b0e56dd',1,'ascon.h']]],
   ['ascon_5ftag_5fok_75',['ASCON_TAG_OK',['../ascon_8h.html#ae4039ea40dc117ac4189ec25a812293e',1,'ascon.h']]],
   ['ascon_5fwindows_76',['ASCON_WINDOWS',['../ascon_8h.html#aeef5680166cd4abd560723ed81468e58',1,'ascon.h']]],
-  ['authors_77',['Authors',['../md__a_u_t_h_o_r_s.html',1,'']]]
+  ['authors_77',['Authors',['../md__a_u_t_h_o_r_s.html',1,'']]],
+  ['authors_2emd_78',['AUTHORS.md',['../_a_u_t_h_o_r_s_8md.html',1,'']]]
 ];
