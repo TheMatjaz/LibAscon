@@ -28,6 +28,12 @@ extern "C"
 
 // awk '{print length, $0}' hash.txt |grep 'Msg ='|sort -nr|head -1
 #define VECS_MAX_HASH_MESSAGE_LEN 1024
+// awk '{print length, $0}' mac.txt |grep 'Msg ='|sort -nr|head -1
+#define VECS_MAX_MAC_MESSAGE_LEN 1024
+// awk '{print length, $0}' prf.txt |grep 'Msg ='|sort -nr|head -1
+#define VECS_MAX_PRF_MESSAGE_LEN 1024
+// awk '{print length, $0}' prfs.txt |grep 'Msg ='|sort -nr|head -1
+#define VECS_MAX_PRFS_MESSAGE_LEN 16
 // awk '{print length, $0}' aead128.txt |grep 'PT ='|sort -nr|head -1
 #define VECS_MAX_AEAD_PLAINTEXT_LEN 32
 // awk '{print length, $0}' aead128.txt |grep 'AD ='|sort -nr|head -1
@@ -36,6 +42,7 @@ extern "C"
 #define VECS_MAX_AEAD_CIPHERTEXT_LEN 48
 
 #define VECS_MAX_HEXBYTES_LEN 1024
+#define VECS_MAX_PRF_TAG_LEN 16
 
 typedef enum
 {
@@ -67,6 +74,15 @@ typedef struct vecs_hash
     uint8_t message[VECS_MAX_HASH_MESSAGE_LEN];
     uint8_t expected_digest[ASCON_HASH_DIGEST_LEN];
 } vecs_hash_t;
+
+typedef struct vecs_prf
+{
+    size_t message_len;
+    size_t count;
+    uint8_t message[VECS_MAX_PRF_MESSAGE_LEN];
+    uint8_t expected_tag[VECS_MAX_PRF_TAG_LEN];
+    uint8_t key[ASCON_PRF_KEY_LEN];
+} vecs_prf_t;
 
 typedef struct vecs_aead
 {
@@ -116,6 +132,19 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* ctx, vecs_hash_t* testcase);
 /**
  * @internal
  * Parses and provides one testcase from the test vectors file used to
+ * test the PRF functions.
+ *
+ * Closes the file automatically on EOF or parsing error.
+ *
+ * @param[in, out] ctx iterator state
+ * @param[out] testcase parsed test vectors
+ * @return any error during file parsing or EOF indication
+ */
+vecs_err_t vecs_prf_next(vecs_ctx_t* ctx, vecs_prf_t* testcase);
+
+/**
+ * @internal
+ * Parses and provides one testcase from the test vectors file used to
  * test the AEAD functions.
  *
  * Closes the file automatically on EOF or parsing error.
@@ -136,6 +165,17 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* ctx, vecs_aead_t* testcase);
  */
 void vecs_hash_log(const vecs_hash_t* testcase,
                    const uint8_t* obtained_digest);
+
+/**
+ * @internal
+ * Logs the PRF testcase to stdout if DEBUG is defined.
+ *
+ * @param[in] testcase the test vector to log
+ * @param[in] obtained_tag optional digest obtained from the
+ *        PRF function. Prints it only if not NULL.
+ */
+void vecs_prf_log(const vecs_prf_t* testcase,
+                  const uint8_t* obtained_tag);
 
 /**
  * @internal

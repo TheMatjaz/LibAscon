@@ -85,8 +85,8 @@ static vecs_err_t fscan_count_hash(vecs_ctx_t* const ctx,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_msg(vecs_ctx_t* const ctx,
-                            vecs_hash_t* const testcase)
+static vecs_err_t fscan_msg_hash(vecs_ctx_t* const ctx,
+                                 vecs_hash_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " %s = ", string);
@@ -108,8 +108,8 @@ static vecs_err_t fscan_msg(vecs_ctx_t* const ctx,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_digest(vecs_ctx_t* const ctx,
-                               vecs_hash_t* const testcase)
+static vecs_err_t fscan_digest_hash(vecs_ctx_t* const ctx,
+                                    vecs_hash_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " %s = ", string);
@@ -141,9 +141,129 @@ vecs_err_t vecs_hash_next(vecs_ctx_t* const ctx, vecs_hash_t* const testcase)
     }
     errcode = fscan_count_hash(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_msg(ctx, testcase);
+    errcode = fscan_msg_hash(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_digest(ctx, testcase);
+    errcode = fscan_digest_hash(ctx, testcase);
+    if (errcode != VECS_OK) { goto termination; }
+    int res = fscanf(ctx->handle, " ");  // Discard any trailing whitespace
+    (void) res; // Unused
+    termination:
+    {
+        if (errcode != VECS_OK)
+        {
+            fclose(ctx->handle);
+        }
+        return errcode;
+    }
+}
+
+static vecs_err_t fscan_count_prf(vecs_ctx_t* const ctx,
+                                  vecs_prf_t* const testcase)
+{
+    unsigned int count = 1;
+    char string[10];
+    const int obtained_len = fscanf(ctx->handle, " %s = %u ", string, &count);
+    if (obtained_len != 2)
+    {
+        return VECS_FORMAT_INCORRECT_COUNT_HDR;
+    }
+    if (memcmp(string, "Count", 5) != 0)
+    {
+        return VECS_FORMAT_INCORRECT_COUNT_HDR;
+    }
+    testcase->message_len = count - 1;
+    if (testcase->message_len > VECS_MAX_HASH_MESSAGE_LEN)
+    {
+        return VECS_FORMAT_TOO_LARGE_PLAINTEXT;
+    }
+    testcase->count = count;
+    return VECS_OK;
+}
+
+static vecs_err_t fscan_key_prf(vecs_ctx_t* const ctx,
+                                vecs_prf_t* const testcase)
+{
+    char string[10];
+    const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
+    if (obtained_len != 1)
+    {
+        return VECS_FORMAT_INCORRECT_KEY_HDR;
+    }
+    if (memcmp(string, "Key", 3) != 0)
+    {
+        return VECS_FORMAT_INCORRECT_KEY_HDR;
+    }
+    const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
+                                                    testcase->key,
+                                                    ASCON_PRF_KEY_LEN);
+    if (errcode != VECS_OK)
+    {
+        return VECS_FORMAT_TOO_SHORT_KEY;
+    }
+    return VECS_OK;
+}
+
+static vecs_err_t fscan_msg_prf(vecs_ctx_t* const ctx,
+                                vecs_prf_t* const testcase)
+{
+    char string[10];
+    const int obtained_len = fscanf(ctx->handle, " %s = ", string);
+    if (obtained_len != 1)
+    {
+        return VECS_FORMAT_INCORRECT_MESSAGE_HDR;
+    }
+    if (memcmp(string, "Msg", 3) != 0)
+    {
+        return VECS_FORMAT_INCORRECT_MESSAGE_HDR;
+    }
+    const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
+                                                    testcase->message,
+                                                    testcase->message_len);
+    if (errcode != VECS_OK)
+    {
+        return VECS_FORMAT_TOO_SHORT_PLAINTEXT;
+    }
+    return VECS_OK;
+}
+
+static vecs_err_t fscan_tag_prf(vecs_ctx_t* const ctx,
+                                    vecs_prf_t* const testcase)
+{
+    char string[10];
+    const int obtained_len = fscanf(ctx->handle, " %s = ", string);
+    if (obtained_len != 1)
+    {
+        return VECS_FORMAT_INCORRECT_DIGEST_HDR;
+    }
+    if (memcmp(string, "MD", 2) != 0)
+    {
+        return VECS_FORMAT_INCORRECT_DIGEST_HDR;
+    }
+    const vecs_err_t errcode = fscan_exact_hexbytes(ctx->handle,
+                                                    testcase->expected_tag,
+                                                    ASCON_HASH_DIGEST_LEN);
+    if (errcode != VECS_OK)
+    {
+        return VECS_FORMAT_TOO_SHORT_DIGEST;
+    }
+    return VECS_OK;
+}
+
+vecs_err_t vecs_prf_next(vecs_ctx_t* const ctx, vecs_prf_t* const testcase)
+{
+    vecs_err_t errcode;
+    if (feof(ctx->handle))
+    {
+        errcode = VECS_EOF;
+        goto termination;
+    }
+    errcode = fscan_count_prf(ctx, testcase);
+    if (errcode != VECS_OK) { goto termination; }
+    errcode = fscan_key_prf(ctx, testcase);
+    if (errcode != VECS_OK) { goto termination; }
+    errcode = fscan_msg_prf(ctx, testcase);
+    if (errcode != VECS_OK) { goto termination; }
+    errcode = fscan_tag_prf(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
     int res = fscanf(ctx->handle, " ");  // Discard any trailing whitespace
     (void) res; // Unused
@@ -175,8 +295,8 @@ static vecs_err_t fscan_count_aead(vecs_ctx_t* const ctx,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
-                            vecs_aead_t* const testcase)
+static vecs_err_t fscan_key_aead(vecs_ctx_t* const ctx,
+                                 vecs_aead_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
@@ -198,8 +318,8 @@ static vecs_err_t fscan_key(vecs_ctx_t* const ctx,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_nonce(vecs_ctx_t* const ctx,
-                              vecs_aead_t* const testcase)
+static vecs_err_t fscan_nonce_aead(vecs_ctx_t* const ctx,
+                                   vecs_aead_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
@@ -221,8 +341,8 @@ static vecs_err_t fscan_nonce(vecs_ctx_t* const ctx,
     return VECS_OK;
 }
 
-static vecs_err_t fscan_plaintext(vecs_ctx_t* const ctx,
-                                  vecs_aead_t* const testcase)
+static vecs_err_t fscan_plaintext_aead(vecs_ctx_t* const ctx,
+                                       vecs_aead_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
@@ -238,8 +358,8 @@ static vecs_err_t fscan_plaintext(vecs_ctx_t* const ctx,
                                    &testcase->plaintext_len);
 }
 
-static vecs_err_t fscan_assoc_data(vecs_ctx_t* const ctx,
-                                   vecs_aead_t* const testcase)
+static vecs_err_t fscan_assoc_data_aead(vecs_ctx_t* const ctx,
+                                        vecs_aead_t* const testcase)
 {
     // IMPORTANT!!!
     // This function may crash if the underscores are removed from the test
@@ -249,6 +369,7 @@ static vecs_err_t fscan_assoc_data(vecs_ctx_t* const ctx,
     // line. The underscores are basically field separators. This is required
     // because fscanf skips EVERY type of whitespace when reading a regular
     // whitespace in its format string, including newline characters.
+    // TODO find a way to fix this problem?
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
     if (obtained_len != 1)
@@ -263,8 +384,8 @@ static vecs_err_t fscan_assoc_data(vecs_ctx_t* const ctx,
                                    &testcase->assoc_data_len);
 }
 
-static vecs_err_t fscan_ciphertext(vecs_ctx_t* const ctx,
-                                   vecs_aead_t* const testcase)
+static vecs_err_t fscan_ciphertext_aead(vecs_ctx_t* const ctx,
+                                        vecs_aead_t* const testcase)
 {
     char string[10];
     const int obtained_len = fscanf(ctx->handle, " _%s = ", string);
@@ -306,15 +427,15 @@ vecs_err_t vecs_aead_next(vecs_ctx_t* const ctx, vecs_aead_t* const testcase)
     testcase->key_len = ctx->key_len;
     errcode = fscan_count_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_key(ctx, testcase);
+    errcode = fscan_key_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_nonce(ctx, testcase);
+    errcode = fscan_nonce_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_plaintext(ctx, testcase);
+    errcode = fscan_plaintext_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_assoc_data(ctx, testcase);
+    errcode = fscan_assoc_data_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
-    errcode = fscan_ciphertext(ctx, testcase);
+    errcode = fscan_ciphertext_aead(ctx, testcase);
     if (errcode != VECS_OK) { goto termination; }
     int res = fscanf(ctx->handle, " ");  // Discard any trailing whitespace
     (void) res; // Unused
@@ -362,6 +483,26 @@ void vecs_hash_log(const vecs_hash_t* const testcase,
 #else
     (void) testcase;
     (void) obtained_digest;
+#endif
+}
+
+void vecs_prf_log(const vecs_prf_t* const testcase,
+                   const uint8_t* const obtained_tag)
+{
+#ifdef DEBUG_TEST_PRINT
+    vecs_log_hexbytes("Msg", testcase->message, testcase->message_len);
+    vecs_log_hexbytes("Key", testcase->key, ASCON_PRF_KEY_LEN);
+    vecs_log_hexbytes("Expected tag", testcase->expected_tag,
+                      VECS_MAX_PRF_TAG_LEN);
+    if (obtained_tag != NULL)
+    {
+        vecs_log_hexbytes("Obtained tag", obtained_tag,
+                          VECS_MAX_PRF_TAG_LEN);
+    }
+    fflush(stdout);
+#else
+    (void) testcase;
+    (void) obtained_tag;
 #endif
 }
 
