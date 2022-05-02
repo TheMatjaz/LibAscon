@@ -142,12 +142,29 @@ extern "C"
  * - `h` is the digest length in bits expressed as `uint32_t`: 0 = 0x00000000,
  *   here being zero, because of unlimited length
  */
-#define ASCON_IV_XOFa     0x00400c0400000000ULL
+#define ASCON_IV_XOFa 0x00400c0400000000ULL
 
 /**
  * @internal
- * Applies 0b1000...000 right-side padding to a uint8_t[8] array of
- * `bytes` filled elements..
+ * Initialisation vector for the Ascon-PRF pseudo-random function.
+ *
+ * Equivalent to the binary concatenation of `k || r || a || 0^40`
+ * (from most significant bit on the left to the least significant bit on the
+ * right) where:
+ *
+ * - `k` is the key length in bits: 128 = 0x80
+ * - `r` is the PRF output rate in bits: 128 = 0x80
+ * - `a` is the amount of rounds during the a-permutation (12 = 0x0C)
+ *   combined with the constant 0x80 with a bitwise-OR: 0x8C
+ * - `b` is the amount of rounds during the b-permutation: 8 = 0x08
+ * - right-padded with zeros to reach 64 bits of size
+ */
+#define ASCON_IV_PRF  0x80808c0000000000ULL
+
+/**
+ * @internal
+ * Generates a 0b1000...000 right-side string, used to pad a uint64_t where the
+ * `bytes` most significant ones are already set.
  */
 #define PADDING(bytes) (0x80ULL << (56U - 8U * ((unsigned int) (bytes))))
 
@@ -179,6 +196,8 @@ typedef enum
     ASCON_FLOW_AEAD128a_DECRYPT_UPDATED,
     ASCON_FLOW_HASHA_INITIALISED,
     ASCON_FLOW_HASHA_UPDATED,
+    ASCON_FLOW_PRF_INITIALISED,
+    ASCON_FLOW_PRF_UPDATED,
 } ascon_flow_t;
 
 /** @internal Decodes an uint64_t from a big-endian encoded array of 8 bytes. */

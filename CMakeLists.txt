@@ -61,12 +61,17 @@ set(LIB_SRC_FILES_80pq
 set(LIB_SRC_FILES_HASH
         ${LIB_SRC_FILES_COMMON}
         src/ascon_hash.c)
+set(LIB_SRC_FILES_PRF
+        ${LIB_SRC_FILES_COMMON}
+        src/ascon_prf.c
+        )
 set(LIB_SRC_FILES_FULL
         ${LIB_SRC_FILES_COMMON}
         ${LIB_SRC_FILES_128}
         ${LIB_SRC_FILES_128a}
         ${LIB_SRC_FILES_80pq}
         ${LIB_SRC_FILES_HASH}
+        ${LIB_SRC_FILES_PRF}
         )
 set(TEST_FRAMEWORK
         tst/atto/atto.c
@@ -116,6 +121,8 @@ add_library(ascon80pq STATIC ${LIB_SRC_FILES_80pq})
 target_include_directories(ascon80pq PUBLIC inc/ PRIVATE src/)
 add_library(asconhash STATIC ${LIB_SRC_FILES_HASH})
 target_include_directories(asconhash PUBLIC inc/ PRIVATE src/)
+add_library(asconprf STATIC ${LIB_SRC_FILES_PRF})
+target_include_directories(asconprf PUBLIC inc/ PRIVATE src/)
 add_library(ascon128hash STATIC ${LIB_SRC_FILES_128} ${LIB_SRC_FILES_HASH})
 target_include_directories(ascon128hash PUBLIC inc/ PRIVATE src/)
 add_library(ascon128ahash STATIC ${LIB_SRC_FILES_128a} ${LIB_SRC_FILES_HASH})

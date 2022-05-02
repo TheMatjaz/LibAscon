@@ -118,6 +118,9 @@ extern "C"
  */
 #define ASCON_AEAD80pq_KEY_LEN 20U
 
+// TODO docs
+#define ASCON_PRF_KEY_LEN 16U
+
 /**
  * Length in bytes of the public nonce used for authenticated
  * encryption and decryption.
@@ -212,9 +215,12 @@ typedef struct ascon_bufstate
      */
     uint8_t flow_state;
 
+    // TODO docs
+    uint8_t sponge_index;
+
     /** Unused padding to the next uint64_t (sponge.x0 or ctx.k0)
      * to avoid errors when compiling with `-Wpadding` on any platform. */
-    uint8_t pad[6];
+    uint8_t pad[5];
 } ascon_bufstate_t;
 
 /** Cipher context for hashing. */
