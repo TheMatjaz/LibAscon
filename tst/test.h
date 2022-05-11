@@ -26,6 +26,8 @@ void test_xofa(void);
 
 void test_hasha(void);
 
+void test_prf(void);
+
 void test_aead128_encryption(void);
 
 void test_aead128_decryption(void);

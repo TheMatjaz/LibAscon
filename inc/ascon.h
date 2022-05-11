@@ -2111,6 +2111,41 @@ ascon_hasha_xof_final_matches(ascon_hash_ctx_t* ctx,
                               const uint8_t* expected_digest,
                               size_t expected_digest_len);
 
+ASCON_API void
+ascon_prf_init(ascon_hash_ctx_t* ctx,
+               const uint8_t key[ASCON_PRF_KEY_LEN]);
+
+ASCON_API void
+ascon_prf_update(ascon_hash_ctx_t* ctx,
+                 const uint8_t* data,
+                 size_t data_len);
+
+ASCON_API void
+ascon_prf_final(ascon_hash_ctx_t* ctx,
+                uint8_t* tag,
+                size_t tag_len);
+
+
+ASCON_API bool
+ascon_prf_final_matches(ascon_hash_ctx_t* ctx,
+                        const uint8_t* expected_tag,
+                        size_t expected_tag_len);
+
+ASCON_API void
+ascon_prf(uint8_t* tag,
+          const uint8_t key[ASCON_PRF_KEY_LEN],
+          const uint8_t* seed,
+          size_t seed_len,
+          size_t tag_len);
+
+ASCON_API bool
+ascon_prf_matches(
+        const uint8_t* expected_tag,
+        const uint8_t key[ASCON_PRF_KEY_LEN],
+        const uint8_t* seed,
+        size_t expected_tag_len,
+        size_t seed_len);
+
 /**
  * Security cleanup of the hashing context, in case the online
  * processing is not completed to the end.

@@ -24,6 +24,7 @@ int main(void)
     test_hash();
     test_xofa();
     test_hasha();
+    test_prf();
     test_aead128_encryption();
     test_aead128_decryption();
     test_aead128_inplace();

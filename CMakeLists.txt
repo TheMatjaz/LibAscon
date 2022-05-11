@@ -82,6 +82,7 @@ set(TEST_SRC_FILES
         tst/test_xofa.c
         tst/test_hash.c
         tst/test_hasha.c
+        tst/test_prf.c
         tst/test_aead128_enc.c
         tst/test_aead128_dec.c
         tst/test_aead128_inplace.c

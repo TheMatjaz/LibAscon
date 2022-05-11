@@ -6,7 +6,6 @@
  * @authors see AUTHORS.md file
  */
 
-#include "ascon.h"
 #include "ascon_internal.h"
 
 ASCON_API void
@@ -56,7 +55,7 @@ absorb_prf_data(ascon_sponge_t* const sponge,
 ASCON_API void
 ascon_prf_update(ascon_hash_ctx_t* const ctx,
                  const uint8_t* data,
-                 size_t data_len)
+                 const size_t data_len)
 {
     ASCON_ASSERT(ctx != NULL);
     ASCON_ASSERT(data_len == 0 || data != NULL);
@@ -111,15 +110,15 @@ ascon_prf_final(ascon_hash_ctx_t* const ctx,
     ascon_hash_cleanup(ctx);
 }
 
-/**
- * @internal
- * Final step of the PRF flow with random-tag equality checks.
- */
-static bool
-prf_final_matches(ascon_hash_ctx_t* const ctx,
-                  const uint8_t* expected_tag,
-                  size_t expected_tag_len)
+ASCON_API bool
+ascon_prf_final_matches(ascon_hash_ctx_t* const ctx,
+                        const uint8_t* expected_tag,
+                        size_t expected_tag_len)
 {
+    ASCON_ASSERT(ctx != NULL);
+    ASCON_ASSERT(expected_tag_len == 0 || expected_tag != NULL);
+    ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_PRF_INITIALISED
+                 || ctx->flow_state == ASCON_FLOW_PRF_UPDATED);
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
     uint64_t* const sponge_parts[5U] = {
@@ -166,7 +165,9 @@ prf_final_matches(ascon_hash_ctx_t* const ctx,
                 expected_tag, (uint_fast8_t) expected_tag_len);
         // Constant time comparison expected vs computed chunk
         tags_differ |= (expected_tag_block_x1 == (ctx->sponge.x1 & ms_mask));
-    } else {
+    }
+    else
+    {
         // Extract the remaining 0<=n<8 most significant bytes of expected/computed tags
         const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_tag_len);
         expected_tag_block_x0 = bigendian_decode_varlen(
@@ -177,18 +178,6 @@ prf_final_matches(ascon_hash_ctx_t* const ctx,
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
     return !tags_differ; // True if they are equal
-}
-
-ASCON_API bool
-ascon_prf_final_matches(ascon_hash_ctx_t* const ctx,
-                        const uint8_t* expected_tag,
-                        size_t expected_tag_len)
-{
-    ASCON_ASSERT(ctx != NULL);
-    ASCON_ASSERT(expected_tag_len == 0 || expected_tag != NULL);
-    ASCON_ASSERT(ctx->flow_state == ASCON_FLOW_PRF_INITIALISED
-                 || ctx->flow_state == ASCON_FLOW_PRF_UPDATED);
-    return prf_final_matches(ctx, expected_tag, expected_tag_len);
 }
 
 
