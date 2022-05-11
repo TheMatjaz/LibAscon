@@ -135,10 +135,11 @@ ascon_aead_cleanup(ascon_aead_ctx_t* const ctx)
     }
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.buffer_len = 0U;
     ((volatile ascon_aead_ctx_t*) ctx)->bufstate.flow_state = ASCON_FLOW_CLEANED;
+    ((volatile ascon_aead_ctx_t*) ctx)->bufstate.sponge_index = 0U;
     // Clearing also the padding to set the whole context to be all-zeros.
     // Makes it easier to check for initialisation and provides a known
     // state after cleanup, initialising all memory.
-    for (uint_fast8_t i = 0U; i < 6U; i++)
+    for (size_t i = 0U; i < sizeof(ctx->bufstate.pad); i++)
     {
         ((volatile ascon_aead_ctx_t*) ctx)->bufstate.pad[i] = 0U;
     }

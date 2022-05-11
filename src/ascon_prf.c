@@ -77,7 +77,7 @@ ascon_prf_final(ascon_hash_ctx_t* const ctx,
                  || ctx->flow_state == ASCON_FLOW_PRF_UPDATED);
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    uint64_t* const sponge_parts[5] = {
+    uint64_t* const sponge_parts[5U] = {
             // Portable way of iterating though sponge variables
             &ctx->sponge.x0,
             &ctx->sponge.x1,
@@ -122,7 +122,7 @@ prf_final_matches(ascon_hash_ctx_t* const ctx,
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    uint64_t* const sponge_parts[5] = {
+    uint64_t* const sponge_parts[5U] = {
             // Portable way of iterating though sponge variables
             &ctx->sponge.x0,
             &ctx->sponge.x1,
