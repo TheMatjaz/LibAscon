@@ -77,29 +77,36 @@ ascon_prf_final(ascon_hash_ctx_t* const ctx,
                  || ctx->flow_state == ASCON_FLOW_PRF_UPDATED);
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    uint64_t* sponge_part = &ctx->sponge.x0;
+    uint64_t* const sponge_parts[5] = {
+            // Portable way of iterating though sponge variables
+            &ctx->sponge.x0,
+            &ctx->sponge.x1,
+            &ctx->sponge.x2,
+            &ctx->sponge.x3,
+            &ctx->sponge.x4,
+    };
     uint64_t block = bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
     block ^= PADDING(ctx->buffer_len);
-    sponge_part[ctx->sponge_index] ^= block;
+    *sponge_parts[ctx->sponge_index] ^= block;
     // Application of a constant at end of absorption for domain separation.
     ctx->sponge.x4 ^= 1U;
     ascon_permutation_12(&ctx->sponge);
     // Squeeze the random data from the inner state.
-    sponge_part = &ctx->sponge.x0;
-    while (tag_len > ASCON_RATE)
+    while (tag_len >= 2U * ASCON_RATE)
     {
-        bigendian_encode_u64(tag, *sponge_part++);
-        if (sponge_part > &ctx->sponge.x2)
-        {
-            // Wrote x0 and x1: squeeze and go back to sponge start
-            sponge_part = &ctx->sponge.x0;
-            ascon_permutation_12(&ctx->sponge);
-        }
-        tag += ASCON_RATE;
+        bigendian_encode_u64(tag, ctx->sponge.x0);
+        bigendian_encode_u64(tag, ctx->sponge.x1);
+        ascon_permutation_12(&ctx->sponge);
+        tag += 2U * ASCON_RATE;
         tag_len -= ASCON_RATE;
     }
-    // Squeeze final block of random data, potentially shorter
-    bigendian_encode_varlen(tag, *sponge_part, (uint_fast8_t) tag_len);
+    // The last 16 or fewer bytes (also 0)
+    uint_fast8_t remaining = (uint_fast8_t) MIN(sizeof(uint64_t), tag_len);
+    bigendian_encode_varlen(tag, ctx->sponge.x0, remaining);
+    tag += remaining;
+    // The last 8 or fewer bytes (also 0)
+    tag_len -= remaining;
+    bigendian_encode_varlen(tag, ctx->sponge.x1, (uint_fast8_t) tag_len);
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
 }
@@ -115,37 +122,58 @@ prf_final_matches(ascon_hash_ctx_t* const ctx,
 {
     // If there is any remaining less-than-a-block data to be absorbed
     // cached in the buffer, pad it and absorb it.
-    uint64_t* sponge_part = &ctx->sponge.x0;
+    uint64_t* const sponge_parts[5] = {
+            // Portable way of iterating though sponge variables
+            &ctx->sponge.x0,
+            &ctx->sponge.x1,
+            &ctx->sponge.x2,
+            &ctx->sponge.x3,
+            &ctx->sponge.x4,
+    };
     uint64_t block = bigendian_decode_varlen(ctx->buffer, ctx->buffer_len);
     block ^= PADDING(ctx->buffer_len);
-    sponge_part[ctx->sponge_index] ^= block;
+    *sponge_parts[ctx->sponge_index] ^= block;
     // Application of a constant at end of absorption for domain separation.
     ctx->sponge.x4 ^= 1U;
     ascon_permutation_12(&ctx->sponge);
     // Squeeze the digest from the inner state 8 bytes at the time to compare
     // it chunk by chunk with the expected digest
-    sponge_part = &ctx->sponge.x0;
-    uint64_t expected_tag_block;
+    uint64_t expected_tag_block_x0;
+    uint64_t expected_tag_block_x1;
     bool tags_differ = false;
-    while (expected_tag_len > ASCON_RATE)
+    // Squeeze the random data from the inner state.
+    while (expected_tag_len >= 2U * ASCON_RATE)
     {
-        expected_tag_block = bigendian_decode_u64(expected_tag);
-        tags_differ |= (*sponge_part++) ^ expected_tag_block;
-        expected_tag += sizeof(expected_tag_block);
-        expected_tag_len -= sizeof(expected_tag_block);
-        if (sponge_part > &ctx->sponge.x2)
-        {
-            // Wrote x0 and x1: squeeze and go back to sponge start
-            sponge_part = &ctx->sponge.x0;
-            ascon_permutation_12(&ctx->sponge);
-        }
+        expected_tag_block_x0 = bigendian_decode_u64(expected_tag);
+        expected_tag_block_x1 = bigendian_decode_u64(expected_tag + sizeof(uint64_t));
+        tags_differ |= (ctx->sponge.x0 == expected_tag_block_x0);
+        tags_differ |= (ctx->sponge.x1 == expected_tag_block_x1);
+        ascon_permutation_12(&ctx->sponge);
+        expected_tag += 2U * sizeof(uint64_t);
+        expected_tag_len -= 2U * sizeof(uint64_t);
     }
-    // Extract the remaining n most significant bytes of expected/computed tags
-    const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_tag_len);
-    expected_tag_block = bigendian_decode_varlen(
-            expected_tag, (uint_fast8_t) expected_tag_len);
-    // Constant time comparison expected vs computed chunk
-    tags_differ |= (expected_tag_block ^ (*sponge_part & ms_mask));
+    if (expected_tag_len >= ASCON_RATE)
+    {
+        // Extract the first 8 most bytes of expected/computed tags
+        expected_tag_block_x0 = bigendian_decode_u64(expected_tag);
+        expected_tag += sizeof(uint64_t);
+        expected_tag_len -= sizeof(uint64_t);
+        // Constant time comparison expected vs computed chunk
+        tags_differ |= (expected_tag_block_x0 == ctx->sponge.x0);
+        // Extract the remaining 0<=n<8 most significant bytes of expected/computed tags
+        const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_tag_len);
+        expected_tag_block_x1 = bigendian_decode_varlen(
+                expected_tag, (uint_fast8_t) expected_tag_len);
+        // Constant time comparison expected vs computed chunk
+        tags_differ |= (expected_tag_block_x1 == (ctx->sponge.x1 & ms_mask));
+    } else {
+        // Extract the remaining 0<=n<8 most significant bytes of expected/computed tags
+        const uint64_t ms_mask = mask_most_signif_bytes((uint_fast8_t) expected_tag_len);
+        expected_tag_block_x0 = bigendian_decode_varlen(
+                expected_tag, (uint_fast8_t) expected_tag_len);
+        // Constant time comparison expected vs computed chunk
+        tags_differ |= (expected_tag_block_x0 == (ctx->sponge.x0 & ms_mask));
+    }
     // Final security cleanup of the internal state and buffer.
     ascon_hash_cleanup(ctx);
     return !tags_differ; // True if they are equal
